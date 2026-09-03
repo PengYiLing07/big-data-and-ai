@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一分钟学会 Agent Skill · 分层自测学习卡</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2563eb; --brand-soft:#eef3fe;
+    --e:#0f6e56; --e-soft:#e1f5ee; --m:#854f0b; --m-soft:#faeeda;
+    --h:#993c1d; --h-soft:#faeee7; --good:#1d9e75; --bad:#e24b4a;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.65; padding:24px;}
+  .wrap{max-width:820px; margin:0 auto;}
+  .hero{background:linear-gradient(135deg,#1e3a8a,#2563eb); color:#fff; border-radius:var(--radius); padding:26px 28px; margin-bottom:20px;}
+  .hero h1{font-size:24px; margin-bottom:4px;}
+  .hero p{opacity:.92; font-size:14px;}
+  .vbadge{display:inline-block; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.4); padding:2px 10px; border-radius:20px; font-size:12px; margin-top:8px;}
+  .goal{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+  .goal span{background:rgba(255,255,255,.14); border-radius:8px; padding:5px 11px; font-size:12px;}
+  h2{font-size:19px; margin:26px 0 4px;}
+  .sub{color:var(--muted); font-size:13px; margin-bottom:14px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; margin-bottom:12px;}
+  .kcard{border-left:4px solid var(--brand);}
+  .khead{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px; flex-wrap:wrap;}
+  .khead b{font-size:15px;}
+  .knum{display:inline-flex; width:22px; height:22px; border-radius:6px; background:var(--brand); color:#fff; align-items:center; justify-content:center; font-size:12px; margin-right:6px;}
+  .src{font-size:11.5px; color:var(--muted); background:var(--brand-soft); border:1px dashed #c9d7f5; padding:5px 9px; border-radius:7px; margin-top:8px; word-break:break-all;}
+  .src b{color:var(--brand);}
+  .src a{color:var(--brand); text-decoration:none;}
+  .src a:hover{text-decoration:underline;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px;}
+  .mini{background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:12px 14px;}
+  .mini b{font-size:13px; display:block; margin-bottom:4px;}
+  .mini p{font-size:12.5px; color:var(--muted);}
+  pre{background:#f4f6fb;border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.7;overflow-x:auto;margin:8px 0;}
+
+  .pill{display:inline-flex; align-items:center; gap:6px; border-radius:20px; padding:2px 11px; font-size:12px; font-weight:600; white-space:nowrap;}
+  .pillE{background:var(--e-soft); color:var(--e);} .pillM{background:var(--m-soft); color:var(--m);} .pillH{background:var(--h-soft); color:var(--h);}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .bar{height:8px; background:#e9edf3; border-radius:6px; overflow:hidden; margin:10px 0;}
+  .bar i{display:block; height:100%; background:linear-gradient(90deg,#2563eb,#38bdf8); border-radius:6px; transition:width .3s;}
+  .statrow{display:flex; gap:12px; flex-wrap:wrap;}
+  .stat{flex:1; min-width:110px; background:#f2f5fa; border-radius:10px; padding:10px 12px; text-align:center;}
+  .stat .n{font-size:21px; font-weight:700;}
+  .stat .l{font-size:11.5px; color:var(--muted);}
+  .qcard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px;}
+  .qmeta{font-size:12px; color:var(--muted); margin-bottom:10px;}
+  #qtext{font-size:16px;font-weight:600;margin-bottom:12px;}
+  .opts{display:flex; flex-direction:column; gap:8px;}
+  .opt{text-align:left; padding:11px 14px; border:1.5px solid var(--line); border-radius:10px; background:#fff; cursor:pointer; font-size:14px; color:var(--ink); transition:.12s; font-family:inherit; display:flex; gap:10px; align-items:flex-start;}
+  .opt:hover{border-color:#a9c0ea; background:#f8fafd;}
+  .opt .L{flex:none; width:22px; height:22px; border-radius:6px; border:1.5px solid #c4ccd8; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; background:#fff;}
+  .opt.sel{border-color:var(--brand); background:var(--brand-soft);}
+  .opt.sel .L{background:var(--brand); border-color:var(--brand); color:#fff;}
+  .opt.cur{pointer-events:none;}
+  .opt.cur.ok{border-color:var(--good); background:#e9f8f2;}
+  .opt.cur.ok .L{background:var(--good); border-color:var(--good); color:#fff;}
+  .opt.cur.no{border-color:var(--bad); background:#fdeceb;}
+  .opt.cur.no .L{background:var(--bad); border-color:var(--bad); color:#fff;}
+  .fb{margin-top:12px; padding:11px 14px; border-radius:10px; font-size:13.5px; display:none;}
+  .fb.ok{background:#e9f8f2; color:#0f6e56; border:1px solid #bfe9d8; display:block;}
+  .fb.no{background:#fdeceb; color:#a32d2d; border:1px solid #f6c9c6; display:block;}
+  .fb .move{display:block; margin-top:5px; font-weight:600;}
+  .up{color:var(--good);} .down{color:var(--bad);} .stay{color:var(--muted);}
+  .actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+  .btn{border:none; border-radius:10px; padding:11px 18px; font-size:14px; cursor:pointer; font-family:inherit; font-weight:600;}
+  .btn-primary{background:var(--brand); color:#fff;}
+  .btn-primary:disabled{background:#b6c6ea; cursor:not-allowed;}
+  .btn-ghost{background:#fff; border:1.5px solid var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:#a9c0ea;}
+
+  .result{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; display:none; margin-top:20px;}
+  .result .tier{font-size:26px; font-weight:800; margin:6px 0;}
+  .lvMaster{color:#854f0b;} .lvPro{color:#993c1d;} .lvAdv{color:#2563eb;} .lvNew{color:#0f6e56;}
+  .rev{margin-top:10px;}
+  .rev .it{display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px dashed var(--line); font-size:13px;}
+  .rev .it .d{color:var(--muted); font-size:12px; white-space:nowrap;}
+  table{width:100%; border-collapse:collapse; margin-top:8px; font-size:13px;}
+  th,td{border:1px solid var(--line); padding:6px 9px; text-align:left;}
+  th{background:#f2f5fa;}
+  .tip{background:#fff8e6; border:1px solid #f3e2a9; color:#7a5a00; border-radius:10px; padding:10px 14px; font-size:13px; margin-top:12px;}
+  .lvlbar{display:flex; gap:6px; margin:12px 0;}
+  .lvlseg{flex:1; text-align:center; padding:7px 0; border-radius:8px; font-size:12px; font-weight:600; background:#eef1f6; color:var(--muted); border:1px solid var(--line);}
+  .lvlseg.curE{background:var(--e-soft); color:var(--e); border-color:#bfe9d8;}
+  .lvlseg.curM{background:var(--m-soft); color:var(--m); border-color:#f3e2a9;}
+  .lvlseg.curH{background:var(--h-soft); color:var(--h); border-color:#f6c9c6;}
+  .lvlseg.done{background:#dfeaff; color:#2563eb;}
+  .restart{margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>一分钟学会 Agent Skill</h1>
+    <p>Skill（技能）= 给 AI 的「能力扩展包 + 自带说明书」。扫读下面 6 块知识，再做 12 道分层自测题验收。</p>
+    <div class="vbadge">v4.0 · 分层自适应版（答对升级 / 答错降级）</div>
+    <div class="goal">
+      <span>① 扫读知识卡（约 60 秒）</span>
+      <span>② 分层自测（约 3 分钟）</span>
+      <span>③ 领取学成等级</span>
+    </div>
+  </div>
+
+  <h2>① 先扫读：6 块核心知识</h2>
+  <p class="sub">每块末尾的「📎 来源」就是这块知识从哪来——官方文档或权威说明书，可点开查证。</p>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">1</span>Skill 是什么？</b><span class="pill pillE"><span class="dot" style="background:var(--e)"></span>入门</span></div>
+    Skill 是打包好的「能力扩展包」，让 AI 遇到特定任务时不必从零摸索，而是读一份自带说明书按流程执行。
+    <div class="grid" style="margin-top:10px;">
+      <div class="mini"><b>一句话</b><p>能力扩展包 + 自带说明书</p></div>
+      <div class="mini"><b>神比喻</b><p>给新员工的「实习生上岗手册 / SOP」</p></div>
+      <div class="mini"><b>解决了什么</b><p>AI 不是全知，需要领域专属的「做法」</p></div>
+    </div>
+    <div class="src"><b>📎 来源：</b>WorkBuddy 官方文档（能力总览）· <a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank">workbuddy.cn/docs/workbuddy/Overview ↗</a></div>
+  </div>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">2</span>内部结构长这样</b><span class="pill pillE"><span class="dot" style="background:var(--e)"></span>入门</span></div>
+    <pre>技能名/
+├── SKILL.md        ✅ 唯一【必填】：说明书 + YAML 元信息
+└── 可选资源
+    ├── scripts/    可执行代码（跑任务，不占 AI 上下文）
+    ├── references/ 长文档（AI「用到才读」）
+    └── assets/     产物素材（logo/模板/字体，复制即用）</pre>
+    <div class="src"><b>📎 来源：</b>skill-creator 权威说明书 · <code>workbuddy-builtin/skills/skill-creator/SKILL.md</code>（本机可查看「Anatomy of a Skill」）；也可对照真实技能 <code>expert-manager/</code> 目录结构</div>
+  </div>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">3</span>frontmatter：必填两项</b><span class="pill pillE"><span class="dot" style="background:var(--e)"></span>入门</span></div>
+    <pre>---
+name: 技能名            ← 必填
+description: |          ← 必填：写清「做什么 / 何时用 / 触发词」
+  触发场景：……
+---</pre>
+    <p style="font-size:13.5px;">关键：<b>description 决定「何时触发」</b>，写清楚 AI 才会在对的时刻加载它。AI 自建的技能可加一行 <code>agent_created: true</code> 以便后续修改/删除。</p>
+    <div class="src"><b>📎 来源：</b>skill-creator · 「Metadata Quality / Agent-Created」章节（本机 <code>skill-creator/SKILL.md</code>）；frontmatter 实例见 <code>expert-manager/SKILL.md</code> 顶部</div>
+  </div>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">4</span>三级加载（省「脑容量」）</b><span class="pill pillM"><span class="dot" style="background:var(--m)"></span>进阶</span></div>
+    <table>
+      <tr><th>级别</th><th>内容</th><th>何时进上下文</th></tr>
+      <tr><td>1 · 元数据</td><td>name + description（约百字）</td><td>始终常驻</td></tr>
+      <tr><td>2 · SKILL.md 正文</td><td>流程指引（宜 &lt;5k 词）</td><td>技能被触发时</td></tr>
+      <tr><td>3 · 资源</td><td>scripts / references / assets</td><td>按需才加载</td></tr>
+    </table>
+    <div class="src"><b>📎 来源：</b>skill-creator · 「Progressive Disclosure Design Principle」（本机 <code>skill-creator/SKILL.md</code>）</div>
+  </div>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">5</span>一次使用怎么流转</b><span class="pill pillM"><span class="dot" style="background:var(--m)"></span>进阶</span></div>
+    <p style="font-size:14px;margin:4px 0 8px;">扫描 → 触发 → 取用 → 执行 → <b>沉淀</b></p>
+    <div class="grid">
+      <div class="mini"><b>① 扫描</b><p>AI 先比对已装技能列表</p></div>
+      <div class="mini"><b>② 触发</b><p>请求命中某技能 description</p></div>
+      <div class="mini"><b>③ 取用</b><p>读 SKILL.md（必要时读其资源）</p></div>
+      <div class="mini"><b>④ 执行</b><p>照说明书 + 脚本完成任务</p></div>
+      <div class="mini"><b>⑤ 沉淀</b><p>发现可复用方法 → 沉淀成新技能 / 更新旧技能</p></div>
+    </div>
+    <div class="src"><b>📎 来源：</b>WorkBuddy 官方文档 · <a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank">workbuddy.cn/docs ↗</a>（Agent 执行模型）+ 系统级 Agent Skill 加载规范（本会话规则）</div>
+  </div>
+
+  <div class="card kcard">
+    <div class="khead"><b><span class="knum">6</span>为什么每题都要标「来源」</b><span class="pill pillH"><span class="dot" style="background:var(--h)"></span>挑战</span></div>
+    <ul style="padding-left:20px;font-size:14px;margin:4px 0;">
+      <li>保证知识<b>可核查</b>：能回链权威出处，而非轻信转述。</li>
+      <li>利于<b>持续跟进</b>：文档会更新，有链接才能看最新版。</li>
+      <li>区分<b>「定义性事实」</b>（官方/说明书）与<b>「操作性建议」</b>（实践），学习者知道深浅。</li>
+    </ul>
+    <div class="src"><b>📎 来源：</b>本知识库设计约定 · <code>agent-skill-101 / references / agent-skill-knowledge.md</code></div>
+  </div>
+
+  <div class="tip">💡 这份材料本身就是用一套叫 <code>agent-skill-101</code> 的技能产出的——「学 Agent Skill」和「造 Agent Skill」是同一个套路：知识 + 说明书 + 来源。</div>
+
+  <h2>② 分层自测：答对升级 ↑ / 答错降级 ↓</h2>
+  <p class="sub">题库按难度分 入门 E · 进阶 M · 挑战 H 三档，每档固定。从 E 起步：<b>答对升一档、答错降一档</b>。上限 12 题；冲到最高档 H 并连续答对 2 题可提前通关；E 档累计答错 3 次会提示回炉。分层升降为本学习工具的设计规则（非官方功能）。</p>
+
+  <div class="card" style="padding:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <div style="font-weight:700;font-size:15px;">🎯 当前难度</div>
+      <div id="diffPill" class="pill pillE"><span class="dot" style="background:var(--e)"></span>入门 E</div>
+    </div>
+    <div class="lvlbar" id="lvlbar">
+      <div class="lvlseg curE" id="segE">入门 E</div>
+      <div class="lvlseg" id="segM">进阶 M</div>
+      <div class="lvlseg" id="segH">挑战 H</div>
+    </div>
+    <div class="bar"><i id="pbar" style="width:0%"></i></div>
+    <div class="statrow" id="statrow"></div>
+
+    <div class="qcard" style="border:1px solid var(--line);margin-top:14px;padding:16px;" id="qbox">
+      <div class="qmeta" id="qstep"></div>
+      <div id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="btnConfirm">✔ 提交本题</button>
+        <button class="btn btn-ghost" id="btnNext" style="display:none;">下一题 →</button>
+      </div>
+      <div class="tip" id="starttip">点击「✔ 提交本题」从 E 档开始。先点选答案（会变蓝 + 打勾），再提交，立即告诉你对错与难度升降。</div>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+var BANK = {
+  version:"agent-skill-101-v1.0", startLevel:"E", maxQuestions:12,
+  hardWinStreak:2, pityLimit:3, order:["E","M","H"],
+  names:{E:"入门 E",M:"进阶 M",H:"挑战 H"},
+  pool:{
+    E:[
+      {q:"在 Agent Skill 目录里，哪个文件是【必须存在】的核心文件？",opts:["assets/logo.png","SKILL.md","references/说明书.md","scripts/run.py"],ans:["B"],src:"skill-creator · Anatomy of a Skill（SKILL.md required）—— 本机 workbuddy-builtin/skills/skill-creator/SKILL.md",note:"只有 SKILL.md 是强制文件，其余资源目录按需取舍。"},
+      {q:"Skill 常被比喻成什么，帮助初学者理解？",opts:["一份股票财报","一本小说","一份『实习生上岗手册 / SOP』","一张地图"],ans:["C"],src:"agent-skill-101 知识库 · 概念类比 —— references/agent-skill-knowledge.md",note:"『实习生手册』最贴切：写清流程与规矩的自带说明书。"},
+      {q:"SKILL.md 顶部 YAML frontmatter 中，哪两项【必填】？",opts:["name 和 description","icon 和 author","version 和 license","tags 和 category"],ans:["A"],src:"skill-creator · Metadata Quality —— 本机 skill-creator/SKILL.md",note:"name=技能名，description=做什么/何时用，后者决定触发时机。"},
+      {q:"『三级加载』中哪一级【始终常驻】AI 上下文？",opts:["全部资源文件","SKILL.md 正文","元数据（name+description）","scripts 脚本"],ans:["C"],src:"skill-creator · Progressive Disclosure —— 本机 skill-creator/SKILL.md",note:"元数据仅约百字、最省『脑容量』，所以常驻。"}
+    ],
+    M:[
+      {q:"description（技能说明）的主要作用是什么？",opts:["显示给用户的装饰文字","决定『何时触发』这个技能","控制页面动画","给文件排序"],ans:["B"],src:"skill-creator · Metadata Quality —— 本机 skill-creator/SKILL.md",note:"写清场景与触发词，AI 才能在对的时刻加载它。"},
+      {q:"references/ 目录适合放什么材料？",opts:["可直接执行的程序","最终输出的 logo/模板","较长、『用到才读』的参考文档","Git 忽略文件"],ans:["C"],src:"skill-creator · references/ —— 本机 skill-creator/SKILL.md",note:"references 只在 AI 判定需要时才读，帮 SKILL.md 保持精简。"},
+      {q:"scripts/ 目录脚本的重要特性是？",opts:["必须人工逐行阅读","可【直接执行】且不占上下文","只能联网使用","不能保存为文件"],ans:["B"],src:"skill-creator · scripts/（Token efficient）—— 本机 skill-creator/SKILL.md",note:"确定性任务放脚本，AI 不必读代码进上下文即可运行。"},
+      {q:"三级加载的正确顺序是？",opts:["资源→SKILL.md→元数据","SKILL.md→元数据→资源","元数据→SKILL.md→资源","只加载 SKILL.md"],ans:["C"],src:"skill-creator · Progressive Disclosure —— 本机 skill-creator/SKILL.md",note:"常驻元数据→触发读 SKILL.md→按需读资源，层层省上下文。"}
+    ],
+    H:[
+      {q:"要为团队写『每次把 PDF 旋转 90°』的稳定脚本，应放技能哪个目录？",opts:["assets/","references/","scripts/","直接写进 SKILL.md 正文"],ans:["C"],src:"skill-creator · scripts/ 用途 + 实例 rotate_pdf.py —— 本机 skill-creator/SKILL.md",note:"确定性、重复写的代码放 scripts/，可执行省上下文。"},
+      {q:"品牌视觉素材（logo/PPT 模板/字体）要在产物里被复制使用，放哪？",opts:["assets/","references/","scripts/","SKILL.md"],ans:["A"],src:"skill-creator · assets/ —— 本机 skill-creator/SKILL.md",note:"assets 用于『产物中直接用的文件』，不读进上下文。"},
+      {q:"设计技能时，一份 8000 词的企业政策长文档，最佳放哪？",opts:["SKILL.md 正文里","references/，SKILL.md 只留简要指引","复制进每个选项","删除不要"],ans:["B"],src:"skill-creator · Avoid duplication / references 最佳实践 —— 本机 skill-creator/SKILL.md",note:"长资料放 references 保持 SKILL.md 精简；真核心流程才留正文。"},
+      {q:"按本工具的『分层自适应』规则，在最高档 H 连续答对几题可【提前通关】？",opts:["1 题","2 题","5 题","永远不能"],ans:["B"],src:"本工具 quiz-engine.md 设计规则（非官方标准）—— references/quiz-engine.md",note:"此题考的是学习工具的分层规则，非官方 Skill 特性，特此标注。"}
+    ]
+  }
+};
+
+var S = {
+  level:"E", asked:[], correct:0, wrong:0, totalAnswered:0,
+  reachedH:false, pityCount:0, hardStreak:0, seen:0, winByStreak:false,
+  perDiff:{E:{c:0,w:0},M:{c:0,w:0},H:{c:0,w:0}},
+  history:[], finished:false, selected:null
+};
+function initState(){S.level="E";S.asked=[];S.correct=0;S.wrong=0;S.totalAnswered=0;S.reachedH=false;S.pityCount=0;S.hardStreak=0;S.seen=0;S.winByStreak=false;S.perDiff={E:{c:0,w:0},M:{c:0,w:0},H:{c:0,w:0}};S.history=[];S.finished=false;S.selected=null;}
+
+var LET=["A","B","C","D"];
+var currentQ=null;
+
+function pickQuestion(){
+  var pool=BANK.pool[S.level];
+  var cand=pool.filter(function(t){return S.asked.indexOf(t.q)<0;});
+  if(cand.length===0)cand=pool.slice();
+  var t=cand[Math.floor(Math.random()*cand.length)];
+  S.asked.push(t.q); S.seen++;
+  return t;
+}
+
+function renderQuestion(){
+  if(S.finished)return;
+  currentQ=pickQuestion(); currentQ._locked=false; S.selected=null;
+  document.getElementById("qtext").textContent=currentQ.q;
+  document.getElementById("qstep").textContent="第 "+S.seen+" 题 · 难度 "+BANK.names[S.level];
+  var o=document.getElementById("opts"); o.innerHTML="";
+  currentQ.opts.forEach(function(opt,i){
+    var b=document.createElement("button"); b.type="button"; b.className="opt";
+    b.innerHTML='<span class="L">'+LET[i]+'</span><span style="flex:1">'+opt+'</span>';
+    b.onclick=function(){selectOpt(i,b);};
+    o.appendChild(b);
+  });
+  var fb=document.getElementById("fb"); fb.className="fb"; fb.innerHTML="";
+  document.getElementById("btnConfirm").style.display="inline-block";
+  document.getElementById("btnConfirm").disabled=false;
+  var nb=document.getElementById("btnNext"); nb.style.display="none";
+  document.getElementById("starttip").style.display="none";
+  updateMeta();
+}
+function selectOpt(i,b){
+  if(currentQ._locked)return;
+  S.selected=i;
+  var all=document.querySelectorAll("#opts .opt");
+  for(var k=0;k<all.length;k++)all[k].classList.remove("sel");
+  b.classList.add("sel");
+}
+function updateMeta(){
+  document.getElementById("pbar").style.width=Math.round(S.totalAnswered/BANK.maxQuestions*100)+"%";
+  document.getElementById("statrow").innerHTML=
+    '<div class="stat"><div class="n">'+S.correct+'</div><div class="l">答对</div></div>'+
+    '<div class="stat"><div class="n">'+S.wrong+'</div><div class="l">答错</div></div>'+
+    '<div class="stat"><div class="n">'+S.totalAnswered+'/'+BANK.maxQuestions+'</div><div class="l">已答/上限</div></div>'+
+    '<div class="stat"><div class="n">'+BANK.names[S.level]+'</div><div class="l">当前档</div></div>';
+  var map={E:"segE",M:"segM",H:"segH"},m={"E":["pillE","var(--e)"],"M":["pillM","var(--m)"],"H":["pillH","var(--h)"]};
+  ["E","M","H"].forEach(function(l){
+    var el=document.getElementById(map[l]);
+    el.className="lvlseg"+(S.reachedH&&l!=="E"?" done":"")+(l===S.level?" cur"+l:"");
+  });
+  var pill=document.getElementById("diffPill");
+  pill.className="pill "+m[S.level][0];
+  pill.innerHTML='<span class="dot" style="background:'+m[S.level][1]+'"></span>'+BANK.names[S.level];
+}
+function markOpts(){
+  var all=document.querySelectorAll("#opts .opt");
+  for(var k=0;k<all.length;k++){
+    var x=all[k]; x.classList.add("cur");
+    var L=x.querySelector(".L").textContent;
+    var isAns=currentQ.ans.indexOf(L)>=0;
+    if(isAns){x.classList.add("ok");}
+    else if(x.classList.contains("sel")){x.classList.add("no");}
+  }
+}
+function grade(){
+  var isCorrect=(S.selected!==null && currentQ.ans.indexOf(LET[S.selected])>=0);
+  var old=S.level;
+  S.totalAnswered++;
+  var move, d=S.perDiff[S.level];
+  if(isCorrect){S.correct++;d.c++;S.hardStreak++;
+    if(S.level==="E"){S.level="M";move="↑ 升到 进阶 M";}
+    else if(S.level==="M"){S.level="H";S.reachedH=true;S.hardStreak=0;move="↑ 升到 挑战 H（已达最高）";}
+    else{S.reachedH=true;if(S.hardStreak>=BANK.hardWinStreak){S.finished=true;S.winByStreak=true;move="⭐ H 档连对 2 题，提前通关！";}else move="H 档 +1（再对 "+(BANK.hardWinStreak-S.hardStreak)+" 题通关）";}
+  }else{S.wrong++;d.w++;S.hardStreak=0;
+    if(S.level==="H"){S.level="M";move="↓ 降回 进阶 M";}
+    else if(S.level==="M"){S.level="E";move="↓ 降回 入门 E";}
+    else{S.pityCount++;move=(S.pityCount>=BANK.pityLimit)?"E 档错 "+BANK.pityLimit+" 次 → 建议回炉复习":"留在 入门 E（保底机会剩 "+(BANK.pityLimit-S.pityCount)+" 次）";}
+  }
+  S.history.push({q:currentQ.q,diff:old,ok:isCorrect,move:move,ansL:S.selected===null?"未选":LET[S.selected],correctL:currentQ.ans.join(","),src:currentQ.src,note:currentQ.note});
+  if(!S.finished&&S.totalAnswered>=BANK.maxQuestions)S.finished=true;
+  currentQ._locked=true; S.selected=null;
+  markOpts();
+  showFeedback(isCorrect,move,old);
+  updateMeta();
+  var nb=document.getElementById("btnNext");
+  nb.textContent=S.finished?"🎓 查看成绩":"下一题 →";
+  nb.style.display="inline-block";
+}
+function showFeedback(ok,move,old){
+  var fb=document.getElementById("fb");
+  var rt=currentQ.ans.map(function(x){var i=LET.indexOf(x);return LET[i]+". "+currentQ.opts[i];}).join("、");
+  var picked=(function(){var h=S.history[S.history.length-1];if(h.ansL==="未选")return"（未选择任何选项）";var i=LET.indexOf(h.ansL);return LET[i]+". "+currentQ.opts[i];})();
+  if(ok){
+    fb.className="fb ok";
+    fb.innerHTML="<b>✓ 答对了！</b>（在 "+BANK.names[old]+" 作答）<span class='move up'>"+move+"</span>";
+  }else{
+    fb.className="fb no";
+    fb.innerHTML="<b>✗ 答错了。</b> 正确答案：<b>"+rt+"</b>；你选了："+picked+"<span class='move down'>"+move+"</span>";
+  }
+  fb.insertAdjacentHTML("beforeend","<div style='margin-top:8px;font-size:12.5px;color:var(--muted)'>💡 "+currentQ.note+"</div><div class='src' style='margin-top:6px'><b>📎 本题来源：</b>"+currentQ.src+"</div>");
+}
+document.getElementById("btnConfirm").onclick=function(){grade();};
+document.getElementById("btnNext").onclick=function(){if(S.finished){showResult();}else{renderQuestion();}};
+
+function levelResult(){
+  if(S.winByStreak){return {t:"🏆 挑战大师",c:"lvMaster"};}      // H连对2提前通关
+  if(S.reachedH){return {t:"🎖 进阶高手",c:"lvPro"};}             // 曾冲到H但结束掉回M/E
+  return S.level==="M"?{t:"📗 进阶学员",c:"lvAdv"}:{t:"📘 入门学员",c:"lvNew"};
+}
+function showResult(){
+  var r=document.getElementById("result"); r.style.display="block";
+  var lv=levelResult(); var acc=Math.round(S.correct/Math.max(1,S.totalAnswered)*100);
+  var rev="";
+  S.history.forEach(function(h,i){
+    rev+="<div class='it'><span>"+(i+1)+". "+(h.ok?"✓":"✗")+" "+(h.q.length>24?h.q.substr(0,24)+"…":h.q)+" <span class='d'>["+h.diff+"]</span></span><span class='d'>"+(h.ok?"答对":"答案 "+h.correctL)+"</span></div>";
+  });
+  r.innerHTML="<h2 style='margin-top:0'>🎓 测验完成</h2>"+
+    "<div style='font-size:13px;color:var(--muted)'>答题 "+S.totalAnswered+" 题 · 答对 "+S.correct+" · 答错 "+S.wrong+" · 正确率 "+acc+"%</div>"+
+    "<div class='tier "+lv.c+"'>"+lv.t+"</div>"+
+    "<div style='font-size:13px;color:var(--muted)'>结束难度档："+BANK.names[S.level]+"　·　曾冲到最高档 H："+(S.reachedH?"是":"否")+"</div>"+
+    "<table><tr><th>档位</th><th>答对</th><th>答错</th><th>正确率</th></tr>"+
+    ["E","M","H"].map(function(l){var p=S.perDiff[l],tt=p.c+p.w,rate=tt?Math.round(p.c/tt*100):"-";return "<tr><td>"+BANK.names[l]+"</td><td>"+p.c+"</td><td>"+p.w+"</td><td>"+rate+"%</td></tr>";}).join("")+
+    "</table>"+
+    (acc>=80&&S.reachedH?'<div class="tip">🎉 优秀！你已吃透 Agent Skill 的核心。可继续挑战：用 skill-creator 亲手造一个新技能，实践第⑤步「沉淀」。</div>':acc>=60?'<div class="tip">👍 不错！回看正确率偏低的档位对应知识卡，再点「重新测试」冲一冲进阶/挑战档。</div>':'<div class="tip">📘 建议先回看上方 6 块知识卡（尤其 ✗ 错题），再点「重新测试」巩固。</div>')+
+    "<div class='rev'><div style='font-weight:700;margin:8px 0 4px'>答题回顾（✗ = 错题，均附来源可查证）</div>"+rev+"</div>"+
+    "<div class='actions restart'><button class='btn btn-primary' onclick='restart()'>↺ 重新测试</button></div>";
+  r.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function restart(){initState();document.getElementById("result").style.display="none";document.getElementById("result").innerHTML="";renderQuestion();window.scrollTo({top:0,behavior:"smooth"});}
+renderQuestion();
+</script>
+</body>
+</html>

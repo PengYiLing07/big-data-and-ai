@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一分钟掌握 Agent Skill（Agent 技能）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f6f8fb; --card: #ffffff; --primary: #3b5bfd; --primary-dark: #2a44cc;
+    --accent: #00c2a8; --warn: #ff9f43; --danger: #ff5b5b;
+    --text: #1f2937; --text-light: #6b7280; --border: #e5e9f0;
+    --shadow: 0 4px 16px rgba(20,40,100,.08); --shadow-lg: 0 10px 30px rgba(20,40,100,.14);
+    --radius: 14px;
+  }
+  body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 24px; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  .hero { background: linear-gradient(135deg,#3b5bfd 0%,#6a3bfd 60%,#9d3bfd 100%); color:#fff; border-radius:var(--radius); padding:34px 32px; margin-bottom:20px; box-shadow:var(--shadow-lg); position:relative; overflow:hidden; }
+  .hero::after { content:""; position:absolute; right:-40px; top:-40px; width:200px; height:200px; background:rgba(255,255,255,.08); border-radius:50%; }
+  .hero h1 { font-size:30px; font-weight:800; letter-spacing:.5px; }
+  .hero p.sub { font-size:15px; opacity:.92; margin-top:8px; }
+  .timer-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); padding:6px 14px; border-radius:30px; font-size:13px; font-weight:600; margin-top:14px; }
+  .stopwatch { position:fixed; top:20px; right:20px; z-index:99; background:var(--card); border-radius:30px; padding:10px 18px; box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:12px; font-size:22px; font-weight:800; color:var(--primary); border:2px solid var(--primary); }
+  .stopwatch button { background:var(--primary); color:#fff; border:none; border-radius:20px; padding:4px 12px; font-size:13px; cursor:pointer; font-weight:600; }
+  .stopwatch button:hover { background:var(--primary-dark); }
+  .card { background:var(--card); border-radius:var(--radius); padding:24px; margin-bottom:20px; box-shadow:var(--shadow); border:1px solid var(--border); }
+  .card h2 { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+  .card h2 .ico { font-size:22px; }
+  .tag { display:inline-block; font-size:12px; font-weight:700; padding:2px 10px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+  .tag.required { background:#ffe9e9; color:var(--danger); }
+  .tag.optional { background:#e8f7f5; color:var(--accent); }
+  .define { background:#f0f3ff; border-left:4px solid var(--primary); border-radius:8px; padding:14px 18px; margin:8px 0 4px; }
+  .define b { color:var(--primary-dark); }
+  .analogy { display:flex; gap:14px; align-items:flex-start; background:#fffaf0; border-left:4px solid var(--warn); border-radius:8px; padding:12px 16px; margin:12px 0; }
+  .analogy .emo { font-size:26px; }
+  pre.code { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:16px 18px; font-family:"JetBrains Mono",Consolas,monospace; font-size:13px; line-height:1.6; overflow-x:auto; margin:10px 0; }
+  pre.code .c { color:#64748b; font-style:italic; }
+  pre.code .k { color:#7dd3fc; font-weight:700; }
+  pre.code .s { color:#fbbf24; }
+  pre.code .f { color:#c4b5fd; }
+  .levels { display:flex; flex-direction:column; gap:12px; }
+  .level { display:flex; align-items:center; gap:16px; border:1px solid var(--border); border-radius:10px; padding:12px 16px; background:#fafbfe; }
+  .level .step { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:18px; flex-shrink:0; }
+  .step.s1 { background:var(--primary); } .step.s2 { background:var(--accent); } .step.s3 { background:var(--danger); }
+  .level .info { flex:1; } .level .info .t { font-weight:700; } .level .info .d { font-size:14px; color:var(--text-light); }
+  .bar { font-size:12px; font-weight:700; color:var(--text-light); white-space:nowrap; }
+  .resources { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; }
+  .res { border:1px solid var(--border); border-radius:10px; padding:16px; background:#fafbfe; text-align:center; }
+  .res .big { font-size:40px; } .res .rn { font-weight:800; font-size:15px; margin-top:6px; } .res .rd { font-size:13px; color:var(--text-light); margin-top:4px; }
+  .res .example { display:block; font-size:12px; color:var(--primary-dark); background:#eef1ff; border-radius:6px; padding:4px 8px; margin-top:8px; }
+  .steps { counter-reset:s; }
+  .step-row { display:flex; gap:14px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border); }
+  .step-row:last-child { border-bottom:none; }
+  .step-row .num { counter-increment:s; flex-shrink:0; width:30px; height:30px; background:var(--primary); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+  .step-row .num::before { content:counter(s); }
+  .step-row .st { font-weight:700; }
+  .qa { border:1px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; }
+  .qa summary { cursor:pointer; padding:14px 18px; font-weight:700; background:#fafbfe; display:flex; align-items:center; gap:8px; list-style:none; }
+  .qa summary::-webkit-details-marker { display:none; }
+  .qa summary .qmark { color:var(--primary); font-weight:800; }
+  .qa summary .arrow { margin-left:auto; transition:transform .2s; color:var(--text-light); }
+  .qa[open] summary .arrow { transform:rotate(180deg); }
+  .qa .body { padding:12px 18px; border-top:1px solid var(--border); font-size:14px; }
+
+  /* ===== 测验 (重构，简化) ===== */
+  .quiz-card { margin-bottom:16px; border:1px solid var(--border); border-radius:12px; padding:18px; }
+  .quiz-card .qn { font-weight:800; margin-bottom:12px; display:flex; gap:8px; align-items:flex-start; }
+  .quiz-card .qn .type { font-size:12px; padding:2px 8px; border-radius:6px; font-weight:700; white-space:nowrap; }
+  .type.single { background:#eef1ff; color:var(--primary); }
+  .type.multi { background:#e8f7f5; color:var(--accent); }
+  .type.judge { background:#fff4e5; color:var(--warn); }
+  .opt-row { margin:8px 0; }
+  .opt-btn {
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    padding:11px 16px; border:1.5px solid var(--border); border-radius:9px;
+    background:#fff; cursor:pointer; font-size:14px; transition:all .15s; font-family:inherit; color:var(--text);
+  }
+  .opt-btn:hover { border-color:var(--primary); background:#f5f7ff; }
+  .opt-btn .box {
+    width:20px; height:20px; border:2px solid #c3c9d6; border-radius:50%;
+    flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:800; color:#fff; transition:all .15s;
+  }
+  .multi-card .opt-btn .box { border-radius:5px; }
+  .opt-btn.selected { border-color:var(--primary); background:#f0f3ff; }
+  .opt-btn.selected .box { background:var(--primary); border-color:var(--primary); }
+  .opt-btn.selected .box::after { content:"✓"; }
+  .opt-btn.correct { border-color:var(--accent); background:#e8fbf7; }
+  .opt-btn.correct .box { background:var(--accent); border-color:var(--accent); }
+  .opt-btn.wrong { border-color:var(--danger); background:#ffecec; }
+  .per-q-feedback { font-size:13px; margin-top:8px; font-weight:600; min-height:20px; }
+  .pf-right { color:var(--accent); } .pf-wrong { color:var(--danger); }
+  .btn-row { margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; }
+  .btn { background:var(--primary); color:#fff; border:none; padding:12px 26px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:all .15s; box-shadow:var(--shadow); font-family:inherit; }
+  .btn:hover { background:var(--primary-dark); transform:translateY(-1px); }
+  .btn.secondary { background:#fff; color:var(--primary); border:2px solid var(--primary); box-shadow:none; }
+  .btn.secondary:hover { background:#f0f3ff; }
+  #score { margin-top:16px; padding:14px 20px; border-radius:10px; font-weight:800; font-size:18px; text-align:center; display:none; }
+  #score.good { background:#e8fbf7; color:var(--accent); } #score.mid { background:#fff4e5; color:var(--warn); } #score.bad { background:#ffecec; color:var(--danger); }
+  .nav-bar { text-align:right; margin-bottom:12px; }
+  .nav-bar a, .nav-bar button { background:none; border:1px solid var(--border); color:var(--text-light); border-radius:20px; padding:6px 16px; font-size:13px; cursor:pointer; margin-left:8px; text-decoration:none; display:inline-block; }
+  .nav-bar a:hover, .nav-bar button:hover { border-color:var(--primary); color:var(--primary); }
+  .ver { display:inline-block; background:var(--accent); color:#fff; font-size:12px; font-weight:700; border-radius:20px; padding:2px 10px; }
+  footer { text-align:center; color:var(--text-light); font-size:13px; padding:20px 0 10px; }
+  @media (max-width:640px){ body{ padding:12px; } .stopwatch{ position:static; margin-bottom:12px; justify-content:center; } }
+</style>
+</head>
+<body>
+
+<div class="stopwatch" id="stopwatch">
+  <span id="time">01:00</span>
+  <button onclick="toggleTimer()" id="swBtn">开始计时</button>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <h1>🤖 一分钟掌握 · Agent Skill（Agent 技能）</h1>
+    <p class="sub">给智能体装上"专业操作手册"——从通用助手变成领域专家 <span class="ver">v3</span></p>
+    <span class="timer-badge">⏱ 目标掌握时长：约 60 秒 &nbsp;|&nbsp; 📍 大数据与人工智能 课程</span>
+  </div>
+
+  <div class="nav-bar">
+    <a href="#what">① 是什么</a>
+    <a href="#structure">② 结构</a>
+    <a href="#levels">③ 加载机制</a>
+    <a href="#workflow">④ 如何用</a>
+    <a href="#qa">⑤ 问答</a>
+    <a href="#quiz">⑥ 测试</a>
+    <button onclick="scrollToTop()">⬆ 顶部</button>
+  </div>
+
+  <!-- ① 是什么 -->
+  <div class="card" id="what">
+    <h2><span class="ico">①</span> Agent Skill 是什么？</h2>
+    <div class="define">是一个<b>自带说明书的小工具包</b>：由 <b>SKILL.md 说明文档</b> + 可选的<b>脚本/资料/素材</b>组成。它把"怎么做一件事的专业流程"固化下来，让智能体一读到就能按规范执行。</div>
+    <div class="analogy"><span class="emo">💡</span><div><b>最贴切比喻：</b>普通智能体像一位<b>聪明的实习生</b>——能力强但没有行业经验；加载 Skill 就像给 TA 一本<b>岗位操作手册 + 工具清单</b>，立刻能按标准干活。</div></div>
+    <h3 style="margin:14px 0 8px;font-size:16px;">Skill 能提供 4 类能力</h3>
+    <div class="resources">
+      <div class="res"><div class="big">🧭</div><div class="rn">专业流程</div><div class="rd">多步骤标准做法</div></div>
+      <div class="res"><div class="big">🔧</div><div class="rn">工具集成</div><div class="rd">特定格式/接口用法</div></div>
+      <div class="res"><div class="big">🎓</div><div class="rn">领域知识</div><div class="rd">公司规范、业务逻辑</div></div>
+      <div class="res"><div class="big">📦</div><div class="rn">资源捆绑</div><div class="rd">脚本/模板/素材</div></div>
+    </div>
+    <div class="analogy" style="background:#f0f3ff;border-left-color:var(--primary);"><span class="emo">🆚</span><div><b>Skill vs 普通对话：</b>普通对话每次都要重新教、易遗漏；Skill 把经验<b>打包复用</b>，写好一次，以后一句话即可触发完整流程。</div></div>
+  </div>
+
+  <!-- ② 结构 -->
+  <div class="card" id="structure">
+    <h2><span class="ico">②</span> Skill 的内部结构</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <pre class="code">skill-name/
+├── <span class="f">SKILL.md</span>   <span class="c"># 必填·总说明书</span>
+│   ├── <span class="k">name:</span>        <span class="c"># 技能名</span>
+│   └── <span class="k">description:</span> <span class="c"># 何时触发</span>
+│       <span class="s">（正文=操作指令）</span>
+├── <span class="f">scripts/</span>    <span class="c"># 可选·可执行脚本</span>
+│   └── <span class="f">xxx.py</span>
+├── <span class="f">references/</span> <span class="c"># 可选·参考资料</span>
+│   └── <span class="f">schema.md</span>
+└── <span class="f">assets/</span>    <span class="c"># 可选·输出素材</span>
+    └── <span class="f">template.html</span></pre>
+      <div>
+        <p style="margin-bottom:10px;"><span class="tag required">必填</span><b style="font-size:15px;"> SKILL.md</b> —— 技能心脏，含两大部分：</p>
+        <div style="background:#f0f3ff;border-radius:8px;padding:12px;margin-bottom:10px;"><b style="color:var(--primary-dark);">① YAML 头部元数据</b><br>必须写 <code>name</code> 和 <code>description</code>。<br><span style="font-size:13px;color:var(--text-light);">description 决定"什么任务触发"，用第三人称写清使用时机。</span></div>
+        <div style="background:#f0f3ff;border-radius:8px;padding:12px;margin-bottom:10px;"><b style="color:var(--primary-dark);">② Markdown 操作指令</b><br>告诉智能体"具体怎么做"，用<b>祈使句/动词开头</b>，简洁明确。</div>
+        <div style="background:#fff4e5;border-radius:8px;padding:12px;"><b style="color:var(--warn);">💡 三资源何时用？</b><br><span style="font-size:13px;"><b>scripts</b>→确定性执行的代码；<b>references</b>→文档资料用才载入；<b>assets</b>→输出要用的成品文件。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 三级加载 -->
+  <div class="card" id="levels">
+    <h2><span class="ico">③</span> 核心机制：三级加载体系 <span class="tag required">重点</span></h2>
+    <p style="color:var(--text-light);margin-bottom:12px;">设计目的是<b>省"脑容量"（上下文）</b>——不一次性全塞给智能体，按需调用。</p>
+    <div class="levels">
+      <div class="level"><div class="step s1">1</div><div class="info"><div class="t">元数据（name + description）</div><div class="d">始终在上下文中，约 100 词。判断"这技能要不要用"。</div></div><div class="bar">总在 · 触发开关</div></div>
+      <div class="level"><div class="step s2">2</div><div class="info"><div class="t">SKILL.md 正文</div><div class="d">任务触发时才加载（&lt;5000 词），提供核心操作流程。</div></div><div class="bar">触发后 · 操作指南</div></div>
+      <div class="level"><div class="step s3">3</div><div class="info"><div class="t">捆绑资源（scripts/references/assets）</div><div class="d">按需读取；脚本可直接运行不占上下文。</div></div><div class="bar">用到才调 · 工具箱</div></div>
+    </div>
+    <div style="background:#e8fbf7;border-radius:8px;padding:12px;margin-top:12px;">✅ <b>好处：</b>无关技能不占内存、描述精准触发、复杂资料按需取用 → 反应更快、更省 token。</div>
+  </div>
+
+  <!-- ④ 流程 -->
+  <div class="card" id="workflow">
+    <h2><span class="ico">④</span> 智能体如何"用"Skill？</h2>
+    <div class="steps">
+      <div class="step-row"><div class="num"></div><div><span class="st">扫描触发：</span>面对任务，系统查看所有 Skill 的 name+description 判断匹配。系统提示常说"遇到相关任务第一时间加载本技能"。</div></div>
+      <div class="step-row"><div class="num"></div><div><span class="st">调用加载：</span>用 Skill 工具载入匹配的 SKILL.md，正文进入工作上下文。</div></div>
+      <div class="step-row"><div class="num"></div><div><span class="st">按需取用资源：</span>需要时读 references，或直接运行 scripts、引用 assets。</div></div>
+      <div class="step-row"><div class="num"></div><div><span class="st">规范执行：</span>严格遵循手册流程产出结果。</div></div>
+      <div class="step-row"><div class="num"></div><div><span class="st">反思沉淀：</span>做完复杂任务，把可复用流程<b>存成新 Skill</b>；发现旧 Skill 过时就修正（积累与纠错）。</div></div>
+    </div>
+  </div>
+
+  <!-- ⑤ 问答 -->
+  <div class="card" id="qa">
+    <h2><span class="ico">⑤</span> 快速问答</h2>
+    <details class="qa" open><summary><span class="qmark">Q</span> Skill 如何被启用？<span class="arrow">▾</span></summary><div class="body">Skill 是一种<b>能力扩展包</b>，需要时由智能体自动加载使用；通常通过"技能市场 / 对话中安装"获得，属于能力生态的一部分。</div></details>
+    <details class="qa"><summary><span class="qmark">Q</span> SKILL.md 为何必须写 description？<span class="arrow">▾</span></summary><div class="body">description 就是技能的<b>"触发开关"</b>——智能体靠它判断当前任务该不该用。写得越精准，越不易误触发或漏触发。</div></details>
+    <details class="qa"><summary><span class="qmark">Q</span> 三级加载帮我省了什么？<span class="arrow">▾</span></summary><div class="body">省<b>上下文窗口</b>（"脑容量"）。不会因装了 100 个技能就撑爆上下文——平时只占一行元数据，用到才真正载入。</div></details>
+    <details class="qa"><summary><span class="qmark">Q</span> 做完任务为何"沉淀成 Skill"？<span class="arrow">▾</span></summary><div class="body">这是<b>经验积累</b>：把这次摸索的步骤记录下来，下次同类任务直接触发，不用重头研究。也用于<b>反思纠错</b>——发现旧说明有误立即修正。</div></details>
+  </div>
+
+  <!-- ⑥ 测试 -->
+  <div class="card" id="quiz">
+    <h2><span class="ico">⑥</span> 学完自测 · 5 道题</h2>
+    <p style="color:var(--text-light);margin-bottom:14px;">点击选项作答，然后点"交卷"。每题会单独反馈对✓/错✗。</p>
+
+    <div class="quiz-card" data-q="1" data-ans="B">
+      <div class="qn"><span class="type single">单选</span> Skill 包中哪个文件是<b>必须存在</b>的？</div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="A"><span class="box"></span>A. references/ 参考目录</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="B"><span class="box"></span>B. SKILL.md 说明书</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="C"><span class="box"></span>C. assets/ 素材目录</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="D"><span class="box"></span>D. scripts/ 脚本目录</button></div>
+      <div class="per-q-feedback"></div>
+    </div>
+
+    <div class="quiz-card" data-q="2" data-ans="C">
+      <div class="qn"><span class="type single">单选</span> 判断"当前任务该不该用某技能"，主要看它的哪部分？</div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="A"><span class="box"></span>A. 绑定的脚本代码</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="B"><span class="box"></span>B. 资源文件夹的名字</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="C"><span class="box"></span>C. SKILL.md 的 name + description</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="D"><span class="box"></span>D. 素材图片的大小</button></div>
+      <div class="per-q-feedback"></div>
+    </div>
+
+    <div class="quiz-card" data-q="3" data-ans="A">
+      <div class="qn"><span class="type single">单选</span> 三级加载体系中，始终常驻上下文的是哪一层？</div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="A"><span class="box"></span>A. 元数据（name+description）</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="B"><span class="box"></span>B. SKILL.md 全部正文</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="C"><span class="box"></span>C. 所有 references 资料</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="D"><span class="box"></span>D. 所有脚本源码</button></div>
+      <div class="per-q-feedback"></div>
+    </div>
+
+    <div class="quiz-card" data-q="4" data-ans="A">
+      <div class="qn"><span class="type judge">判断</span> scripts/ 里的脚本"可直接运行而无需读进上下文"，对吗？</div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="A"><span class="box"></span>A. 对 —— 脚本执行不占上下文</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="B"><span class="box"></span>B. 错 —— 脚本必须先整段读入</button></div>
+      <div class="per-q-feedback"></div>
+    </div>
+
+    <div class="quiz-card multi-card" data-q="5" data-ans='["A","B","C"]'>
+      <div class="qn"><span class="type multi">多选</span> 做完复杂任务后，正确做法包括哪些？</div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="A"><span class="box"></span>A. 把可复用的流程沉淀成新 Skill</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="B"><span class="box"></span>B. 发现旧 Skill 过时就及时修正</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="C"><span class="box"></span>C. 反思本次是否暴露了更好的做法</button></div>
+      <div class="opt-row"><button type="button" class="opt-btn" data-val="D"><span class="box"></span>D. 反正不能用，装完就忘掉它</button></div>
+      <div class="per-q-feedback"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="submitQuiz()">✔ 交卷查看成绩</button>
+      <button class="btn secondary" onclick="resetQuiz()">↺ 重新作答</button>
+      <button class="btn secondary" onclick="revealAll()">👁 直接看答案</button>
+    </div>
+    <div id="score"></div>
+  </div>
+
+  <footer>大数据与人工智能课程 · Agent Skill 学习卡 · v3（修复判分）</footer>
+</div>
+
+<script>
+  // 秒表
+  let timerOn=false, remaining=60, tId=null;
+  const timeEl=document.getElementById('time'), swBtn=document.getElementById('swBtn');
+  function pad(n){return n<10?'0'+n:''+n;}
+  function tick(){ remaining--; if(remaining<0){remaining=0;clearInterval(tId);timerOn=false;swBtn.textContent='重新计时';} timeEl.textContent=pad(Math.floor(remaining/60))+':'+pad(remaining%60); timeEl.style.color=remaining<=10?'var(--danger)':'var(--primary)'; }
+  function toggleTimer(){ if(!timerOn&&remaining<=0){remaining=60;timeEl.textContent='01:00';} if(timerOn){clearInterval(tId);timerOn=false;swBtn.textContent='继续';} else{timerOn=true;tId=setInterval(tick,1000);swBtn.textContent='暂停';} }
+  function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+  // ===== 测验 (重构：纯按钮，判分原生可靠) =====
+  function parseAns(str){ try{ return JSON.parse(str); }catch(e){ return str; } }
+
+  // 点击选项
+  document.querySelectorAll('.opt-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz-card');
+      var multi = card.classList.contains('multi-card');
+      var isSelected = btn.classList.contains('selected');
+      // 清除每题反馈
+      var fb = card.querySelector('.per-q-feedback');
+      fb.textContent=''; fb.className='per-q-feedback';
+      card.querySelectorAll('.opt-btn').forEach(function(o){ o.classList.remove('correct','wrong'); });
+      if(!multi){
+        // 单选：清除同题其他选中
+        card.querySelectorAll('.opt-btn').forEach(function(o){ o.classList.remove('selected'); });
+        btn.classList.add('selected');
+      } else {
+        btn.classList.toggle('selected');
+      }
+    });
+  });
+
+  function getChosen(card){
+    // 用 DOM 中的 .selected 类收集，返回数组
+    var chosen=[];
+    card.querySelectorAll('.opt-btn.selected').forEach(function(o){ chosen.push(o.getAttribute('data-val')); });
+    return chosen;
+  }
+  function correctCount(card){
+    var ans = parseAns(String(card.getAttribute('data-ans')));
+    var chosen = getChosen(card).sort();
+    if(Array.isArray(ans)){
+      var ansSorted = ans.slice().sort();
+      return JSON.stringify(chosen)===JSON.stringify(ansSorted);
+    }
+    return chosen.length===1 && chosen[0]===ans;
+  }
+
+  function submitQuiz(){
+    var total=0, right=0;
+    document.querySelectorAll('.quiz-card').forEach(function(card){
+      total++;
+      var fb = card.querySelector('.per-q-feedback');
+      var ans = parseAns(String(card.getAttribute('data-ans')));
+      var chosen = getChosen(card);
+      // 高亮正确答案
+      card.querySelectorAll('.opt-btn').forEach(function(o){
+        var v=o.getAttribute('data-val');
+        o.classList.remove('wrong','correct');
+        var isCorrectOpt = Array.isArray(ans) ? ans.indexOf(v)>=0 : v===ans;
+        if(isCorrectOpt) o.classList.add('correct');
+      });
+      // 判定
+      var ok = correctCount(card);
+      if(ok) right++;
+      // 高亮用户选错的项
+      card.querySelectorAll('.opt-btn').forEach(function(o){
+        var v=o.getAttribute('data-val');
+        var isCorrectOpt = Array.isArray(ans) ? ans.indexOf(v)>=0 : v===ans;
+        if(o.classList.contains('selected') && !isCorrectOpt) o.classList.add('wrong');
+      });
+      // 每题反馈
+      if(chosen.length===0){ fb.textContent='未作答'; fb.className='per-q-feedback pf-wrong'; }
+      else { fb.textContent = ok ? '✓ 答对了' : '✗ 答错了（绿色为正确答案）'; fb.className = 'per-q-feedback ' + (ok?'pf-right':'pf-wrong'); }
+    });
+    showScore(right,total);
+  }
+
+  function showScore(r,t){
+    var el=document.getElementById('score');
+    el.style.display='block';
+    var pct=r/t;
+    if(pct===1){ el.className='good'; el.innerHTML='🎉 '+r+'/'+t+' 满分通过！核心要点你已完全掌握！'; }
+    else if(pct>=0.6){ el.className='mid'; el.innerHTML='👍 '+r+'/'+t+' 答对多数，建议回看第③节"三级加载体系"。'; }
+    else { el.className='bad'; el.innerHTML='📖 '+r+'/'+t+' 再看一遍上方卡片（尤其①②③），然后重新作答试试！'; }
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
+  function resetQuiz(){
+    document.querySelectorAll('.quiz-card').forEach(function(card){
+      card.querySelectorAll('.opt-btn').forEach(function(o){ o.classList.remove('selected','correct','wrong'); });
+      var fb=card.querySelector('.per-q-feedback'); fb.textContent=''; fb.className='per-q-feedback';
+    });
+    var el=document.getElementById('score'); el.style.display='none';
+  }
+
+  function revealAll(){
+    document.querySelectorAll('.quiz-card').forEach(function(card){
+      var ans=parseAns(String(card.getAttribute('data-ans')));
+      card.querySelectorAll('.opt-btn').forEach(function(o){
+        var v=o.getAttribute('data-val');
+        var isC=Array.isArray(ans)?ans.indexOf(v)>=0:v===ans;
+        if(isC){ o.classList.add('correct'); } else { o.classList.remove('correct','wrong'); }
+      });
+      var fb=card.querySelector('.per-q-feedback'); fb.textContent='正确答案已标绿'; fb.className='per-q-feedback pf-right';
+    });
+  }
+</script>
+</body>
+</html>
