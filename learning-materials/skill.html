@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · Skill（智能体技能）</title>
+<style>
+  :root{--bg:#f7f8fa;--card:#fff;--ink:#1f2430;--line:#e3e7ee;--brand:#2f6fed;--brand-bg:#eaf1ff;--ok:#1a9e5a;--muted:#5b6472}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{background:linear-gradient(135deg,#6d28d9,#8b5cf6);color:#fff;border-radius:16px;padding:28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85}
+  header.hero h1{margin:6px 0;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.92;margin-top:6px}
+  .badge{display:inline-block;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin:2px 4px 0 0}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:22px}
+  .toc h2{margin:0 0 8px;font-size:16px}.toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+  section h2{margin-top:0;font-size:20px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  .code{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:12px 16px;font-family:ui-monospace,Consolas,monospace;font-size:13px;overflow-x:auto;margin:12px 0}
+  .code .cm{color:#64748b}
+  .lvl{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+  .lvl .step{background:#fafbfc;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:8px;padding:10px 14px}
+  .lvl .step b{color:var(--brand)}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:24px;position:relative;margin-bottom:6px}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成 · 已人工核查</div>
+    <h1>Skill（智能体技能）</h1>
+    <div class="meta">
+      <span class="badge">领域：Agent / 大模型工程</span>
+      <span class="badge">课程：大数据与人工智能</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的个人解释</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <ul>
+      <li>能说清「Skill」是什么，以及它和普通「提示词 / Prompt」的区别。</li>
+      <li>能描述一个 Skill 的目录结构与核心文件 SKILL.md 的组成（frontmatter + 正文）。</li>
+      <li>能理解「渐进式披露（Progressive Disclosure）」如何让装很多技能却不占上下文。</li>
+      <li>能区分「个人技能」与「项目级技能」的存放位置，并懂得安全使用第三方 Skill。</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li>它解决 Agent 的什么问题（为什么不能只靠反复贴提示词）？</li>
+      <li>SKILL.md 长什么样，必填的元数据是什么？</li>
+      <li>装了 100 个技能为何上下文不被挤爆？</li>
+      <li>个人 vs 项目级技能各放哪？安全上要注意什么？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的个人解释</h2>
+    <p>
+      <strong>Skill（技能）</strong> 是打包给智能体的一份<strong>「专业领域说明书 + 工具 + 参考资料」的文件夹</strong>，
+      让一个通用 Agent 在遇到相关任务时能立刻调用这套专长，而不必每次都把冗长步骤重新讲一遍。
+      官方把它比作「给新同事做的入职引导手册」：不是每次都口头交代，而是把该怎么做、有什么规范、调哪些脚本都写进一沓资料里，需要时翻出来照着做。
+    </p>
+    <p>
+      关键点在于它是<strong>按需加载</strong>的：平时只占用很小空间（名字+一句简介），只有当任务相关时才真正把详细内容读进来。这正是它和「把长提示词贴在每次对话里」最大的不同。
+    </p>
+    <div class="analogy"><span class="lbl">💡 我的类比</span>
+      把 Agent 想成一位<strong>全能新员工</strong>。你给他装技能，就像在他工位上放好一摞<strong>《岗位手册》</strong>：
+      每本封面上只写「这本讲什么、什么时候用」（很小，随时能扫到）。当他接到「帮我处理一份 PDF」的活时，
+      才去把《PDF 处理手册》翻开，照着里面的步骤、脚本把事办成。平时他不会把 100 本手册全背下来，而是用到哪本翻哪本——
+      这就叫「用的时候才加载」，既不占脑子，又能带很多本。
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 四、核心机制 / 组成</h2>
+    <p>官方把 Skill 定义为一个<strong>目录</strong>，入口是 <code>SKILL.md</code>，可按需附带脚本与参考资料。结构大致如下：</p>
+    <div class="code">my-skill/
+├── SKILL.md            <span class="cm"># 必需：说明书 + 元数据</span>
+├── reference.md        <span class="cm"># 可选：需要时才读的详细参考</span>
+├── scripts/
+│   └── tool.py         <span class="cm"># 可选：Agent 可直接执行的脚本（不占上下文）</span>
+└── assets/             <span class="cm"># 可选：模板、样例等素材</span></div>
+    <p><code>SKILL.md</code> 顶部是 <strong>YAML frontmatter</strong>，必填 <code>name</code> 和 <code>description</code>；正文是给 Agent 的说明与步骤。</p>
+    <div class="code">---
+name: concept-learner
+description: 通用概念学习引擎，接收任意概念并生成可核查的学习资料。用户说“学一下 X/帮我搞懂 X”时触发。
+---
+# 使用步骤 ...</div>
+    <p>官方描述的「<strong>渐进式披露</strong>」分为三层，这是 Skill 能装很多却不占脑的关键：</p>
+    <div class="lvl">
+      <div class="step"><b>第 1 层 · 元数据（始终加载）</b><br>启动时就装入每个技能的 name + description（每个约一百 token 量级）。够小，装几十上百个也不挤。</div>
+      <div class="step"><b>第 2 层 · 说明正文（被触发才加载）</b><br>当你的请求与某个 description 匹配，Agent 才去读那个 SKILL.md 的正文，此时细节才进上下文。</div>
+      <div class="step"><b>第 3 层 · 资源/代码（用到才读/执行）</b><br>reference、模板、脚本等，需要时才访问；脚本通过执行拿到结果而不把代码塞进上下文。</div>
+    </div>
+    <p>存放位置决定谁能用：个人级放个人技能目录（所有项目可用）；<strong>项目级放仓库里的技能目录（随仓库共享给团队成员）</strong>，正是本作业把概念学习 Skill 放在 <code>.workbuddy/skills/</code> 的原因。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 五、一个具体应用场景</h2>
+    <p><strong>场景：给通用 Agent 装一个「概念学习」项目级技能（concept-learner）。</strong></p>
+    <ul>
+      <li>你第一次装好后，Agent 只在系统里登记了它的 name 和一句 description，几乎不占上下文。</li>
+      <li>当你输入「帮我搞懂 <em>Agent</em> 这个概念」时，description 被匹配 → Agent 才去读 SKILL.md 正文，按其中 7 板块的规范产出学习资料。</li>
+      <li>下次你说「学一下 <em>RAG</em>」「学一下 <em>向量数据库</em>」，同一个技能无缝复用——<strong>Skill 沉淀的是「怎么学任意概念」的方法</strong>，而不是针对某一个概念的临时答案。</li>
+      <li>因为是项目级技能，把它提交到 GitHub 后，同仓库的任何人（或未来的你）都能调用同一套方法，学习成果统一落到 learning-materials/。</li>
+    </ul>
+    <p>这个例子正体现了作业设计意图：Skill 让「生成高质量、可核查概念资料」这件事<strong>可复用、可沉淀、可共享</strong>。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 六、易混与边界</h2>
+    <ul>
+      <li><strong>易混 1｜Skill ≠ 普通 Prompt：</strong>Prompt 是一次性贴进对话的指令；Skill 是「文件系统的目录 + 按需加载」，可包含脚本与资源，且不用每次重复。Prompt 面向单次，Skill 面向可复用能力。</li>
+      <li><strong>易混 2｜Skill ≠ 模型自带能力：</strong>Skill 是「给 Agent 的说明书 + 脚本」，它不改变底层模型参数；它的价值在于把流程知识显式、可复用地喂给 Agent。</li>
+      <li><strong>边界 1｜必须来自可信来源：</strong>第三方 Skill 本质是「让 Agent 执行你给的指令/代码」，恶意的 Skill 可能诱导 Agent 做危险操作或泄露数据。只应使用自己创建或官方发布的技能，外部来源要先审计。</li>
+      <li><strong>边界 2｜同名/层级有优先级：</strong>个人级与项目级技能可能同名，且有覆盖顺序；跨平台/跨工具也有可用范围限制，不能假设处处通用。</li>
+    </ul>
+    <div class="person"><span class="lbl">✅ 我的核查说明（人工）</span>
+      核心表述（Skill=含 SKILL.md 的目录、frontmatter 必填 name+description、三级渐进式披露、个人 vs 项目级位置、安全审计）均取自 Anthropic 官方 Agent Skills 文档与官方博客，多处原文一致后我采信。
+      目录/层级示例中「<code>.workbuddy/skills/</code>」是本课程平台的项目级技能路径，与官方示例路径对应，属平台约定而非官方原话，故单列说明。
+    </div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 七、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页关键论断，均为可核查的真实出处：</p>
+    <ul class="source-list">
+      <li>Anthropic 官方文档《Agent Skills》（SKILL.md 结构、frontmatter、三级披露、安全） — <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview</a></li>
+      <li>Claude 官方博客《Equipping agents for the real world with Agent Skills》 — <a href="https://claude.com/blog/equipping-agents-for-the-real-world-with-agent-skills" target="_blank" rel="noopener">https://claude.com/blog/equipping-agents-for-the-real-world-with-agent-skills</a></li>
+      <li>Claude Code 官方中文文档《使用 skills 擴展 Claude》 — <a href="https://code.claude.com/docs/zh-TW/skills" target="_blank" rel="noopener">https://code.claude.com/docs/zh-TW/skills</a></li>
+    </ul>
+  </section>
+
+  <footer>📎 个人学习资料 · 权威结论见来源，个人理解/类比已标注 · concept-learner 生成，学习后人工核查</footer>
+</div>
+</body>
+</html>

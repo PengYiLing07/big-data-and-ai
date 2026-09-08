@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · {{CONCEPT}}</title>
+<!-- concept-learner 模板：将 {{占位符}} 替换为对应内容即可生成一份资料 -->
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#f1f4f9}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .tag{display:inline-block;background:#eef0f3;color:var(--tag);border-radius:12px;padding:1px 10px;font-size:12px;margin:2px 4px 2px 0}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>{{CONCEPT}}</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：{{FIELD}}</span>
+      <span class="badge">生成版本：v{{VERSION}}</span>
+      <span class="badge">日期：{{DATE}}</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的个人解释</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 学习目标 -->
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，你应该能够回答：</p>
+    <ul class="goal-list">
+      <li>{{GOAL_1}}</li>
+      <li>{{GOAL_2}}</li>
+      <li>{{GOAL_3}}</li>
+      <li>{{GOAL_4}}</li>
+    </ul>
+  </section>
+
+  <!-- 2 核心问题 -->
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li>{{QUESTION_1}}</li>
+      <li>{{QUESTION_2}}</li>
+      <li>{{QUESTION_3}}</li>
+    </ul>
+  </section>
+
+  <!-- 3 个人解释 -->
+  <section id="explain">
+    <h2>📖 三、概念的个人解释</h2>
+    <p>{{PLAIN_TEXT}}</p>
+    <div class="analogy"><span class="lbl">💡 我的类比</span>{{ANALOGY}}</div>
+  </section>
+
+  <!-- 4 机制/组成 -->
+  <section id="mechanism">
+    <h2>⚙️ 四、核心机制 / 组成</h2>
+    <p>{{MECHANISM_INTRO}}</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td>{{PART_1}}</td><td>{{PART_1_DESC}}</td></tr>
+      <tr><td>{{PART_2}}</td><td>{{PART_2_DESC}}</td></tr>
+      <tr><td>{{PART_3}}</td><td>{{PART_3_DESC}}</td></tr>
+    </table>
+  </section>
+
+  <!-- 5 应用场景 -->
+  <section id="scenario">
+    <h2>🚀 五、一个具体应用场景</h2>
+    <p>{{SCENARIO}}</p>
+  </section>
+
+  <!-- 6 易混与边界 -->
+  <section id="confusions">
+    <h2>⚠️ 六、易混与边界</h2>
+    <ul class="confuse">
+      <li>{{CONFUSE_1}}</li>
+      <li>{{CONFUSE_2}}</li>
+      <li>{{CONFUSE_3}}</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>我的核查说明：</strong>{{REVIEW_NOTE}}</p>
+  </section>
+
+  <!-- 7 来源 -->
+  <section id="sources">
+    <h2>🔗 七、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的真实出处：</p>
+    <ul class="source-list">
+      <li>{{SOURCE_1_TITLE}} — <a href="{{SOURCE_1_URL}}" target="_blank" rel="noopener">{{SOURCE_1_URL}}</a></li>
+      <li>{{SOURCE_2_TITLE}} — <a href="{{SOURCE_2_URL}}" target="_blank" rel="noopener">{{SOURCE_2_URL}}</a></li>
+      <li>{{SOURCE_3_TITLE}} — <a href="{{SOURCE_3_URL}}" target="_blank" rel="noopener">{{SOURCE_3_URL}}</a></li>
+    </ul>
+  </section>
+
+  <footer>📎 个人学习资料 · 权威结论见来源，个人理解已标注 · concept-learner 生成</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+# ===== 敏感信息：严禁上传 =====
+# 密钥、口令、令牌
+*.pem
+*.key
+*.crt
+id_rsa
+id_ed25519
+*.p12
+*.pfx
+
+# 环境变量 / 配置文件（可能含凭据）
+.env
+.env.*
+*.local
+config.local.json
+settings.local.json
+
+# 常见 API 令牌 / 密码类命名
+*.secret
+*token*
+*password*
+*apikey*
+*.credentials
+
+# ===== 系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== 运行 / 缓存 =====
+__pycache__/
+*.py[cod]
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+
+# ===== 大文件或临时产物 =====
+*.zip
+*.tar.gz
