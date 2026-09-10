@@ -61,6 +61,19 @@
   .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
   .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  /* 可视化板块 */
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
   @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
 </style>
 </head>
@@ -83,6 +96,7 @@
       <li><a href="#goals">学习目标</a></li>
       <li><a href="#questions">核心问题</a></li>
       <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
@@ -120,9 +134,48 @@
     <div class="analogy"><span class="lbl">💡 一个类比</span>{{ANALOGY}}</div>
   </section>
 
-  <!-- 4 机制/组成 -->
+  <!-- 4 可视化图解（新增板块） -->
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>{{VISUAL_INTRO}}</p>
+
+    <!-- 图 1：结构图（概念由什么组成 / 内部层次） -->
+    <figure class="viz">
+      <div class="vcap">图 1 · {{FIG1_TITLE}}</div>
+      <div class="vsub">{{FIG1_SUB}}</div>
+      {{FIG1_SVG}}
+      <div class="fig-legend">{{FIG1_LEGEND}}</div>
+      <div class="viz-note">🎯 读图要点：{{FIG1_TAKEAWAY}}</div>
+    </figure>
+
+    <!-- 图 2：难点对比图（易混点 / 边界） -->
+    <figure class="viz">
+      <div class="vcap">图 2 · {{FIG2_TITLE}}</div>
+      <div class="vsub">{{FIG2_SUB}}</div>
+      {{FIG2_SVG}}
+      <div class="viz-note">🎯 读图要点：{{FIG2_TAKEAWAY}}</div>
+    </figure>
+
+    <!-- 图 3（可选）：流程 / 时间线，不需要可整块删除 -->
+    <figure class="viz">
+      <div class="vcap">图 3 · {{FIG3_TITLE}}</div>
+      <div class="vsub">{{FIG3_SUB}}</div>
+      <div class="viz-flow">
+        <span class="fnode">{{FIG3_S1}}</span><span class="farrow">→</span>
+        <span class="fnode">{{FIG3_S2}}</span><span class="farrow">→</span>
+        <span class="fnode hot">{{FIG3_S3}}</span><span class="farrow">→</span>
+        <span class="fnode">{{FIG3_S4}}</span>
+      </div>
+      <div class="viz-note">🎯 读图要点：{{FIG3_TAKEAWAY}}</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>{{VISUAL_NOTE}}</p>
+  </section>
+
+  <!-- 5 机制/组成 -->
   <section id="mechanism">
-    <h2>⚙️ 四、核心机制 / 组成</h2>
+    <h2>⚙️ 五、核心机制 / 组成</h2>
     <p>{{MECHANISM_INTRO}}</p>
     <table>
       <tr><th>组成部分</th><th>作用 / 说明</th></tr>
@@ -134,13 +187,13 @@
 
   <!-- 5 应用场景 -->
   <section id="scenario">
-    <h2>🚀 五、一个具体应用场景</h2>
+    <h2>🚀 六、一个具体应用场景</h2>
     <p>{{SCENARIO}}</p>
   </section>
 
   <!-- 6 易混与边界 -->
   <section id="confusions">
-    <h2>⚠️ 六、易混与边界</h2>
+    <h2>⚠️ 七、易混与边界</h2>
     <ul class="confuse">
       <li>{{CONFUSE_1}}</li>
       <li>{{CONFUSE_2}}</li>
@@ -152,7 +205,7 @@
 
   <!-- 7 自测问题（交互式） -->
   <section id="quiz">
-    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <h2>🧪 八、自测问题（可点击作答）</h2>
     <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
 
     <!-- 入门题 1 -->
@@ -220,7 +273,7 @@
 
   <!-- 8 来源 -->
   <section id="sources">
-    <h2>🔗 八、资料来源与可核查链接</h2>
+    <h2>🔗 九、资料来源与可核查链接</h2>
     <p>以下来源支撑本页的关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>{{SOURCE_1_TITLE}} — <a href="{{SOURCE_1_URL}}" target="_blank" rel="noopener">{{SOURCE_1_URL}}</a></li>
@@ -229,7 +282,7 @@
     </ul>
   </section>
 
-  <footer>📎 个人学习资料 · 权威结论见来源，个人理解已标注 · concept-learner 生成</footer>
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成</footer>
 </div>
 <script>
 /* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
