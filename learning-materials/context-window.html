@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 上下文窗口（Context Window）</title>
+<!-- concept-learner 模板：将 {{占位符}} 替换为对应内容即可生成一份资料 -->
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#f1f4f9}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .tag{display:inline-block;background:#eef0f3;color:var(--tag);border-radius:12px;padding:1px 10px;font-size:12px;margin:2px 4px 2px 0}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  /* 第 7 板块：交互式自测 */
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  /* 可视化板块 */
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>上下文窗口（Context Window）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：AI / 大模型</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-10</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 学习目标 -->
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，你应该能够回答：</p>
+    <ul class="goal-list">
+      <li>上下文窗口的准确定义是什么，它和"模型训练时学到的知识"有什么区别。</li>
+      <li>一次请求里，哪些内容会占用上下文窗口的预算。</li>
+      <li>为什么"窗口越大越好"是一个常见误解。</li>
+      <li>当对话快要撑满窗口时，工程上有哪些处理方式。</li>
+    </ul>
+  </section>
+
+  <!-- 2 核心问题 -->
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li>模型在生成回答时，到底"看"到了哪些文字？</li>
+      <li>窗口的容量为什么有上限，是什么决定了这个上限？</li>
+      <li>窗口越大，模型的表现就一定越好吗？</li>
+    </ul>
+  </section>
+
+  <!-- 3 通俗解释 -->
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>上下文窗口指的是<strong>语言模型在生成回答时可以参考的全部文本，其中也包括它自己正在生成的回答</strong>。
+它和模型训练时"记住"的海量知识不是一回事：训练得到的知识是长期固定的，而上下文窗口是一次请求内的<strong>临时工作区</strong>，
+回答结束后并不会自动保留到下一次会话。<br>
+窗口的大小以 <strong>token</strong> 计量。token 是模型处理文本的最小单位，可能是一个字符、一个词的一部分、一个完整的词，
+甚至一小段短语，不同模型的分词方式不同。粗略估计，英文中 1 个 token 约等于 0.75 个词。
+一次请求中，系统提示、工具定义、历史对话、工具返回结果以及本次输入，全都占用这同一份预算；
+模型生成的输出同样计入其中——输入与输出共享一个上限，而不是各自独立。</p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>上下文窗口可类比为模型的<strong>工作台面</strong>，而训练得到的知识相当于它身后那座<strong>藏书固定的图书馆</strong>。
+图书馆很大且不会改变，但台面一次只能摊开有限的几页纸。想让模型此刻推理什么，就必须先把材料摊到台面上；
+台面铺满后，旧纸页会被挤下去，除非刻意把它们重新放回来。这也解释了一个容易被忽略的点：
+<strong>新开一次会话相当于把台面清空</strong>，若应用没有主动把先前信息重新送入，模型并不会"记得"上一轮谈过什么。</div>
+  </section>
+
+  <!-- 4 可视化图解（新增板块） -->
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>以下三张图分别回答三个问题：窗口里到底装了哪些东西？关键信息放在不同位置会有什么差别？标称的窗口上限和真正可用的长度差多少？</p>
+
+    <!-- 图 1：结构图（概念由什么组成 / 内部层次） -->
+    <figure class="viz">
+      <div class="vcap">图 1 · 上下文窗口里装了什么</div>
+      <div class="vsub">一块容量固定的工作区，五类内容共享同一份预算</div>
+      <svg viewBox="0 0 600 300" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>上下文窗口的内容构成</title>
+  <desc>上下文窗口是一块容量固定的工作区，内含系统提示、工具定义、历史对话、工具返回结果与本次用户输入，总量受 token 上限约束。</desc>
+  <rect x="10" y="10" width="580" height="280" rx="14" fill="#f7f9ff" stroke="#b9c9ee" stroke-width="1"/>
+  <text x="30" y="34" font-size="12" fill="#5b6472">上下文窗口（容量上限固定，以 token 计）</text>
+  <text x="560" y="34" font-size="12" fill="#5b6472" text-anchor="end">↓ 全部内容共享同一预算</text>
+  <rect x="30" y="48" width="540" height="38" rx="7" fill="#e6f1fb" stroke="#378add" stroke-width="1"/>
+  <text x="46" y="72" font-size="12" fill="#0c447c">系统提示 · 角色与规则</text>
+  <text x="554" y="72" font-size="11" fill="#0c447c" text-anchor="end">相对固定</text>
+  <rect x="30" y="92" width="540" height="38" rx="7" fill="#e6f1fb" stroke="#378add" stroke-width="1"/>
+  <text x="46" y="116" font-size="12" fill="#0c447c">工具定义 · 可用工具及其参数说明</text>
+  <text x="554" y="116" font-size="11" fill="#0c447c" text-anchor="end">可能很大</text>
+  <rect x="30" y="136" width="540" height="38" rx="7" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1"/>
+  <text x="46" y="160" font-size="12" fill="#127a44">本次用户输入 · 当前这一问</text>
+  <text x="554" y="160" font-size="11" fill="#127a44" text-anchor="end">较小</text>
+  <rect x="30" y="180" width="540" height="38" rx="7" fill="#fff1e6" stroke="#d97706" stroke-width="1"/>
+  <text x="46" y="204" font-size="12" fill="#a9560d">工具返回结果 · 检索片段、接口数据、文件内容</text>
+  <text x="554" y="204" font-size="11" fill="#a9560d" text-anchor="end">极易膨胀</text>
+  <rect x="30" y="224" width="540" height="38" rx="7" fill="#fcebeb" stroke="#e24b4a" stroke-width="1"/>
+  <text x="46" y="248" font-size="12" fill="#a32d2d">历史对话 · 此前每一轮的来往</text>
+  <text x="554" y="248" font-size="11" fill="#a32d2d" text-anchor="end">逐轮累加</text>
+  <text x="30" y="282" font-size="11" fill="#5b6472">模型生成的回答同样占用这个预算——输入与输出不是两份独立空间。</text>
+</svg>
+      <div class="fig-legend"><span><i style="background:#378add"></i>固定开销</span><span><i style="background:#1a9e5a"></i>本次输入</span><span><i style="background:#d97706"></i>易膨胀项</span><span><i style="background:#e24b4a"></i>逐轮累加</span></div>
+      <div class="viz-note">🎯 读图要点：真正容易撑满窗口的是工具返回结果与历史对话这两类，而非用户那句提问。</div>
+    </figure>
+
+    <!-- 图 2：难点对比图（易混点 / 边界） -->
+    <figure class="viz">
+      <div class="vcap">图 2 · 关键信息放在哪里，效果差别很大</div>
+      <div class="vsub">模型对上下文的注意力分布并不均匀</div>
+      <svg viewBox="0 0 600 300" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>上下文位置与模型取用准确率的关系</title>
+  <desc>相关信息放在上下文开头或结尾时准确率最高，放在中间时明显下降，呈 U 型曲线。</desc>
+  <line x1="70" y1="250" x2="565" y2="250" stroke="#b9c9ee" stroke-width="1"/>
+  <line x1="70" y1="250" x2="70" y2="40" stroke="#b9c9ee" stroke-width="1"/>
+  <text x="317" y="278" font-size="12" fill="#5b6472" text-anchor="middle">关键信息在上下文中的位置</text>
+  <text x="36" y="145" font-size="12" fill="#5b6472" text-anchor="middle" transform="rotate(-90 36 145)">准确率</text>
+  <text x="88" y="46" font-size="11" fill="#5b6472">高</text>
+  <text x="88" y="246" font-size="11" fill="#5b6472">低</text>
+  <path d="M80 72 C160 200 250 236 317 238 C384 236 470 200 552 72" fill="none" stroke="#2f6fed" stroke-width="2.5"/>
+  <circle cx="80" cy="72" r="5" fill="#1a9e5a"/><circle cx="552" cy="72" r="5" fill="#1a9e5a"/>
+  <circle cx="317" cy="238" r="5" fill="#e24b4a"/>
+  <text x="80" y="60" font-size="11" font-weight="700" fill="#127a44" text-anchor="middle">开头：好</text>
+  <text x="552" y="60" font-size="11" font-weight="700" fill="#127a44" text-anchor="middle">结尾：好</text>
+  <text x="317" y="262" font-size="11" font-weight="700" fill="#a32d2d" text-anchor="middle">中间：最弱</text>
+  <rect x="235" y="100" width="165" height="150" rx="8" fill="#fcebeb" stroke="#e24b4a" stroke-width="1" opacity="0.35"/>
+  <text x="317" y="128" font-size="11" fill="#a32d2d" text-anchor="middle">attention 关注最少</text>
+  <text x="317" y="146" font-size="11" fill="#a32d2d" text-anchor="middle">信息被稀释</text>
+</svg>
+      <div class="viz-note">🎯 读图要点：重要约束宜放在上下文的开头或结尾；埋在中间的信息，即便"在窗口里"，也可能未被有效使用。</div>
+    </figure>
+
+    <!-- 图 3：容量规格与实际可用长度的差距 -->
+    <figure class="viz">
+      <div class="vcap">图 3 · 标称窗口 ≠ 有效窗口</div>
+      <div class="vsub">容量规格与实际可用长度之间存在明显差距</div>
+      <svg viewBox="0 0 600 280" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>标称窗口与有效窗口的差距</title>
+  <desc>模型标称的上下文窗口上限，与它实际能可靠利用的长度之间存在明显差距，后者通常远小于前者。</desc>
+  <rect x="30" y="46" width="540" height="46" rx="8" fill="#eaf1ff" stroke="#5b8cff" stroke-width="1"/>
+  <text x="46" y="68" font-size="12" font-weight="700" fill="#1c4fb8">标称窗口（模型卡上写的上限）</text>
+  <text x="46" y="84" font-size="11" fill="#4a5a72">厂商公布的最大输入 token 数，例如 128K / 200K / 1M</text>
+  <text x="554" y="74" font-size="12" font-weight="700" fill="#1c4fb8" text-anchor="end">容量规格</text>
+  <rect x="30" y="112" width="200" height="46" rx="8" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1"/>
+  <text x="46" y="134" font-size="12" font-weight="700" fill="#127a44">有效窗口</text>
+  <text x="46" y="150" font-size="11" fill="#127a44">能稳定可靠利用的长度</text>
+  <text x="250" y="140" font-size="12" fill="#127a44">← 两者差距随任务难度而扩大</text>
+  <text x="30" y="196" font-size="12" font-weight="700" fill="#5b6472">为什么会有差距</text>
+  <rect x="30" y="208" width="172" height="56" rx="8" fill="#fff1e6" stroke="#d97706" stroke-width="1"/>
+  <text x="116" y="230" font-size="11" fill="#a9560d" text-anchor="middle">位置损耗</text>
+  <text x="116" y="248" font-size="11" fill="#a9560d" text-anchor="middle">中间信息被忽略</text>
+  <rect x="214" y="208" width="172" height="56" rx="8" fill="#fff1e6" stroke="#d97706" stroke-width="1"/>
+  <text x="300" y="230" font-size="11" fill="#a9560d" text-anchor="middle">长度损耗</text>
+  <text x="300" y="248" font-size="11" fill="#a9560d" text-anchor="middle">越长越易被稀释</text>
+  <rect x="398" y="208" width="172" height="56" rx="8" fill="#fff1e6" stroke="#d97706" stroke-width="1"/>
+  <text x="484" y="230" font-size="11" fill="#a9560d" text-anchor="middle">任务难度</text>
+  <text x="484" y="248" font-size="11" fill="#a9560d" text-anchor="middle">推理比检索更早失效</text>
+</svg>
+      <div class="viz-note">🎯 读图要点：模型卡上的窗口上限是容量规格，不是性能承诺；实际可用长度取决于任务类型，需要按自己的任务实测。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>以上三张为示意图，用于帮助理解容量约束与注意力分布，非精确结构、非官方原文插图。结论依据 Anthropic 官方文档、Redis 工程博客与 Liu et al.《Lost in the Middle》等来源（见第九节）。</p>
+  </section>
+
+  <!-- 5 机制/组成 -->
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>从"一次请求"的视角看，上下文窗口可以拆成三类内容。它们的更新频率与体量差异很大，这也是上下文管理的着手点。</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td>静态层（系统提示、工具定义）</td><td>角色设定、行为规则、可用工具清单。每轮都随请求发送，内容基本不变，适合做缓存以降低成本。</td></tr>
+      <tr><td>动态层（历史对话、本次输入）</td><td>此前所有轮次的往来内容与当前提问。随对话推进线性累加，是窗口增长的主要来源之一。</td></tr>
+      <tr><td>临时层（工具返回、检索片段）</td><td>接口数据、检索到的文档片段、文件内容。单次体量可能极大，容易在几步之内吃掉大部分预算。</td></tr>
+    </table>
+  </section>
+
+  <!-- 5 应用场景 -->
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>一个接入检索增强（RAG）的客服助手，需要依据产品手册回答用户问题。典型的一轮流程是：
+用户提问 → 检索系统取回若干文档片段 → 片段与历史对话一起送入窗口 → 模型给出回答。<br>
+问题出在检索片段上：如果为了"保险"一次塞入十几段材料，其中大部分与问题只是语义相近但并不真正作答，
+这些片段会挤占预算、并把真正有用的那一段推向窗口中部。检索系统只负责取回，<strong>取多少、放几段、怎么排序属于应用侧的预算决策</strong>。
+工程上常见的做法是：先放宽召回，再用重排序模型（cross-encoder）精排，只把排在最前的高相关片段送入窗口，
+并把最关键的内容安排在开头或结尾的位置。</p>
+  </section>
+
+  <!-- 6 易混与边界 -->
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>把窗口大小等同于模型能力。</strong>窗口是"能接收多少"的容量规格，不等于"能可靠使用多少"。研究显示，随着输入变长，模型的准确率会持续下降，这一现象被称为 context rot（上下文腐化）；且这种下降在远未填满窗口时就已开始。</li>
+      <li><strong>把上下文窗口当作长期记忆。</strong>模型本身是无状态的，每次推理都从零开始。窗口只是本次请求的工作区，会话结束即失效。跨会话的"记忆"需要应用层用数据库或向量检索显式地重新送入，而不是模型自带的属性。</li>
+      <li><strong>以为扩大窗口就能替代检索。</strong>相关但错误的干扰文档比明显无关的内容危害更大，因为它们看起来可信。把语料整段塞进窗口，往往同时推高了成本并降低了准确率；检索的价值在于筛选，而不只是搬运。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本页核心论断取自 Anthropic 官方文档《Context windows》、Redis 官方工程博客（上下文窗口与 token 效率系列）、IBM Think 术语解释，以及 Liu et al. 发表于 TACL 的《Lost in the Middle》。其中"位置分布影响取用效果""输入变长准确率下降"两项结论在多个独立来源中相互印证。三张示意图为本页为帮助理解而绘制，非官方插图。</p>
+  </section>
+
+  <!-- 7 自测问题（交互式） -->
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <!-- 入门题 1 -->
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 关于上下文窗口，下列哪一项描述最准确？</div>
+      <button class="opt" data-v="A">它就是模型训练时使用的那批海量语料。</button>
+      <button class="opt" data-v="B">它只在多轮对话中存在，单次提问不涉及。</button>
+      <button class="opt" data-v="C">它是模型生成回答时可以参考的全部文本，也包括它正在生成的回答。</button>
+      <button class="opt" data-v="D">它是模型永久保存的记忆，会话结束后仍会自动保留。</button>
+      <div class="fb" data-ok="正确。官方定义明确：上下文窗口指语言模型生成响应时可以参考的所有文本，包含响应本身；它与训练语料不同，相当于模型的"工作记忆"。"></div>
+      <div class="src">📎 来源：Anthropic 官方文档《Context windows》— platform.claude.com/docs/zh-CN/build-with-claude/context-windows</div>
+    </div>
+
+    <!-- 入门题 2 -->
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 一次 API 请求中，下列哪些内容会计入上下文窗口？</div>
+      <button class="opt" data-v="A">只有用户这次输入的那句话。</button>
+      <button class="opt" data-v="B">系统提示、历史消息（含工具结果与附件）、工具定义，以及模型本轮生成的输出。</button>
+      <button class="opt" data-v="C">只有输入部分，输出不占用窗口。</button>
+      <button class="opt" data-v="D">只有文本，图片与文档不占用窗口。</button>
+      <div class="fb" data-ok="正确。官方文档指出：请求中的所有内容都计入上下文窗口——系统提示、messages 中的每条消息（包括工具结果、图像和文档）以及工具定义；模型本轮生成的输出也计入其中。"></div>
+      <div class="src">📎 来源：Anthropic 官方文档《Context windows》— platform.claude.com/docs/zh-CN/build-with-claude/context-windows</div>
+    </div>
+
+    <!-- 进阶题 3 -->
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 关于"窗口越大越好"，下列说法正确的是：</div>
+      <button class="opt" data-v="A">窗口越大，模型表现一定越好。</button>
+      <button class="opt" data-v="B">窗口变大提升了可接收的容量，但随着 token 数增长，准确率与召回率会下降。</button>
+      <button class="opt" data-v="C">窗口大小与准确率之间没有关系。</button>
+      <button class="opt" data-v="D">只要窗口没被填满，准确率就不会受影响。</button>
+      <div class="fb" data-ok="正确。官方文档明确：更大的上下文窗口让模型能处理更复杂冗长的提示，但更多上下文并不自动意味着更好；随着令牌数量增长，准确性和召回率会下降，即 context rot。"></div>
+      <div class="src">📎 来源：Anthropic 官方文档《Context windows》— platform.claude.com/docs/zh-CN/build-with-claude/context-windows</div>
+    </div>
+
+    <!-- 进阶题 4 -->
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 根据《Lost in the Middle》的研究，当关键信息位于长上下文的不同位置时，模型的取用表现是：</div>
+      <button class="opt" data-v="A">位置没有影响，模型对全窗口一视同仁。</button>
+      <button class="opt" data-v="B">中间位置表现最好，因为离问题最近。</button>
+      <button class="opt" data-v="C">开头与结尾表现最好，中间明显下降，呈 U 型曲线。</button>
+      <button class="opt" data-v="D">只有超过 1M token 时才会出现位置差异。</button>
+      <div class="fb" data-ok="正确。该研究发现性能通常在相关信息位于输入上下文开头或结尾时最高，而模型必须使用长上下文中间的信息时性能显著下降，即 U 型性能曲线；且该现象在未经指令微调的基座模型上同样存在。"></div>
+      <div class="src">📎 来源：Liu et al.《Lost in the Middle: How Language Models Use Long Contexts》(TACL 2024) — arxiv.org/html/2307.03172v1</div>
+    </div>
+
+    <!-- 挑战题 5 -->
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 某应用发现，检索系统把答案文档放进了上下文，模型却仍答错。综合本页内容，最合理的排查方向是：</div>
+      <button class="opt" data-v="A">模型参数量不够，需要换更大的模型。</button>
+      <button class="opt" data-v="B">检索系统没取回文档，应继续增加检索数量。</button>
+      <button class="opt" data-v="C">该文档可能被排在了上下文中部，或周围混入了相关但错误的干扰片段，导致其未被有效使用。</button>
+      <button class="opt" data-v="D">上下文窗口太小，只要换成 1M 窗口即可解决。</button>
+      <div class="fb" data-ok="正确。这正是"信息在窗口里却没被用上"的典型情形：位置（lost in the middle）与干扰片段都会削弱有效使用。加大窗口反而可能把有用内容进一步推向中部并推高成本，正确做法是精排、控制片段数量并调整位置。"></div>
+      <div class="src">📎 来源：Liu et al.《Lost in the Middle》(TACL 2024) — arxiv.org/html/2307.03172v1；Redis 工程博客《Token efficiency》— redis.io/blog/token-efficiency-signal-context-window</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <!-- 8 来源 -->
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的真实出处：</p>
+    <ul class="source-list">
+      <li>Anthropic 官方文档《Context windows》（上下文窗口） — <a href="https://platform.claude.com/docs/zh-CN/build-with-claude/context-windows" target="_blank" rel="noopener">https://platform.claude.com/docs/zh-CN/build-with-claude/context-windows</a></li>
+      <li>Liu et al.《Lost in the Middle: How Language Models Use Long Contexts》(TACL 2024) — <a href="https://arxiv.org/html/2307.03172v1" target="_blank" rel="noopener">https://arxiv.org/html/2307.03172v1</a></li>
+      <li>IBM Think《What is a context window?》 — <a href="https://www.ibm.com/think/topics/context-window" target="_blank" rel="noopener">https://www.ibm.com/think/topics/context-window</a></li>
+    </ul>
+      <li>Redis 官方博客《Your agent hit the context limit. Here's the playbook》 — <a href="https://redis.io/blog/ai-agent-context-limit-recovery-playbook" target="_blank" rel="noopener">https://redis.io/blog/ai-agent-context-limit-recovery-playbook</a></li>
+      <li>Redis 官方博客《Token efficiency: getting more signal into the context window》 — <a href="https://redis.io/blog/token-efficiency-signal-context-window" target="_blank" rel="noopener">https://redis.io/blog/token-efficiency-signal-context-window</a></li>
+      <li>Chroma Research《Context Rot: How Increasing Input Tokens Impacts LLM Performance》(2025) — <a href="https://research.trychroma.com/context-rot" target="_blank" rel="noopener">https://research.trychroma.com/context-rot</a></li>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成</footer>
+</div>
+<script>
+/* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>
