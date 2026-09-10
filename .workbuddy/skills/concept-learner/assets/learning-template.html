@@ -40,6 +40,26 @@
   .source-list a{color:var(--brand);word-break:break-all}
   .tag{display:inline-block;background:#eef0f3;color:var(--tag);border-radius:12px;padding:1px 10px;font-size:12px;margin:2px 4px 2px 0}
   .divider{height:1px;background:var(--line);margin:16px 0}
+  /* 第 7 板块：交互式自测 */
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
   @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
 </style>
@@ -66,6 +86,7 @@
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
       <li><a href="#sources">资料来源与可核查链接</a></li>
     </ol>
   </nav>
@@ -129,9 +150,77 @@
     <p>✅ <strong>我的核查说明：</strong>{{REVIEW_NOTE}}</p>
   </section>
 
-  <!-- 7 来源 -->
+  <!-- 7 自测问题（交互式） -->
+  <section id="quiz">
+    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <!-- 入门题 1 -->
+    <div class="quiz" data-ans="{{Q1_ANS}}">
+      <div class="q"><span class="lv lv-e">入门</span>1. {{Q1_TEXT}}</div>
+      <button class="opt" data-v="A">{{Q1_A}}</button>
+      <button class="opt" data-v="B">{{Q1_B}}</button>
+      <button class="opt" data-v="C">{{Q1_C}}</button>
+      <button class="opt" data-v="D">{{Q1_D}}</button>
+      <div class="fb" data-ok="{{Q1_EXPLAIN}}"></div>
+      <div class="src">📎 来源：{{Q1_SRC}}</div>
+    </div>
+
+    <!-- 入门题 2 -->
+    <div class="quiz" data-ans="{{Q2_ANS}}">
+      <div class="q"><span class="lv lv-e">入门</span>2. {{Q2_TEXT}}</div>
+      <button class="opt" data-v="A">{{Q2_A}}</button>
+      <button class="opt" data-v="B">{{Q2_B}}</button>
+      <button class="opt" data-v="C">{{Q2_C}}</button>
+      <button class="opt" data-v="D">{{Q2_D}}</button>
+      <div class="fb" data-ok="{{Q2_EXPLAIN}}"></div>
+      <div class="src">📎 来源：{{Q2_SRC}}</div>
+    </div>
+
+    <!-- 进阶题 3 -->
+    <div class="quiz" data-ans="{{Q3_ANS}}">
+      <div class="q"><span class="lv lv-m">进阶</span>3. {{Q3_TEXT}}</div>
+      <button class="opt" data-v="A">{{Q3_A}}</button>
+      <button class="opt" data-v="B">{{Q3_B}}</button>
+      <button class="opt" data-v="C">{{Q3_C}}</button>
+      <button class="opt" data-v="D">{{Q3_D}}</button>
+      <div class="fb" data-ok="{{Q3_EXPLAIN}}"></div>
+      <div class="src">📎 来源：{{Q3_SRC}}</div>
+    </div>
+
+    <!-- 进阶题 4 -->
+    <div class="quiz" data-ans="{{Q4_ANS}}">
+      <div class="q"><span class="lv lv-m">进阶</span>4. {{Q4_TEXT}}</div>
+      <button class="opt" data-v="A">{{Q4_A}}</button>
+      <button class="opt" data-v="B">{{Q4_B}}</button>
+      <button class="opt" data-v="C">{{Q4_C}}</button>
+      <button class="opt" data-v="D">{{Q4_D}}</button>
+      <div class="fb" data-ok="{{Q4_EXPLAIN}}"></div>
+      <div class="src">📎 来源：{{Q4_SRC}}</div>
+    </div>
+
+    <!-- 挑战题 5 -->
+    <div class="quiz" data-ans="{{Q5_ANS}}">
+      <div class="q"><span class="lv lv-h">挑战</span>5. {{Q5_TEXT}}</div>
+      <button class="opt" data-v="A">{{Q5_A}}</button>
+      <button class="opt" data-v="B">{{Q5_B}}</button>
+      <button class="opt" data-v="C">{{Q5_C}}</button>
+      <button class="opt" data-v="D">{{Q5_D}}</button>
+      <div class="fb" data-ok="{{Q5_EXPLAIN}}"></div>
+      <div class="src">📎 来源：{{Q5_SRC}}</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <!-- 8 来源 -->
   <section id="sources">
-    <h2>🔗 七、资料来源与可核查链接</h2>
+    <h2>🔗 八、资料来源与可核查链接</h2>
     <p>以下来源支撑本页的关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>{{SOURCE_1_TITLE}} — <a href="{{SOURCE_1_URL}}" target="_blank" rel="noopener">{{SOURCE_1_URL}}</a></li>
@@ -142,5 +231,70 @@
 
   <footer>📎 个人学习资料 · 权威结论见来源，个人理解已标注 · concept-learner 生成</footer>
 </div>
+<script>
+/* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
 </body>
 </html>

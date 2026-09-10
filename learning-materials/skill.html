@@ -34,6 +34,26 @@
   .source-list li{padding-left:24px;position:relative;margin-bottom:6px}
   .source-list li:before{content:"🔗";position:absolute;left:0}
   .source-list a{color:var(--brand);word-break:break-all}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz .src a{color:var(--brand);word-break:break-all}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
 </style>
 </head>
@@ -57,6 +77,7 @@
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
       <li><a href="#sources">资料来源与可核查链接</a></li>
     </ol>
   </nav>
@@ -149,8 +170,70 @@ description: 通用概念学习引擎，接收任意概念并生成可核查的�
     </div>
   </section>
 
+  <section id="quiz">
+    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注了对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>1. 一个 Skill 的目录中，哪个文件是必需的入口？</div>
+      <button class="opt" data-v="A">A. README.md</button>
+      <button class="opt" data-v="B">B. SKILL.md</button>
+      <button class="opt" data-v="C">C. index.html</button>
+      <button class="opt" data-v="D">D. config.json</button>
+      <div class="fb" data-ok="答对了：SKILL.md 是技能的唯一必需入口，包含 frontmatter 元数据与正文说明。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· Anthropic Agent Skills 官方文档</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. Skill 与「把长提示词贴在每次对话里」最本质的区别是？</div>
+      <button class="opt" data-v="A">A. Skill 写得更长</button>
+      <button class="opt" data-v="B">B. Skill 只能用英文写</button>
+      <button class="opt" data-v="C">C. Skill 按需加载——平时只占名字+简介，相关时才读入详细内容</button>
+      <button class="opt" data-v="D">D. Skill 不需要写说明</button>
+      <div class="fb" data-ok="答对了：按需加载（渐进式披露）正是 Skill 的核心优势，避免上下文被长期占满。"></div>
+      <div class="src">📎 来源：本页「三、概念的个人解释」· Anthropic 官方博客</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 关于 SKILL.md 顶部的 YAML frontmatter，哪两项通常是必需的？</div>
+      <button class="opt" data-v="A">A. name 和 description</button>
+      <button class="opt" data-v="B">B. author 和 date</button>
+      <button class="opt" data-v="C">C. version 和 license</button>
+      <button class="opt" data-v="D">D. color 和 icon</button>
+      <div class="fb" data-ok="答对了：name 用于标识技能，description 决定「何时触发」——这两项是元数据的关键。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· skill-creator 规范</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 「渐进式披露（Progressive Disclosure）」主要解决什么问题？</div>
+      <button class="opt" data-v="A">A. 让技能运行得更快</button>
+      <button class="opt" data-v="B">B. 让技能自动生成代码</button>
+      <button class="opt" data-v="C">C. 让技能能联网</button>
+      <button class="opt" data-v="D">D. 让 Agent 装很多技能也不挤爆上下文</button>
+      <div class="fb" data-ok="答对了：三级加载（元数据→正文→资源）让大量技能共存而不占用过多上下文。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· Anthropic 官方文档</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 你要在某个具体仓库里放一个「团队共享、随 git 一起分发」的技能，应该放在哪里？</div>
+      <button class="opt" data-v="A">A. 用户级目录（~/.workbuddy/skills/），仅自己可用</button>
+      <button class="opt" data-v="B">B. 项目级目录（仓库根的 .workbuddy/skills/），随仓库共享</button>
+      <button class="opt" data-v="C">C. 随便放在桌面即可</button>
+      <button class="opt" data-v="D">D. 必须放在系统目录</button>
+      <div class="fb" data-ok="答对了：项目级技能放在仓库 .workbuddy/skills/ 下，随 git 共享；用户级只对本机个人生效。"></div>
+      <div class="src">📎 来源：本页「六、易混与边界」· WorkBuddy 技能规范</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
   <section id="sources">
-    <h2>🔗 七、资料来源与可核查链接</h2>
+    <h2>🔗 八、资料来源与可核查链接</h2>
     <p>以下来源支撑本页关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>Anthropic 官方文档《Agent Skills》（SKILL.md 结构、frontmatter、三级披露、安全） — <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview</a></li>
@@ -161,5 +244,71 @@ description: 通用概念学习引擎，接收任意概念并生成可核查的�
 
   <footer>📎 个人学习资料 · 权威结论见来源，个人理解/类比已标注 · concept-learner 生成，学习后人工核查</footer>
 </div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok;
+    if(Array.isArray(key)){ ok = JSON.stringify(sel) === JSON.stringify(key); }
+    else { ok = sel.length === 1 && sel[0] === key; }
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
 </body>
 </html>

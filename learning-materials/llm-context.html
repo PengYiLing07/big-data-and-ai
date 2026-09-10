@@ -31,6 +31,26 @@
   .source-list li{padding-left:24px;position:relative;margin-bottom:6px}
   .source-list li:before{content:"🔗";position:absolute;left:0}
   .source-list a{color:var(--brand);word-break:break-all}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz .src a{color:var(--brand);word-break:break-all}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
 </style>
 </head>
@@ -54,6 +74,7 @@
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
       <li><a href="#sources">资料来源与可核查链接</a></li>
     </ol>
   </nav>
@@ -140,8 +161,70 @@
     </div>
   </section>
 
+  <section id="quiz">
+    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注了对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 「上下文窗口（Context Window）」通常用什么单位衡量？</div>
+      <button class="opt" data-v="A">A. 字数</button>
+      <button class="opt" data-v="B">B. 字节（Byte）</button>
+      <button class="opt" data-v="C">C. token（词元）</button>
+      <button class="opt" data-v="D">D. 秒</button>
+      <div class="fb" data-ok="答对了：上下文窗口是模型一次能容纳的最大文字容量，通常用 token 衡量。"></div>
+      <div class="src">📎 来源：本页「三、概念的个人解释」· AI Glossary《Context Window》</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>2. 关于「上下文」，下列说法最准确的是？</div>
+      <button class="opt" data-v="A">A. 窗口内 = 模型此刻能推理的一切；窗口外 = 对模型来说不存在</button>
+      <button class="opt" data-v="B">B. 上下文就是模型的永久记忆，永远不会丢</button>
+      <button class="opt" data-v="C">C. 上下文只包括你最后输入的那句话</button>
+      <button class="opt" data-v="D">D. 上下文与模型输出无关</button>
+      <div class="fb" data-ok="答对了：上下文是模型生成下一个字之前眼前能看到的全部文字；窗口外的信息它看不到。"></div>
+      <div class="src">📎 来源：本页「三、概念的个人解释」· Redis《LLM 上下文窗口》</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 下列哪一项<strong>通常不</strong>属于上下文窗口里占空间的内容？</div>
+      <button class="opt" data-v="A">A. 系统提示（System Prompt）</button>
+      <button class="opt" data-v="B">B. 模型的训练数据全集</button>
+      <button class="opt" data-v="C">C. 历史对话消息</button>
+      <button class="opt" data-v="D">D. 工具返回结果</button>
+      <div class="fb" data-ok="答对了：窗口里装的是系统提示、工具定义、用户消息、工具返回等运行时内容；训练数据是模型「内化」的知识，不占本次窗口。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· Moveworks 文档 / AWS Labs</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 为什么「上下文窗口越大越好」这种说法不完全正确？</div>
+      <button class="opt" data-v="A">A. 因为窗口大就没法用</button>
+      <button class="opt" data-v="B">B. 因为窗口越大模型就越笨</button>
+      <button class="opt" data-v="C">C. 因为窗口大就不能联网</button>
+      <button class="opt" data-v="D">D. 越大≠越聪明，且会更慢、更贵，还可能「看不过来」</button>
+      <div class="fb" data-ok="答对了：容量更大不等于效果更好，长上下文会带来成本、延迟与注意力稀释问题，需要合理管理。"></div>
+      <div class="src">📎 来源：本页「六、易混与边界」· Redis / AWS Labs</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 当对话超出窗口上限时，下列哪种做法<strong>最符合</strong>工程上「把无限知识装进有限窗口」的思路？</div>
+      <button class="opt" data-v="A">A. 无限增大模型参数</button>
+      <button class="opt" data-v="B">B. 截断/摘要历史，或按相关性检索（RAG）只放入必要片段</button>
+      <button class="opt" data-v="C">C. 直接忽略超出部分，不做任何处理</button>
+      <button class="opt" data-v="D">D. 把窗口外的内容当作模型已记住</button>
+      <div class="fb" data-ok="答对了：截断、摘要、检索增强（RAG）等都是常见手段——只把与当前任务最相关的信息放进有限窗口。"></div>
+      <div class="src">📎 来源：本页「六、易混与边界」· Moveworks / AWS Labs 上下文管理</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
   <section id="sources">
-    <h2>🔗 七、资料来源与可核查链接</h2>
+    <h2>🔗 八、资料来源与可核查链接</h2>
     <p>以下来源支撑本页关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>Redis 官方博客《LLM context windows: understanding and optimizing working memory》 — <a href="https://redis.io/blog/llm-context-windows/" target="_blank" rel="noopener">https://redis.io/blog/llm-context-windows/</a></li>
@@ -153,5 +236,71 @@
 
   <footer>📎 个人学习资料 · 权威结论见来源，个人理解/类比已标注 · concept-learner 生成，学习后人工核查</footer>
 </div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok;
+    if(Array.isArray(key)){ ok = JSON.stringify(sel) === JSON.stringify(key); }
+    else { ok = sel.length === 1 && sel[0] === key; }
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
 </body>
 </html>

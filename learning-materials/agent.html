@@ -29,6 +29,26 @@
   .source-list li{padding-left:24px;position:relative;margin-bottom:6px}
   .source-list li:before{content:"🔗";position:absolute;left:0}
   .source-list a{color:var(--brand);word-break:break-all}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz .src a{color:var(--brand);word-break:break-all}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
 </style>
 </head>
@@ -52,6 +72,7 @@
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
       <li><a href="#sources">资料来源与可核查链接</a></li>
     </ol>
   </nav>
@@ -129,8 +150,70 @@
     </div>
   </section>
 
+  <section id="quiz">
+    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注了对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>1. Agent 与「会对话的大模型」最核心的分界是什么？</div>
+      <button class="opt" data-v="A">A. 回答得更长、更流畅</button>
+      <button class="opt" data-v="B">B. 能否调用工具并自主决定下一步、多步推进目标</button>
+      <button class="opt" data-v="C">C. 参数量更大</button>
+      <button class="opt" data-v="D">D. 支持多轮对话</button>
+      <div class="fb" data-ok="答对了：Agent 是目标导向、多步自主推进的；能否调用工具并自主决定下一步是核心分界。"></div>
+      <div class="src">📎 来源：本页「六、易混与边界」· Agentic Academy / DataCamp</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. 下列哪一组最能概括 Agent 的核心组成？</div>
+      <button class="opt" data-v="A">A. 只有大模型</button>
+      <button class="opt" data-v="B">B. 大模型 + 显卡</button>
+      <button class="opt" data-v="C">C. 大模型（大脑）+ 工具 + 指令/记忆 + 编排循环</button>
+      <button class="opt" data-v="D">D. 数据库 + 前端界面</button>
+      <div class="fb" data-ok="答对了：LLM 驱动的 Agent = 决策大脑 + 外部工具 + 指令/记忆 + 编排循环。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· DataCamp AI Agents Cheat Sheet</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 在「感知 → 推理 → 行动 → 观察」循环中，「自主性」主要来自哪一层？</div>
+      <button class="opt" data-v="A">A. 编排循环层——它把各部件串成不断迭代的闭环</button>
+      <button class="opt" data-v="B">B. 大模型参数量</button>
+      <button class="opt" data-v="C">C. 工具的数量</button>
+      <button class="opt" data-v="D">D. 用户输入的措辞</button>
+      <div class="fb" data-ok="答对了：正是编排循环（感知→推理→行动→观察）让 Agent 不只会答一句，而是持续推进目标。"></div>
+      <div class="src">📎 来源：本页「四、核心机制 / 组成」· ReAct 思想</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 关于 Agent 的「自主」，下列说法正确的是？</div>
+      <button class="opt" data-v="A">A. 自主 = 完全自由，不受任何限制</button>
+      <button class="opt" data-v="B">B. 自主意味着它绝不会犯错</button>
+      <button class="opt" data-v="C">C. 自主度只有「全自主」一种</button>
+      <button class="opt" data-v="D">D. 自主通常在指令、工具权限与预算内，越界应停下来请示人类</button>
+      <div class="fb" data-ok="答对了：自主度是从「助手型」到「全自主」的谱系；真实系统需要人在环、权限控制与可审计日志。"></div>
+      <div class="src">📎 来源：本页「六、易混与边界」· Agentic Academy 自主度谱系</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 「智能旅行订票助手」在你说「航班太早不要」后能重新筛选、不忘记前文约束，主要体现的是哪个部件的作用？</div>
+      <button class="opt" data-v="A">A. 大模型的参数量</button>
+      <button class="opt" data-v="B">B. 指令 / 记忆（上下文）——让它在多轮中不跑偏</button>
+      <button class="opt" data-v="C">C. 显卡性能</button>
+      <button class="opt" data-v="D">D. 网页前端样式</button>
+      <div class="fb" data-ok="答对了：上下文/记忆负责把新约束并入既有信息，使多轮对话保持连贯，这正是它区别于单次问答的关键。"></div>
+      <div class="src">📎 来源：本页「五、一个具体应用场景」· 与《大模型的上下文》资料互证</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz('agent.html')">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
   <section id="sources">
-    <h2>🔗 七、资料来源与可核查链接</h2>
+    <h2>🔗 八、资料来源与可核查链接</h2>
     <p>以下来源支撑本页关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>鹤壁市科学技术局科普《AI 智能体技术应用及展望》（智能体=大脑/感知/行动） — <a href="https://kjj.hebi.gov.cn/ztzl/kpzl/art/2024/art_725f8963e09c4e4383cbcfc21334ee71.html" target="_blank" rel="noopener">https://kjj.hebi.gov.cn/ztzl/kpzl/art/2024/art_725f8963e09c4e4383cbcfc21334ee71.html</a></li>
@@ -142,5 +225,71 @@
 
   <footer>📎 个人学习资料 · 权威结论见来源，个人理解/类比已标注 · concept-learner 生成，学习后人工核查</footer>
 </div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(page){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok;
+    if(Array.isArray(key)){ ok = JSON.stringify(sel) === JSON.stringify(key); }
+    else { ok = sel.length === 1 && sel[0] === key; }
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
 </body>
 </html>
