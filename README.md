@@ -28,7 +28,8 @@ big-data-and-ai/
 │   ├── agent.html                    #    概念 1：AI Agent（智能体）
 │   ├── llm-context.html              #    概念 2：大模型的上下文
 │   ├── skill.html                    #    概念 3：Skill（智能体技能）
-│   └── concept-relationship.html     #    三者关系说明
+│   ├── concept-relationship.html     #    三者关系说明
+│   └── context-window.html           #    拓展：上下文窗口（同一概念的进阶讲法）
 ├── hello.py                          # 早期课程示例
 ├── agent-skill-guide*.html           # 早期实验产物（教学 HTML，非本次作业交付）
 ├── README.md
@@ -37,6 +38,9 @@ big-data-and-ai/
 
 > 说明：`agent-skill-101` 与 `agent-skill-guide*.html` 是我早期学习「Agent Skill」概念时做的实验性技能与页面。
 > 本次作业的核心是 `concept-learner`（通用概念学习引擎）与 `learning-materials/`（三份概念资料 + 关系说明）。
+>
+> 另：`context-window.html` 是作业核心三份资料之外的**拓展资料**——用同一套 Skill 生成，从「容量构成 / 注意力位置分布 / 标称与有效窗口差距」的进阶视角讲解上下文窗口，
+> 与 `llm-context.html` 互为补充（后者侧重基础概念与上限成因，本份侧重工程实践与实证研究）。
 
 ---
 
@@ -71,6 +75,7 @@ big-data-and-ai/
 | `learning-materials/llm-context.html` | 大模型的上下文 | 通俗解释、可视化图解（内容构成/容量误区/信息取舍）、上下文窗口=有限工作记忆、内含组成、越大≠越好、对话压缩/RAG |
 | `learning-materials/skill.html` | Skill（智能体技能） | 通俗解释、可视化图解（目录结构/三级披露/与Prompt对比）、SKILL.md、三级渐进式披露、个人 vs 项目级 |
 | `learning-materials/concept-relationship.html` | 三者关系 | 上下文影响 Agent 的表现、Skill 沉淀可复用任务知识、关系图与工作流 |
+| `learning-materials/context-window.html` | 上下文窗口（拓展） | 输入与输出共享预算、token 粒度、位置 U 型曲线、context rot、标称≠有效窗口、RAG 精排 |
 
 ---
 
