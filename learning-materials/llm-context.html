@@ -52,6 +52,19 @@
   .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
   .score.show{display:block}
   footer{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
+  /* 可视化板块 */
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -71,6 +84,7 @@
       <li><a href="#goals">学习目标</a></li>
       <li><a href="#questions">核心问题</a></li>
       <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
@@ -107,19 +121,96 @@
       一句话概括：<em>窗口内 = 模型此刻能推理的一切；窗口外 = 对模型来说不存在</em>。
     </p>
     <p>
-      它就像模型的「<strong>工作记忆 / 桌面</strong>」：桌面有多大，你一次能摊开多少材料。系统里设定的角色说明（系统提示）、
-      你问过的前因后果（历史对话）、Agent 调接口拿回的数据（工具返回）、以及你刚输入的话，全都得摆在这张桌面上，模型才能「看着它们」来回答。
+      上下文窗口相当于模型的「<strong>工作记忆 / 桌面</strong>」：桌面有多大，一次能摊开多少材料就定了。系统设定的角色说明（系统提示）、
+      此前的对话往来（历史对话）、Agent 调接口拿回的数据（工具返回）、以及本次输入的内容，全都必须摆在这张桌面上，模型才能据此作答。
     </p>
     <div class="analogy"><span class="lbl">💡 一个类比</span>
-      想象一场<strong>开卷考试</strong>：上下文窗口就是那张<strong>桌面</strong>。考试规则允许你带资料，但桌面只有那么大——你把系统提示这页「考试须知」、
-      之前的对话这几张「草稿」、工具查回的「参考数据」都摊上去后，桌面就满了。这时：
-      要么把最早的草稿收起来（截断/摘要），要么只挑相关的几页放上来（检索），否则新内容就放不下了。
-      窗口越大，能同时摊开的资料越多，但资料太多也会「看不过来」，还更费时。
+      可类比为一场<strong>开卷考试</strong>：上下文窗口就是那张<strong>桌面</strong>。考试允许带资料，但桌面面积有限——系统提示这页「考试须知」、
+      之前的对话这几张「草稿」、工具查回的「参考数据」都摊上去后，桌面就满了。此时有两种做法：
+      要么把最早的草稿收起来（截断/摘要），要么只挑相关的几页放上来（检索），否则新内容就放不下。
+      窗口越大，能同时摊开的资料越多，但资料过多也会降低阅读效率，并增加耗时。
     </div>
   </section>
 
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>以下三张图分别回答三个问题：上下文窗口里装了什么？为什么窗口不是越大越好？对话变长后信息是怎么被处理的？</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 上下文窗口的内容构成</div>
+      <div class="vsub">一张容量固定的「桌面」，上面摆着五类材料</div>
+      <svg viewBox="0 0 600 250" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>上下文窗口的内容构成图</title>
+        <desc>上下文窗口内含系统提示、工具定义、用户消息、工具返回结果与历史对话，总量受固定上限约束。</desc>
+        <rect x="10" y="10" width="580" height="230" rx="16" fill="#f7f9ff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="30" y="34" font-size="12" fill="#5b6472">上下文窗口（容量上限固定）</text>
+        <rect x="30" y="46" width="540" height="30" rx="6" fill="#e6f1fb" stroke="#378add" stroke-width="1"/>
+        <text x="44" y="65" font-size="12" fill="#0c447c">系统提示　角色、语气、规则</text>
+        <text x="556" y="65" font-size="12" fill="#0c447c" text-anchor="end">小～中</text>
+        <rect x="30" y="82" width="540" height="30" rx="6" fill="#e6f1fb" stroke="#378add" stroke-width="1"/>
+        <text x="44" y="101" font-size="12" fill="#0c447c">工具 / 插件定义　工具清单与参数说明</text>
+        <text x="556" y="101" font-size="12" fill="#0c447c" text-anchor="end">中</text>
+        <rect x="30" y="118" width="540" height="30" rx="6" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="44" y="137" font-size="12" fill="#127a44">用户消息　本次输入</text>
+        <text x="556" y="137" font-size="12" fill="#127a44" text-anchor="end">较小</text>
+        <rect x="30" y="154" width="540" height="30" rx="6" fill="#fff1e6" stroke="#d97706" stroke-width="1"/>
+        <text x="44" y="173" font-size="12" fill="#a9560d">工具返回结果　API / 查库拿回的数据</text>
+        <text x="556" y="173" font-size="12" fill="#a9560d" text-anchor="end">可能很大</text>
+        <rect x="30" y="190" width="540" height="30" rx="6" fill="#fcebeb" stroke="#e24b4a" stroke-width="1"/>
+        <text x="44" y="209" font-size="12" fill="#a32d2d">历史对话　前面所有轮的来往</text>
+        <text x="556" y="209" font-size="12" fill="#a32d2d" text-anchor="end">持续增长</text>
+      </svg>
+      <div class="fig-legend"><span><i style="background:#378add"></i>固定开销</span><span><i style="background:#1a9e5a"></i>用户输入</span><span><i style="background:#d97706"></i>易膨胀项</span><span><i style="background:#e24b4a"></i>随时间增长</span></div>
+      <div class="viz-note">🎯 读图要点：真正会撑爆窗口的是后两类——工具返回与历史对话。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 为什么「窗口越大越好」是误区</div>
+      <div class="vsub">信息量与判断准确率不是正比关系</div>
+      <svg viewBox="0 0 600 230" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>上下文长度与准确率的关系图</title>
+        <desc>上下文过短信息不足，适中时准确率最高，过长后噪声增加导致准确率下降。</desc>
+        <line x1="60" y1="180" x2="560" y2="180" stroke="#b9c9ee" stroke-width="1"/>
+        <line x1="60" y1="180" x2="60" y2="40" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="310" y="208" font-size="12" fill="#5b6472" text-anchor="middle">放入上下文的信息量</text>
+        <text x="34" y="110" font-size="12" fill="#5b6472" text-anchor="middle" transform="rotate(-90 34 110)">判断准确率</text>
+        <path d="M70 168 C180 60 300 48 360 56 C440 66 500 130 552 168" fill="none" stroke="#2f6fed" stroke-width="2"/>
+        <circle cx="330" cy="50" r="5" fill="#1a9e5a"/>
+        <text x="330" y="36" font-size="12" font-weight="700" fill="#127a44" text-anchor="middle">最佳区间</text>
+        <rect x="70" y="52" width="150" height="118" rx="8" fill="#fcebeb" stroke="#e24b4a" stroke-width="1" opacity="0.35"/>
+        <text x="145" y="115" font-size="12" fill="#a32d2d" text-anchor="middle">信息不足</text>
+        <text x="145" y="133" font-size="12" fill="#a32d2d" text-anchor="middle">答不准</text>
+        <rect x="400" y="52" width="152" height="118" rx="8" fill="#fff1e6" stroke="#d97706" stroke-width="1" opacity="0.35"/>
+        <text x="476" y="115" font-size="12" fill="#a9560d" text-anchor="middle">噪声过多</text>
+        <text x="476" y="133" font-size="12" fill="#a9560d" text-anchor="middle">变慢、变贵、降准确</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：工程目标是「给够决策所需、且不带无关噪声」，而非把窗口塞满。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 对话变长后的两种处理方式</div>
+      <div class="vsub">直接截断会丢关键信息，压缩与检索能保住</div>
+      <div class="viz-flow">
+        <span class="fnode">对话变长</span><span class="farrow">→</span>
+        <span class="fnode hot">直接砍最早几轮</span><span class="farrow">→</span>
+        <span class="fnode hot">关键前提被裁掉</span><span class="farrow">→</span>
+        <span class="fnode hot">模型「忘事」</span>
+      </div>
+      <div class="viz-flow">
+        <span class="fnode">对话变长</span><span class="farrow">→</span>
+        <span class="fnode">摘要压缩 / 检索相关片段</span><span class="farrow">→</span>
+        <span class="fnode">关键信息保留</span><span class="farrow">→</span>
+        <span class="fnode">持续准确作答</span>
+      </div>
+      <div class="viz-note">🎯 读图要点：上下文管理是工程问题——重点是知道哪些能丢、怎么保住关键信息。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>以上为示意图，用于帮助理解容量约束与信息取舍关系，非精确结构；结论依据 Redis、AWS Labs 等工程文档（见第九节）。</p>
+  </section>
+
   <section id="mechanism">
-    <h2>⚙️ 四、核心机制 / 组成</h2>
+    <h2>⚙️ 五、核心机制 / 组成</h2>
     <p>一个典型上下文窗口里通常包含以下内容（引用工程实践来源的拆解）：</p>
     <table>
       <tr><th>内容</th><th>说明</th><th>规模占比</th></tr>
@@ -127,7 +218,7 @@
       <tr><td><strong>工具 / 插件定义</strong></td><td>给模型看的工具清单与参数说明，供它决定调用哪个。</td><td>中，恒定</td></tr>
       <tr><td><strong>用户消息</strong></td><td>你真正输入的内容。</td><td>较小</td></tr>
       <tr><td><strong>工具返回结果</strong></td><td>Agent 调 API / 查库拿回的数据（可能很长）。</td><td>可很大</td></tr>
-      <tr><td><strong>历史对话</strong></td><td>前面所有轮的你来我往。</td><td>随对话不断增长</td></tr>
+      <tr><td><strong>历史对话</strong></td><td>前面所有轮次的往来内容。</td><td>随对话不断增长</td></tr>
     </table>
     <p>为什么有上限？根源是 Transformer 架构：注意力机制需要让每个 token 与其它所有 token 互相比较，上下文越长，<strong>计算量约按平方增长、显存（KV cache）同步攀升</strong>，导致更慢、更贵。所以模型厂商会设一个固定上限。</p>
     <div class="warn"><span class="lbl">⚠️ 关键认知</span>
@@ -137,18 +228,18 @@
   </section>
 
   <section id="scenario">
-    <h2>🚀 五、一个具体应用场景</h2>
+    <h2>🚀 六、一个具体应用场景</h2>
     <p><strong>场景：一个「企业客服 Agent」处理超长对话时，为什么会「忘」，又怎么解决。</strong></p>
     <ul>
       <li>客户连问 30 轮、期间 Agent 查了 3 次订单接口，每次返回一长串 JSON。这些内容都堆在窗口里。</li>
-      <li>当窗口接近上限时，若系统直接「砍掉最早的几轮」，客户第一句说的「我是会员、要升级套餐」就可能被裁掉 → 表现为<em>「模型忘了重要前提」</em>。</li>
+      <li>当窗口接近上限时，若系统直接「砍掉最早的几轮」，客户首句提出的「会员身份、需升级套餐」这一前提就可能被裁掉 → 表现为<em>「模型忘了重要前提」</em>。</li>
       <li>更好的做法是<strong>对话压缩</strong>：把前面内容让模型提炼成一段摘要放回窗口；或只<strong>检索</strong>与当前问题相关的片段（RAG），而不是一股脑全塞进去。</li>
     </ul>
     <p>这个例子说明：上下文管理是工程问题——不是「窗口越大越省心」，而是要知道里面装了什么、哪些能丢、怎么保住关键信息。</p>
   </section>
 
   <section id="confusions">
-    <h2>⚠️ 六、易混与边界</h2>
+    <h2>⚠️ 七、易混与边界</h2>
     <ul>
       <li><strong>易混 1｜上下文 ≠ 「记忆」：</strong>模型并没有一个永久仓库去「记住」你；它只是每一轮把对话内容放进窗口里重新看一遍。关掉会话、窗口清空，它就不记得你了。「记忆」其实是靠每次把历史塞进上下文实现。</li>
       <li><strong>易混 2｜上下文窗口 ≠ 模型参数记忆：</strong>窗口里装的是「本次会话动态提供的信息」；而模型「参数里学到的世界知识」是另一回事，二者别混淆。</li>
@@ -162,7 +253,7 @@
   </section>
 
   <section id="quiz">
-    <h2>🧪 七、自测问题（可点击作答）</h2>
+    <h2>🧪 八、自测问题（可点击作答）</h2>
     <p>先自己作答，再点「查看成绩」对照。每题下方标注了对应知识点与来源，方便回溯。</p>
 
     <div class="quiz" data-ans="C">
@@ -202,7 +293,7 @@
       <button class="opt" data-v="C">C. 因为窗口大就不能联网</button>
       <button class="opt" data-v="D">D. 越大≠越聪明，且会更慢、更贵，还可能「看不过来」</button>
       <div class="fb" data-ok="答对了：容量更大不等于效果更好，长上下文会带来成本、延迟与注意力稀释问题，需要合理管理。"></div>
-      <div class="src">📎 来源：本页「六、易混与边界」· Redis / AWS Labs</div>
+      <div class="src">📎 来源：本页「七、易混与边界」· Redis / AWS Labs</div>
     </div>
 
     <div class="quiz" data-ans="B">
@@ -212,7 +303,7 @@
       <button class="opt" data-v="C">C. 直接忽略超出部分，不做任何处理</button>
       <button class="opt" data-v="D">D. 把窗口外的内容当作模型已记住</button>
       <div class="fb" data-ok="答对了：截断、摘要、检索增强（RAG）等都是常见手段——只把与当前任务最相关的信息放进有限窗口。"></div>
-      <div class="src">📎 来源：本页「六、易混与边界」· Moveworks / AWS Labs 上下文管理</div>
+      <div class="src">📎 来源：本页「七、易混与边界」· Moveworks / AWS Labs 上下文管理</div>
     </div>
 
     <div class="quiz-actions">
@@ -224,7 +315,7 @@
   </section>
 
   <section id="sources">
-    <h2>🔗 八、资料来源与可核查链接</h2>
+    <h2>🔗 九、资料来源与可核查链接</h2>
     <p>以下来源支撑本页关键论断，均为可核查的真实出处：</p>
     <ul class="source-list">
       <li>Redis 官方博客《LLM context windows: understanding and optimizing working memory》 — <a href="https://redis.io/blog/llm-context-windows/" target="_blank" rel="noopener">https://redis.io/blog/llm-context-windows/</a></li>
