@@ -104,10 +104,10 @@
   <section>
     <h2>🔗 二、逐对关系</h2>
     <table>
-      <tr><th>关系</th><th>我的理解</th></tr>
+      <tr><th>关系</th><th>说明</th></tr>
       <tr>
         <td><strong>上下文 → Agent</strong><br>（视野决定表现）</td>
-        <td>Agent 每一轮决策都只基于「当前上下文窗口里有什么」。上下文给了它：你是谁（系统提示）、我们聊到哪（历史）、刚查回什么（工具结果）。<br>关键：<strong>上下文越相关、越无噪声，Agent 判断越准；上下文被撑爆或关键信息被挤掉，Agent 就会“忘事/跑偏”</strong>。所以 Agent 的能力上限，很大程度取决于它能否高效利用有限的上下文。</td>
+        <td>Agent 每一轮决策都只基于「当前上下文窗口里有什么」。上下文给了它：它是谁（系统提示）、对话到哪了（历史）、刚查回什么（工具结果）。<br>关键：<strong>上下文越相关、越无噪声，Agent 判断越准；上下文被撑爆或关键信息被挤掉，Agent 就会“忘事/跑偏”</strong>。所以 Agent 的能力上限，很大程度取决于它能否高效利用有限的上下文。</td>
       </tr>
       <tr>
         <td><strong>上下文 ← Skill</strong><br>（Skill 改变“进什么上下文”）</td>
@@ -141,7 +141,7 @@
       <tr><td><strong>共享</strong></td><td>项目级 Skill 放进仓库技能目录，随 git 提交。</td><td>团队或未来的自己，克隆仓库即获得同一套方法，学习成果统一落盘。</td></tr>
       <tr><td><strong>省上下文</strong></td><td>靠渐进式披露：平时只占元数据，需要时才载入详细内容。</td><td>可同时携带大量技能而不挤爆上下文，反而让 Agent 更“专业”。</td></tr>
     </table>
-    <p>本仓库就是一个实例：我创建的 <code>concept-learner</code> Skill 把「如何学懂并核查任意概念」的方法沉淀下来，并由此产出 agent / llm-context / skill 三份资料——<strong>方法存进 Skill，成果放进 learning-materials/</strong>，正是“沉淀”的体现。</p>
+    <p>本仓库就是一个实例：<code>concept-learner</code> Skill 把「如何学懂并核查任意概念」的方法沉淀下来，并由此产出 agent / llm-context / skill 三份资料——<strong>方法存进 Skill，成果放进 learning-materials/</strong>，正是“沉淀”的体现。</p>
   </section>
 
   <section>
@@ -159,18 +159,18 @@
   </section>
 
   <section>
-    <h2>👤 六、我的理解与核查</h2>
-    <div class="person"><span class="lbl">✅ 个人判断 + 人工核查记录</span>
-      我判断三者是「容器 / 执行者 / 方法库」的关系：上下文是容器（有限的视野），Agent 是执行者（在视野内推理行动），Skill 是方法库（把流程知识按需注入容器）。
-      <strong>“上下文影响 Agent”——</strong>从 Agent 组件资料与上下文工程资料交叉印证：Agent 每轮决策只依赖窗口内信息，窗口质量直接决定表现，这点我采信并特别强调。
+    <h2>👤 六、理解与核查</h2>
+    <div class="person"><span class="lbl">✅ 综合判断 + 人工核查记录</span>
+      三者可概括为「容器 / 执行者 / 方法库」的关系：上下文是容器（有限的视野），Agent 是执行者（在视野内推理行动），Skill 是方法库（把流程知识按需注入容器）。
+      <strong>“上下文影响 Agent”——</strong>从 Agent 组件资料与上下文工程资料交叉印证：Agent 每轮决策只依赖窗口内信息，窗口质量直接决定表现，该结论经多来源印证后采信并特别强调。
       <strong>“Skill 沉淀任务知识”——</strong>依据 Anthropic 官方文档对渐进式披露与可复用性的描述。
-      关系图与“容器/执行者/方法库”比喻属于我自己的概括，用于帮助理解，不是某来源原文。
+      关系图与“容器/执行者/方法库”比喻属于帮助理解的概括，不是某来源原文。
     </div>
   </section>
 
   <section>
     <h2>🔗 七、资料来源</h2>
-    <p>本文综合以下可核查来源（详见各概念单页）：</p>
+    <p>本页综合以下可核查来源（详见各概念单页）：</p>
     <ul class="source-list">
       <li>Anthropic 官方《Agent Skills》与官方博客（Skill 结构、渐进式披露） — <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">platform.claude.com/docs/en/agents-and-tools/agent-skills/overview</a></li>
       <li>Redis / Moveworks / AWS Labs 的上下文窗口资料（Agent 与上下文工程） — <a href="https://redis.io/blog/llm-context-windows/" target="_blank" rel="noopener">redis.io/blog/llm-context-windows</a></li>

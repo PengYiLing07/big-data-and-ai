@@ -70,7 +70,7 @@
     <ol>
       <li><a href="#goals">学习目标</a></li>
       <li><a href="#questions">核心问题</a></li>
-      <li><a href="#explain">概念的个人解释</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
@@ -100,7 +100,7 @@
   </section>
 
   <section id="explain">
-    <h2>📖 三、概念的个人解释</h2>
+    <h2>📖 三、概念的通俗解释</h2>
     <p>
       <strong>上下文（Context）</strong> 指大模型在生成下一个字之前，<strong>眼前能看到的所有文字信息</strong>；
       而<strong>上下文窗口（Context Window）</strong> 是模型一次能容纳这些文字的<strong>最大容量</strong>，通常用 <strong>token（词元）</strong>衡量。
@@ -110,7 +110,7 @@
       它就像模型的「<strong>工作记忆 / 桌面</strong>」：桌面有多大，你一次能摊开多少材料。系统里设定的角色说明（系统提示）、
       你问过的前因后果（历史对话）、Agent 调接口拿回的数据（工具返回）、以及你刚输入的话，全都得摆在这张桌面上，模型才能「看着它们」来回答。
     </p>
-    <div class="analogy"><span class="lbl">💡 我的类比</span>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
       想象一场<strong>开卷考试</strong>：上下文窗口就是那张<strong>桌面</strong>。考试规则允许你带资料，但桌面只有那么大——你把系统提示这页「考试须知」、
       之前的对话这几张「草稿」、工具查回的「参考数据」都摊上去后，桌面就满了。这时：
       要么把最早的草稿收起来（截断/摘要），要么只挑相关的几页放上来（检索），否则新内容就放不下了。
@@ -155,9 +155,9 @@
       <li><strong>边界 1｜标称长度 ≠ 有效长度：</strong>系统提示、工具定义会先占空间；且窗口过长时模型对中间内容的理解会下降（所谓 lost in the middle 现象），真实可靠范围常小于上限。</li>
       <li><strong>边界 2｜窗口可能被「撑爆/攻击」：</strong>超长输入或恶意构造内容可能触发上下文溢出，挤掉关键指令甚至带来安全风险，因此需要预算管控与长度防护。</li>
     </ul>
-    <div class="person"><span class="lbl">✅ 我的核查说明（人工）</span>
-      我把「窗口=模型的有限工作记忆、以 token 计、内含系统提示/历史/工具返回」作为主线，此表述在 Redis、Moveworks、AWS Labs 多篇工程文档中一致。
-      「越大越好是误区、过长降准确、有效长度小于标称」这部分，我综合了多来源关于噪声与 lost-in-the-middle 的讨论后采信并如实标注为工程经验结论。
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      本页把「窗口=模型的有限工作记忆、以 token 计、内含系统提示/历史/工具返回」作为主线，此表述在 Redis、Moveworks、AWS Labs 多篇工程文档中一致。
+      「越大越好是误区、过长降准确、有效长度小于标称」这部分，综合了多来源关于噪声与 lost-in-the-middle 的讨论后采信，并如实标注为工程经验结论。
     </div>
   </section>
 
@@ -172,7 +172,7 @@
       <button class="opt" data-v="C">C. token（词元）</button>
       <button class="opt" data-v="D">D. 秒</button>
       <div class="fb" data-ok="答对了：上下文窗口是模型一次能容纳的最大文字容量，通常用 token 衡量。"></div>
-      <div class="src">📎 来源：本页「三、概念的个人解释」· AI Glossary《Context Window》</div>
+      <div class="src">📎 来源：本页「三、概念的通俗解释」· AI Glossary《Context Window》</div>
     </div>
 
     <div class="quiz" data-ans="A">
@@ -182,7 +182,7 @@
       <button class="opt" data-v="C">C. 上下文只包括你最后输入的那句话</button>
       <button class="opt" data-v="D">D. 上下文与模型输出无关</button>
       <div class="fb" data-ok="答对了：上下文是模型生成下一个字之前眼前能看到的全部文字；窗口外的信息它看不到。"></div>
-      <div class="src">📎 来源：本页「三、概念的个人解释」· Redis《LLM 上下文窗口》</div>
+      <div class="src">📎 来源：本页「三、概念的通俗解释」· Redis《LLM 上下文窗口》</div>
     </div>
 
     <div class="quiz" data-ans="B">

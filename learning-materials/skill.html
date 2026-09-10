@@ -73,7 +73,7 @@
     <ol>
       <li><a href="#goals">学习目标</a></li>
       <li><a href="#questions">核心问题</a></li>
-      <li><a href="#explain">概念的个人解释</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
       <li><a href="#mechanism">核心机制 / 组成</a></li>
       <li><a href="#scenario">一个具体应用场景</a></li>
       <li><a href="#confusions">易混与边界</a></li>
@@ -103,7 +103,7 @@
   </section>
 
   <section id="explain">
-    <h2>📖 三、概念的个人解释</h2>
+    <h2>📖 三、概念的通俗解释</h2>
     <p>
       <strong>Skill（技能）</strong> 是打包给智能体的一份<strong>「专业领域说明书 + 工具 + 参考资料」的文件夹</strong>，
       让一个通用 Agent 在遇到相关任务时能立刻调用这套专长，而不必每次都把冗长步骤重新讲一遍。
@@ -112,7 +112,7 @@
     <p>
       关键点在于它是<strong>按需加载</strong>的：平时只占用很小空间（名字+一句简介），只有当任务相关时才真正把详细内容读进来。这正是它和「把长提示词贴在每次对话里」最大的不同。
     </p>
-    <div class="analogy"><span class="lbl">💡 我的类比</span>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
       把 Agent 想成一位<strong>全能新员工</strong>。你给他装技能，就像在他工位上放好一摞<strong>《岗位手册》</strong>：
       每本封面上只写「这本讲什么、什么时候用」（很小，随时能扫到）。当他接到「帮我处理一份 PDF」的活时，
       才去把《PDF 处理手册》翻开，照着里面的步骤、脚本把事办成。平时他不会把 100 本手册全背下来，而是用到哪本翻哪本——
@@ -164,8 +164,8 @@ description: 通用概念学习引擎，接收任意概念并生成可核查的�
       <li><strong>边界 1｜必须来自可信来源：</strong>第三方 Skill 本质是「让 Agent 执行你给的指令/代码」，恶意的 Skill 可能诱导 Agent 做危险操作或泄露数据。只应使用自己创建或官方发布的技能，外部来源要先审计。</li>
       <li><strong>边界 2｜同名/层级有优先级：</strong>个人级与项目级技能可能同名，且有覆盖顺序；跨平台/跨工具也有可用范围限制，不能假设处处通用。</li>
     </ul>
-    <div class="person"><span class="lbl">✅ 我的核查说明（人工）</span>
-      核心表述（Skill=含 SKILL.md 的目录、frontmatter 必填 name+description、三级渐进式披露、个人 vs 项目级位置、安全审计）均取自 Anthropic 官方 Agent Skills 文档与官方博客，多处原文一致后我采信。
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      核心表述（Skill=含 SKILL.md 的目录、frontmatter 必填 name+description、三级渐进式披露、个人 vs 项目级位置、安全审计）均取自 Anthropic 官方 Agent Skills 文档与官方博客，多处原文一致后采信。
       目录/层级示例中「<code>.workbuddy/skills/</code>」是本课程平台的项目级技能路径，与官方示例路径对应，属平台约定而非官方原话，故单列说明。
     </div>
   </section>
@@ -191,7 +191,7 @@ description: 通用概念学习引擎，接收任意概念并生成可核查的�
       <button class="opt" data-v="C">C. Skill 按需加载——平时只占名字+简介，相关时才读入详细内容</button>
       <button class="opt" data-v="D">D. Skill 不需要写说明</button>
       <div class="fb" data-ok="答对了：按需加载（渐进式披露）正是 Skill 的核心优势，避免上下文被长期占满。"></div>
-      <div class="src">📎 来源：本页「三、概念的个人解释」· Anthropic 官方博客</div>
+      <div class="src">📎 来源：本页「三、概念的通俗解释」· Anthropic 官方博客</div>
     </div>
 
     <div class="quiz" data-ans="A">
