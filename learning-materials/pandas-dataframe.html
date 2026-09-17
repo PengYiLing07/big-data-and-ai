@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · pandas 与 DataFrame</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块四 · AI 前置数据能力 ｜ 第 12–13 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>pandas 与 DataFrame</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础 · 数据处理</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li><code>Series</code> 与 <code>DataFrame</code> 是什么关系？为什么说一张表可以看成「共享同一行索引的多个 Series」？</li>
+      <li><code>read_csv</code> / <code>read_excel</code> 读进来的数据，怎么通过 <code>head()</code> / <code>info()</code> / <code>describe()</code> / <code>shape</code> 快速判断「这份数据能不能直接用」？</li>
+      <li>选列、加列、按条件筛选，为什么有时用 <code>loc</code>、有时用 <code>iloc</code>，还有时直接用中括号？</li>
+      <li>一份评论表里有缺失值和重复口径时，<code>isna()</code> / <code>dropna()</code> / <code>fillna()</code> 各适用什么情形？</li>
+      <li><code>value_counts()</code> 与 <code>groupby()</code> 分别回答什么问题？链式操作为什么比反复赋值的中间变量更清晰？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——用列表和字典处理一批带多列字段的数据时，代码会越写越长；pandas 提供了什么，让「一列一列地算」变成「一张表一起算」？</li>
+      <li><strong>它由什么组成</strong>——一张 DataFrame 由哪几部分构成？行索引、列名、值、每列类型各自承担什么职责？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——DataFrame 与 Excel 表格、与 <code>dict</code>、与 NumPy 的二维 <code>ndarray</code>，边界分别在哪里？</li>
+      <li><strong>它的边界在哪</strong>——什么情况下 pandas 不是合适工具？为什么同一个筛选条件写错一个括号就会得到错误结果，而且不一定报错？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      pandas 是一个用于表格数据的 Python 库。它提供两个最基本的结构：<strong>Series</strong> 和 <strong>DataFrame</strong>。按官方文档的说法，<code>Series</code> 是「一维的、带轴标签的数组」，<code>DataFrame</code> 是「二维的、带标签的数据结构，各列可以有不同的类型」——后者可以被看成类似电子表格或 SQL 表，也可以被看成「由多个 Series 组成的字典」。
+    </p>
+    <p>
+      关键在于「<strong>带标签</strong>」这三个字。普通列表只有位置：第 0 个、第 1 个。DataFrame 的每一行有一个<strong>行索引</strong>（可以是默认的 0、1、2，也可以改成日期或稿件编号），每一列有一个<strong>列名</strong>。要取某一个值，既可以说「第 0 行第 2 列」（按位置），也可以说「评论编号为 A001 那一行的字数」（按标签）。这两种说法分别对应 <code>iloc</code> 和 <code>loc</code>，是初学者最容易混的一对。
+    </p>
+    <p>
+      而「一次对整列做运算」这件事，是 pandas 真正省力的地方。<code>df["文本长度"] = df["评论内容"].str.len()</code> 这一行里没有循环，它对每一行都算了一次长度。这与 NumPy 的向量化思路一致：把「逐条处理」交给底层的数组运算，代码更短，也通常更快。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      DataFrame 可类比为一张带固定表头的采访记录台账：横向是字段（来源、字数、情感标签），纵向是每一条记录；每一行左端还贴了一个编号，这个编号就是行索引。<code>loc</code> 相当于「按编号或字段名去查」，<code>iloc</code> 相当于「按第几行第几格去找」。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      从字典走向 DataFrame，可类比为把散装卡片装订成册。字典的键（「字数」「来源」）变成列名，字典里每个键对应的那一串值（原本是一个列表）变成一列，也就是一个 Series；所有列共用同一份行编号，因此可以整列比较、整列统计。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面两张图分别回答两个最容易卡住的问题：一张 DataFrame 到底由什么构成，以及从原始文件到分析结果要经过哪几步。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · DataFrame 由「行索引 + 列名 + 单元格」三件东西共同定位一个值</div>
+      <div class="vsub">左侧是 DataFrame 的结构示意；右侧列出它与 Excel 表格、字典、多个 Series 的对应关系。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>DataFrame 结构示意图：行索引、列名与单元格</title>
+        <desc>一张三行五列的评论表，最左列为行索引，首行为列名，其余格子为单元格值；右侧标注它与 Excel 表格、字典、多个 Series 的对应关系。</desc>
+        <defs>
+          <marker id="pdA" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+        </defs>
+
+        <text x="20" y="24" font-size="12.5" fill="#5b6472">列名 columns（字段名，通常也是字符串）</text>
+        <rect x="20" y="34" width="450" height="34" rx="7" fill="#dbe8ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="55" y="51" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central">index</text>
+        <text x="135" y="51" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-weight="700">来源</text>
+        <text x="225" y="51" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-weight="700">字数</text>
+        <text x="315" y="51" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-weight="700">情感标签</text>
+        <text x="410" y="51" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-weight="700">含链接</text>
+
+        <rect x="20" y="68" width="70" height="34" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="55" y="85" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">0</text>
+        <rect x="90" y="68" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="135" y="85" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">A 报</text>
+        <rect x="180" y="68" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="225" y="85" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">86</text>
+        <rect x="270" y="68" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="315" y="85" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">正面</text>
+        <rect x="360" y="68" width="110" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="410" y="85" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">False</text>
+
+        <rect x="20" y="102" width="70" height="34" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="55" y="119" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">1</text>
+        <rect x="90" y="102" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="135" y="119" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">B 网</text>
+        <rect x="180" y="102" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="225" y="119" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">42</text>
+        <rect x="270" y="102" width="90" height="34" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="315" y="119" font-size="12" fill="#b45309" text-anchor="middle" dominant-baseline="central">NaN</text>
+        <rect x="360" y="102" width="110" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="410" y="119" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">True</text>
+
+        <rect x="20" y="136" width="70" height="34" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="55" y="153" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">2</text>
+        <rect x="90" y="136" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="135" y="153" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">A 报</text>
+        <rect x="180" y="136" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="225" y="153" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">25</text>
+        <rect x="270" y="136" width="90" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="315" y="153" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">负面</text>
+        <rect x="360" y="136" width="110" height="34" fill="#ffffff" stroke="#e3e7ee"/>
+        <text x="410" y="153" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">False</text>
+
+        <line x1="20" y1="180" x2="470" y2="180" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="20" y="200" font-size="11.5" fill="#5b6472">行索引 index（可改为稿件编号、日期等，不一定是 0/1/2）</text>
+        <text x="20" y="220" font-size="11.5" fill="#5b6472">单元格值：每个值自带类型；<tspan fill="#b45309">NaN 表示缺失值</tspan>，不是 0 也不是空字符串</text>
+
+        <rect x="486" y="34" width="196" height="52" rx="9" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="498" y="52" font-size="12" font-weight="700" fill="#4c3aa8" dominant-baseline="central">↔ Excel 表格</text>
+        <text x="498" y="71" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">行号 ≈ 行索引；表头 ≈ 列名</text>
+
+        <rect x="486" y="94" width="196" height="52" rx="9" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="498" y="112" font-size="12" font-weight="700" fill="#4c3aa8" dominant-baseline="central">↔ 字典 dict</text>
+        <text x="498" y="131" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">列名作键，一列作一个值</text>
+
+        <rect x="486" y="154" width="196" height="52" rx="9" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="498" y="172" font-size="12" font-weight="700" fill="#4c3aa8" dominant-baseline="central">↔ 多个 Series</text>
+        <text x="498" y="191" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">每列一个 Series，共享行索引</text>
+
+        <rect x="20" y="238" width="662" height="52" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="36" y="258" font-size="12.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">定位一个值有两种说法：</text>
+        <text x="36" y="278" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">df.loc[1, "字数"]　→ 按标签　｜　df.iloc[1, 1]　→ 按位置</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：行索引负责「哪一行」、列名负责「哪一列」、单元格负责「那个值」；三件东西合起来才唯一确定一个数据格。<code>loc</code> 问的是名字，<code>iloc</code> 问的是位置。示意图，用于帮助理解，非 pandas 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 一次完整的数据处理流水线</div>
+      <div class="vsub">从原始文件到可交付结果通常要经过六个环节；橙色标出的是需要人工判断规则的一步。</div>
+      <svg viewBox="0 0 700 240" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>pandas 数据处理的六个环节流程图</title>
+        <desc>横向流程：读入、查看、清洗、筛选、分组、导出；每个环节下方标注对应的 pandas 调用，最后一段说明链式操作与中间变量的取舍。</desc>
+        <defs>
+          <marker id="pdB" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#8b94a3"/>
+          </marker>
+        </defs>
+
+        <text x="20" y="26" font-size="12.5" fill="#5b6472">六个环节，各由一个典型的 pandas 调用承担</text>
+
+        <rect x="20" y="42" width="98" height="40" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <text x="69" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① 读入</text>
+        <text x="69" y="98" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">read_csv</text>
+        <text x="69" y="113" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">read_excel</text>
+        <line x1="122" y1="62" x2="130" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#pdB)"/>
+
+        <rect x="134" y="42" width="98" height="40" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <text x="183" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">② 查看</text>
+        <text x="183" y="98" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">head / tail</text>
+        <text x="183" y="113" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">info / describe / shape</text>
+        <line x1="236" y1="62" x2="244" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#pdB)"/>
+
+        <rect x="248" y="42" width="98" height="40" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.6"/>
+        <text x="297" y="62" font-size="12.5" font-weight="700" fill="#b45309" text-anchor="middle" dominant-baseline="central">③ 清洗</text>
+        <text x="297" y="98" font-size="11" fill="#a9560d" text-anchor="middle" dominant-baseline="central">isna / dropna</text>
+        <text x="297" y="113" font-size="11" fill="#a9560d" text-anchor="middle" dominant-baseline="central">fillna</text>
+        <line x1="350" y1="62" x2="358" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#pdB)"/>
+
+        <rect x="362" y="42" width="98" height="40" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <text x="411" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">④ 筛选</text>
+        <text x="411" y="98" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">布尔条件 + loc</text>
+        <text x="411" y="113" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">sort_values</text>
+        <line x1="464" y1="62" x2="472" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#pdB)"/>
+
+        <rect x="476" y="42" width="98" height="40" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <text x="525" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">⑤ 分组</text>
+        <text x="525" y="98" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">groupby + 聚合</text>
+        <text x="525" y="113" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">value_counts</text>
+        <line x1="578" y1="62" x2="586" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#pdB)"/>
+
+        <rect x="590" y="42" width="90" height="40" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <text x="635" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">⑥ 导出</text>
+        <text x="635" y="98" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">to_csv</text>
+        <text x="635" y="113" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">encoding</text>
+
+        <rect x="20" y="132" width="140" height="22" rx="11" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="90" y="143" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">蓝：数据读入 / 变换 / 输出</text>
+        <rect x="172" y="132" width="180" height="22" rx="11" fill="#fff7ed" stroke="#d97706" stroke-width="0.9"/>
+        <text x="262" y="143" font-size="11" fill="#b45309" text-anchor="middle" dominant-baseline="central">橙：需要人工判断规则的一步</text>
+
+        <rect x="20" y="166" width="662" height="60" rx="9" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1"/>
+        <text x="36" y="186" font-size="12" font-weight="700" fill="#4c3aa8" dominant-baseline="central">为什么推荐链式操作</text>
+        <text x="36" y="206" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">df.dropna().sort_values("字数").head(10)</text>
+        <text x="330" y="206" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">读起来就是「先清、再排、再取前十」</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：多数数据处理任务都能拆成这六步；「清洗」这一步需要人来定规则（缺失算不算、空白算不算），因此最容易出错，也最值得在报告里写清楚。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>两张图均为帮助理解的示意图，非 pandas 官方原文插图。图中的结构关系（Series 与 DataFrame 的定义、<code>loc</code> 与 <code>iloc</code> 的区别）与各方法名称均依据 pandas 官方文档整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一张 DataFrame 可以拆成四个组成部分。理解这四部分各自管什么，是理解后面所有索引与运算规则的前提。</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>行索引 <code>index</code></strong></td><td>每一行的名字标签。不指定时自动生成 <code>RangeIndex</code>（0、1、2……）。索引值允许重复，但重复后某些依赖唯一性的操作会报错。</td></tr>
+      <tr><td><strong>列名 <code>columns</code></strong></td><td>每一列的名字标签，相当于字段名。按列取值最常用的写法就是 <code>df["列名"]</code>。</td></tr>
+      <tr><td><strong>值 <code>values</code></strong></td><td>真正被存储的数据，底层通常是一个或多个 NumPy 数组。<code>Series</code> 与 <code>DataFrame</code> 都能被大多数 NumPy 函数直接接受。</td></tr>
+      <tr><td><strong>每列类型 <code>dtype</code></strong></td><td>同一列内部类型一致，不同列可以不同。<code>info()</code> 会列出每一列的非空数量与类型，是判断「这份数据能不能直接算」的第一手信息。</td></tr>
+    </table>
+
+    <h3>Series 与 DataFrame 的关系</h3>
+    <table>
+      <tr><th>对象</th><th>维度</th><th>通俗说法</th><th>典型取值</th></tr>
+      <tr><td><code>Series</code></td><td>一维</td><td>带标签的一列数据</td><td><code>df["字数"]</code>、<code>df.loc[0]</code>（取一行也是一个 Series）</td></tr>
+      <tr><td><code>DataFrame</code></td><td>二维</td><td>共享同一行索引的多个 Series 组成的字典</td><td><code>df</code> 本身；<code>df[["来源","字数"]]</code> 取多列得到的是 DataFrame</td></tr>
+    </table>
+    <p>官方《数据结构简介》给出的表述是：<code>DataFrame</code> 是「二维的、带标签的数据结构，各列可以有不同的类型」，可以理解成类似电子表格或 SQL 表，也可以理解成「由 Series 组成的字典」。注意一个常见细节：用单个中括号取一列得到的是 <code>Series</code>，用双重中括号取多列得到的是 <code>DataFrame</code>——多一个中括号，返回类型就变了。</p>
+
+    <h3>常用方法与属性速查</h3>
+    <table>
+      <tr><th>环节</th><th>写法</th><th>作用 / 说明</th></tr>
+      <tr><td rowspan="4">读入导出</td><td><code>pd.read_csv(路径, encoding=...)</code></td><td>读 CSV。文件不是 UTF-8 时（常见为 GBK）必须显式指定 <code>encoding</code>，否则报错或出现乱码。</td></tr>
+      <tr><td><code>pd.read_excel(路径, sheet_name=...)</code></td><td>读 Excel，支持 xls / xlsx 等格式；<code>sheet_name=None</code> 时返回一个「工作表名 → DataFrame」的字典。</td></tr>
+      <tr><td><code>df.to_csv(路径, encoding=..., index=False)</code></td><td>写出 CSV。<code>index=False</code> 表示不把行索引也写成一列。</td></tr>
+      <tr><td><code>df.to_excel(...)</code></td><td>写出 Excel 文件。</td></tr>
+      <tr><td rowspan="5">查看</td><td><code>df.head(n)</code> / <code>df.tail(n)</code></td><td>看前 n 行 / 后 n 行，用于快速确认列名与数据形态。</td></tr>
+      <tr><td><code>df.shape</code></td><td>返回 <code>(行数, 列数)</code> 元组。</td></tr>
+      <tr><td><code>df.info()</code></td><td>逐列显示非空数量与 dtype，用于发现「本该是数字的列却是文本」。</td></tr>
+      <tr><td><code>df.describe()</code></td><td>数值列的计数、均值、标准差与分位数；文本列可用 <code>include="object"</code> 查看。</td></tr>
+      <tr><td><code>df.columns</code> / <code>df.index</code></td><td>查看列名与行索引。</td></tr>
+      <tr><td rowspan="4">选择与新增</td><td><code>df["列名"]</code></td><td>取一列，返回 Series。</td></tr>
+      <tr><td><code>df[["列A","列B"]]</code></td><td>取多列，返回 DataFrame。</td></tr>
+      <tr><td><code>df["新列"] = 计算式</code></td><td>新增一列。整列一次算出，不需要循环。</td></tr>
+      <tr><td><code>df.drop(columns=["列名"])</code></td><td>删除列。</td></tr>
+      <tr><td rowspan="3">筛选</td><td><code>df[df["字数"] &gt; 50]</code></td><td>布尔条件筛选，返回条件为真的那些行。</td></tr>
+      <tr><td><code>df.loc[行标签, 列标签]</code></td><td>按标签取值。标签切片时<strong>两端都包含</strong>。</td></tr>
+      <tr><td><code>df.iloc[行位置, 列位置]</code></td><td>按整数位置取值。位置切片<strong>上界不含</strong>，与普通列表一致。</td></tr>
+      <tr><td rowspan="2">排序</td><td><code>df.sort_values("列名", ascending=False)</code></td><td>按某列排序；多列排序可传列表。</td></tr>
+      <tr><td><code>df.sort_index()</code></td><td>按行索引排序。</td></tr>
+      <tr><td rowspan="3">缺失值</td><td><code>df.isna()</code></td><td>逐格判断是否为缺失值，返回同形状的布尔表；配合 <code>.sum()</code> 可统计每列缺失数量。</td></tr>
+      <tr><td><code>df.dropna(subset=[...])</code></td><td>删除含缺失值的行或列；<code>how="all"</code> 表示全部为空才删，<code>thresh=n</code> 表示至少保留 n 个非空值。</td></tr>
+      <tr><td><code>df.fillna(值)</code></td><td>把缺失值替换成指定值；也支持用均值等填充、或前后向填充。</td></tr>
+      <tr><td rowspan="3">统计与分组</td><td><code>df["列名"].value_counts()</code></td><td>统计每个取值出现多少次，默认按次数从多到少排列，是看「正负样本分布」最直接的方法。</td></tr>
+      <tr><td><code>df.groupby("列名")[目标列].mean()</code></td><td>按某列分组后对目标列做聚合。官方文档把这类操作概括为「拆分—应用—合并」三步。</td></tr>
+      <tr><td><code>.agg(["mean","count"])</code></td><td>一次算多个聚合指标。</td></tr>
+      <tr><td>函数应用</td><td><code>df["列名"].apply(函数)</code></td><td>把自定义函数应用到每个元素。主要用于内置方法覆盖不到的判断逻辑。</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上方法名与参数说明均来自 pandas 官方《数据结构简介》《索引与选择数据》《缺失值处理》《分组》《IO 工具》与《基础功能》等章节，可经第九节链接逐条核查。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      编辑部从后台导出了一份新闻评论数据集 <code>comments.csv</code>，字段包括「来源」「评论内容」「情感标签」「发布时间」。要回答两个问题：正负样本的比例是否均衡？评论长度集中在什么范围？下面这一段把第 12–13 课涉及的主要方法串成一条完整链路。
+    </p>
+    <pre><span class="c"># 场景：加载新闻评论数据集，看正负样本分布与文本长度分布</span>
+import pandas as pd
+
+<span class="c"># ① 读入：CSV 若不是 UTF-8 编码（常见为 GBK），要显式指定 encoding</span>
+df = pd.read_csv(<span class="s">"comments.csv"</span>, encoding=<span class="s">"utf-8"</span>)
+
+<span class="c"># ② 查看：先确认形状、类型与非空数量，再决定怎么处理</span>
+print(df.shape)            <span class="c"># (行数, 列数)</span>
+print(df.info())           <span class="c"># 每列的非空数量与 dtype</span>
+print(df.head(3))          <span class="c"># 前 3 行，确认字段是否对得上</span>
+
+<span class="c"># ③ 清洗：新增「文本长度」列；处理缺失的情感标签</span>
+df[<span class="s">"文本长度"</span>] = df[<span class="s">"评论内容"</span>].str.len()
+print(df[<span class="s">"情感标签"</span>].isna().sum())          <span class="c"># 有多少条没打标签</span>
+df[<span class="s">"情感标签"</span>] = df[<span class="s">"情感标签"</span>].fillna(<span class="s">"未标注"</span>)
+df = df.dropna(subset=[<span class="s">"评论内容"</span>])               <span class="c"># 正文为空的行去掉</span>
+
+<span class="c"># ④ 筛选：多个条件要用括号分组，连接用 & 而不是 and</span>
+long_neg = df.loc[(df[<span class="s">"情感标签"</span>] == <span class="s">"负面"</span>) &amp; (df[<span class="s">"文本长度"</span>] &gt; 50),
+                  [<span class="s">"来源"</span>, <span class="s">"文本长度"</span>]]
+print(long_neg.shape)
+
+<span class="c"># ⑤ 统计与分组：看样本分布 + 看长度分布 + 按来源比较</span>
+print(df[<span class="s">"情感标签"</span>].value_counts())     <span class="c"># 正负样本分布</span>
+print(df[<span class="s">"文本长度"</span>].describe())          <span class="c"># 长度分布：均值与分位数</span>
+by_source = (df.groupby(<span class="s">"来源"</span>)[<span class="s">"文本长度"</span>]
+               .mean()
+               .sort_values(ascending=False))  <span class="c"># 链式操作</span>
+print(by_source)
+
+<span class="c"># ⑥ 导出：写回 CSV 时同样要指定编码；index=False 表示不写行号列</span>
+by_source.to_csv(<span class="s">"按来源平均字数.csv"</span>, encoding=<span class="s">"utf-8-sig"</span>)</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明各方法在流程中的位置，属于辅助理解示例，非某个来源的原文代码。其中 <code>encoding="utf-8"</code> 与 <code>encoding="utf-8-sig"</code> 的写法依据 pandas 官方 <code>read_csv</code> / <code>read_excel</code> 页面中关于 <code>encoding</code> 参数的说明；<code>utf-8-sig</code> 属于 Python 标准编码之一，写出的文件带 BOM，用 Excel 直接打开中文不易乱码。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>loc</code> 按标签，<code>iloc</code> 按位置，切片语义还不一样。</strong>官方《索引与选择数据》说明：<code>loc</code> 的标签切片<strong>首尾都包含</strong>（<code>df.loc["a":"c"]</code> 取 a、b、c 三行），<code>iloc</code> 的位置切片<strong>上界不含</strong>（<code>df.iloc[1:3]</code> 取位置 1、2 两行）。一个常见误解是「两者可以互换」——当行索引恰好也是 0、1、2 时，取单个值的结果往往相同，但一旦索引换成了日期或编号，<code>loc</code> 里写整数就不再表示位置。</li>
+      <li><strong>多个筛选条件必须用括号，且只能用 <code>&amp;</code> / <code>|</code> / <code>~</code>。</strong>官方文档明确指出布尔向量之间要用 <code>|</code>（或）、<code>&amp;</code>（且）、<code>~</code>（非），并且<strong>必须加括号</strong>以避免运算符优先级导致的错误。写成 <code>df[df["a"] &gt; 1 &amp; df["b"] &lt; 2]</code> 通常不会按预期工作，而且未必报错，只是结果悄悄不对。</li>
+      <li><strong>「空」不等于 <code>None</code>，也不能用 <code>==</code> 判断。</strong>官方《缺失值处理》特别提示：<code>np.nan == np.nan</code> 的结果是 <code>False</code>，<code>pd.NaT == pd.NaT</code> 同样是 <code>False</code>。判断缺失要用 <code>isna()</code> / <code>notna()</code>，而不是比较运算。缺失值在算术与比较中会「传播」——一个缺失值参与运算，结果通常仍是缺失值。</li>
+      <li><strong>不要对筛选结果直接赋值。</strong>像 <code>df[df["字数"] &gt; 50]["标签"] = "长"</code> 这样的链式写法，中间那一步返回的对象通常不是原表本身，赋值可能不会反映到 <code>df</code> 上。稳妥做法是一次性用 <code>df.loc[条件, "标签"] = "长"</code>。官方索引文档专门对这一类链式索引的风险给出了提示。</li>
+      <li><strong><code>groupby</code> 的结果不是「原表的子集」，而是「每组一行的新表」。</strong>默认情况下分组键会变成结果的索引（<code>as_index=True</code>），因此结果的行数等于组数，而不是原表的行数。若希望分组键仍是一列普通数据，可加 <code>as_index=False</code>，或在结果上继续链式调用 <code>.reset_index()</code>。另外官方文档说明 <code>dropna</code> 默认为 <code>True</code>，意味着分组键中的缺失值所在行会被丢弃——这会静默改变样本量。</li>
+      <li><strong>pandas 不是万能的边界。</strong>它擅长的是「单机内存装得下」的表格数据。数据量大到内存放不下时，通常需要换成分块读入（<code>chunksize</code>）或改用分布式工具；对图片、音频等非表格数据，pandas 提供不了直接的帮助。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条的技术结论均以 pandas 官方文档为依据。切片语义、布尔索引的括号要求与链式索引提示见《索引与选择数据》；缺失值比较行为见《缺失值处理》；<code>as_index</code> 与 <code>dropna</code> 的默认行为见 <code>DataFrame.groupby</code> 页面；「Group by 是拆分—应用—合并」的概括见《Group by: split-apply-combine》。具体链接见第九节。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 关于 <code>Series</code> 与 <code>DataFrame</code> 的关系，下列表述通常正确的是？</div>
+      <button class="opt" data-v="A">A. <code>DataFrame</code> 是多个 <code>Series</code> 的简单拼接，各列的行索引互相独立</button>
+      <button class="opt" data-v="B">B. <code>Series</code> 是二维带标签结构，<code>DataFrame</code> 是它的一维特例</button>
+      <button class="opt" data-v="C">C. <code>DataFrame</code> 是二维带标签结构，可理解为「共享同一行索引、由多个 Series 组成的字典」</button>
+      <button class="opt" data-v="D">D. 两者只能存数值，不能存字符串</button>
+      <div class="fb" data-ok="✅ 正确。官方《数据结构简介》把 DataFrame 描述为「二维的、带标签的数据结构，各列可以有不同的类型」，可以理解成类似电子表格或 SQL 表，也可以理解成由 Series 组成的字典。关键点是所有列共享同一份行索引。"></div>
+      <div class="src">📎 来源：pandas 官方《数据结构简介》（Series 与 DataFrame 的定义与关系） — pandas.pydata.org/docs/user_guide/dsintro.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 用 <code>read_csv</code> 读取一份由 Windows 下 Excel 另存而来的评论表，发现中文全部乱码。最可能的原因与处理方式是？</div>
+      <button class="opt" data-v="A">A. 文件已损坏，必须重新导出</button>
+      <button class="opt" data-v="B">B. 文件编码不是 UTF-8（此类文件常见为 GBK），可在 <code>read_csv</code> 中显式指定 <code>encoding</code> 参数</button>
+      <button class="opt" data-v="C">C. pandas 无法读取中文，需要先把中文全部替换成拼音</button>
+      <button class="opt" data-v="D">D. 必须先用 Excel 打开另存为 .xlsx，再把扩展名改回 .csv</button>
+      <div class="fb" data-ok="✅ 正确。官方 IO 工具章节专门讨论了编码问题，指出某些编码（如 UTF-16）在不指定编码时根本无法正确解析；read_csv 的 encoding 参数默认值为 'utf-8'，读非 UTF-8 文件时需显式指定，例如 encoding='gbk'。"></div>
+      <div class="src">📎 来源：pandas 官方《IO 工具》— pandas.pydata.org/docs/user_guide/io.html ；pandas.read_csv 参数说明 — pandas.pydata.org/docs/reference/api/pandas.read_csv.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 关于 <code>df.loc</code> 与 <code>df.iloc</code> 的切片行为，下列表述通常正确的是？</div>
+      <button class="opt" data-v="A">A. <code>df.loc[1:3]</code> 取的是位置 1 到 3（不含 3）的行</button>
+      <button class="opt" data-v="B">B. <code>df.iloc[1:3]</code> 取位置 1、2 两行（上界不含）；<code>df.loc[1:3]</code> 若标签为整数则两端都包含</button>
+      <button class="opt" data-v="C">C. 两者完全等价，可以随意替换</button>
+      <button class="opt" data-v="D">D. <code>iloc</code> 只接受标签，<code>loc</code> 只接受位置</button>
+      <div class="fb" data-ok="✅ 正确。官方《索引与选择数据》说明：iloc 基于整数位置，切片遵循 Python/NumPy 语义（起始包含、上界排除）；loc 基于标签，标签切片首尾均包含。选 A 的常见原因是把 loc 也当成了位置索引。"></div>
+      <div class="src">📎 来源：pandas 官方《索引与选择数据》（Selection by label / Selection by position） — pandas.pydata.org/docs/user_guide/indexing.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 一份评论表的「情感标签」列有若干空缺。若希望保留这些行、把空缺统一记为「未标注」，通常用哪个写法？</div>
+      <button class="opt" data-v="A">A. <code>df.dropna(subset=["情感标签"])</code></button>
+      <button class="opt" data-v="B">B. <code>df["情感标签"].isna()</code></button>
+      <button class="opt" data-v="C">C. <code>df.duplicated()</code></button>
+      <button class="opt" data-v="D">D. <code>df["情感标签"].fillna("未标注")</code></button>
+      <div class="fb" data-ok="✅ 正确。官方缺失值文档给出的分工是：isna()/notna() 用于检测，dropna() 用于删除含缺失值的行或列，fillna() 用于把缺失值替换成指定值。题目要求「保留这些行」，因此用 fillna 而不是 dropna。"></div>
+      <div class="src">📎 来源：pandas 官方《缺失值处理》— pandas.pydata.org/docs/user_guide/missing_data.html ；pandas.DataFrame.dropna — pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 有 DataFrame <code>df</code>（列：<code>来源</code>、<code>字数</code>）。下列哪一段最接近「按来源分组，算出每组的平均字数，再按平均字数从高到低排序」？</div>
+      <button class="opt" data-v="A">A. <code>df.groupby("来源")["字数"].mean().sort_values(ascending=False)</code></button>
+      <button class="opt" data-v="B">B. <code>df.sort_values("来源").groupby("字数").mean()</code></button>
+      <button class="opt" data-v="C">C. <code>df["字数"].mean().groupby("来源")</code></button>
+      <button class="opt" data-v="D">D. <code>df.groupby("来源").sort_values("字数").head()</code></button>
+      <div class="fb" data-ok="✅ 正确。这是一条链式操作：先用 groupby(&quot;来源&quot;) 按来源拆成若干组，再用 [&quot;字数&quot;] 选定要聚合的列，.mean() 对每组求均值（合起来就是官方所说的「拆分—应用—合并」），最后 sort_values(ascending=False) 按均值降序排列。选项 B 混淆了分组键与目标列，选项 C 把顺序颠倒了，选项 D 得到的是每组的前几行而不是均值。"></div>
+      <div class="src">📎 来源：pandas 官方《Group by: split-apply-combine》— pandas.pydata.org/docs/user_guide/groupby.html ；pandas.DataFrame.groupby — pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处（生成时已逐条访问确认）：</p>
+    <ul class="source-list">
+      <li>pandas 官方《数据结构简介》（Series 是一维带标签数组、DataFrame 是二维带标签结构、列的新增与删除） — <a href="https://pandas.pydata.org/docs/user_guide/dsintro.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/dsintro.html</a></li>
+      <li>pandas 官方《10 minutes to pandas》（查看、选择、缺失值、分组、导入导出总览） — <a href="https://pandas.pydata.org/docs/user_guide/10min.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/10min.html</a></li>
+      <li>pandas 官方《IO 工具 (text, CSV, HDF5, …)》（read_csv / to_csv 与 encoding 参数） — <a href="https://pandas.pydata.org/docs/user_guide/io.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/io.html</a></li>
+      <li>pandas 官方《索引与选择数据》（loc 与 iloc 的切片语义、布尔索引必须加括号、链式索引提示） — <a href="https://pandas.pydata.org/docs/user_guide/indexing.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/indexing.html</a></li>
+      <li>pandas 官方《缺失值处理》（isna / dropna / fillna；NaN 与 NaT 不能用 == 判断） — <a href="https://pandas.pydata.org/docs/user_guide/missing_data.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/missing_data.html</a></li>
+      <li>pandas 官方《Group by: split-apply-combine》（分组聚合的拆分—应用—合并模型） — <a href="https://pandas.pydata.org/docs/user_guide/groupby.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/groupby.html</a></li>
+      <li>pandas 官方《基础功能》（value_counts、describe、方法链与方法串接） — <a href="https://pandas.pydata.org/docs/user_guide/basics.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/basics.html</a></li>
+      <li>pandas API 参考：<code>pandas.read_csv</code> — <a href="https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.read_csv.html</a></li>
+      <li>pandas API 参考：<code>pandas.read_excel</code>（sheet_name、engine 等参数） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.read_excel.html</a></li>
+      <li>pandas API 参考：<code>pandas.DataFrame.groupby</code>（as_index、dropna 默认值说明） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html</a></li>
+      <li>pandas API 参考：<code>pandas.DataFrame.value_counts</code>（normalize、sort、dropna 参数） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html</a></li>
+      <li>pandas API 参考：<code>pandas.Series</code>（一维带轴标签的 ndarray） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.Series.html</a></li>
+      <li>Python 官方文档《5. 数据结构》（字典与集合，本概念的前置知识） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+      <li>Python 官方文档《7. 输入与输出》（文件读写与 encoding，CSV 手工读写的对照） — <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/inputoutput.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节两张表格中的结构定义与方法说明、第七节六条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节两张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

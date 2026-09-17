@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 正则表达式</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块四 · AI 前置数据能力 ｜ 第 10 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>正则表达式</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>为什么 <code>str.replace()</code> 这类字符串方法不够用？正则表达式多解决了哪一类问题？</li>
+      <li>字符类 <code>[]</code>、预定义类 <code>\d</code> <code>\w</code> <code>\s</code> 与量词 <code>*</code> <code>+</code> <code>?</code> <code>{m,n}</code> 各匹配什么？</li>
+      <li>贪婪与非贪婪（<code>.*</code> 与 <code>.*?</code>）差在哪里，什么场景必须用非贪婪？</li>
+      <li><code>search</code> / <code>match</code> / <code>fullmatch</code> / <code>findall</code> / <code>finditer</code> / <code>sub</code> / <code>split</code> / <code>compile</code> 各返回什么？</li>
+      <li>为什么官方建议用原始字符串 <code>r"..."</code> 写模式？常见陷阱有哪些？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——要匹配的不是「某个固定字符串」，而是「一类形状的文本」（任意四位数字、任意网址、任意 @ 提及）时，固定字符串替换为什么行不通？</li>
+      <li><strong>它由什么组成</strong>——字符类、量词、锚点、分组、或运算、转义，这六类构件如何拼出一个模式？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——正则的「匹配」与字符串方法的「查找」有何不同？<code>search</code>、<code>match</code>、<code>fullmatch</code> 的边界在哪？</li>
+      <li><strong>它的边界在哪</strong>——哪些任务不该用正则？回溯为什么会拖慢速度？为什么官方提醒不要用正则解析 HTML？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      正则表达式（Regular Expression，简称 RE 或 regex）本质上是<strong>一门内嵌在 Python 里的小型模式描述语言</strong>，由标准库 <code>re</code> 模块提供接口。它描述的不是「一个具体字符串」，而是「一类字符串的共同形状」：<code>\d{4}-\d{2}-\d{2}</code> 描述的是「四位数字、连字符、两位数字、连字符、两位数字」这个形状，而不是某一天。
+    </p>
+    <p>
+      这是普通字符串方法做不到的。<code>str.replace("2026-09-17", "")</code> 只认写死的那一天，换一批稿件就得改代码；<code>str.replace()</code> 认的是<strong>内容字面相同</strong>，正则认的是<strong>形状相同</strong>——这是两者的根本分界。官方文档也把这点写得很清楚：正则会被编译成字节码，再由 C 语言编写的匹配引擎执行。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      字符串方法可类比为「照着照片找人」，只有完全一致才认得出；正则表达式可类比为「按体貌特征找人」，「戴眼镜、身高一米七五左右、左手拿伞」这类描述能匹配一批人。特征写得越宽松，匹配范围越大，因此模式里每处宽严取舍都会直接改变结果。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      匹配过程可类比为「拿一把尺子在文本上从左往右挪」：默认量词贪婪，相当于尺子先一口气拉到最右端，发现后面的条件对不上，再一格一格往回收，直到对上为止。这个「拉满再回退」的动作就是回溯（backtracking），它解释了为什么同一个模式换个写法速度可能差很多。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <p>
+      另外要记住：正则是一门独立的小语言，只是「写在 Python 字符串里」，于是存在<strong>两层转义</strong>——Python 字符串的转义和正则自己的转义。原始字符串 <code>r"..."</code> 用来消掉第一层：<code>r"\n"</code> 是两个字符（反斜杠和 n），<code>"\n"</code> 是一个换行符。官方文档因此「高度推荐，就算是最简单的表达式，也要使用原始字符串」。
+    </p>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：匹配到底怎么「对齐」上、贪婪与非贪婪差在哪里、<code>re</code> 的八个常用函数各交出什么结果。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 正则匹配过程：模式与被匹配文本的对齐关系</div>
+      <div class="vsub">模式 <code>(\d{4})-(\d{2})-(\d{2})</code> 匹配文本「批次 2026-09-17」时，五个构件分别落在哪些字符上。</div>
+      <svg viewBox="0 0 700 258" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>正则表达式与文本逐字符对齐的匹配过程示意图</title>
+        <desc>模式由五个构件组成，分别对齐到文本中连续的十个字符；前三个字符不匹配，引擎把起点右移到第四个字符才成功，并划出三个捕获组。</desc>
+        <defs><marker id="rea" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#2f6fed"/></marker></defs>
+        <text x="20" y="16" font-size="12.5" fill="#5b6472">① 引擎从左向右滑动起点，逐个位置尝试匹配</text>
+        <rect x="124" y="28" width="112" height="30" rx="6" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="180" y="43" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">\d{4}</text>
+        <rect x="236" y="28" width="28" height="30" rx="6" fill="#f1f4f9" stroke="#94a3b8"/>
+        <text x="250" y="43" font-size="13" fill="#475569" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">-</text>
+        <rect x="264" y="28" width="56" height="30" rx="6" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="292" y="43" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">\d{2}</text>
+        <rect x="320" y="28" width="28" height="30" rx="6" fill="#f1f4f9" stroke="#94a3b8"/>
+        <text x="334" y="43" font-size="13" fill="#475569" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">-</text>
+        <rect x="348" y="28" width="56" height="30" rx="6" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="376" y="43" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">\d{2}</text>
+        <text x="416" y="43" font-size="12" fill="#5b6472" dominant-baseline="central">← 模式的五个构件</text>
+        <path d="M180 60V84 M250 60V84 M292 60V84 M334 60V84 M376 60V84" stroke="#2f6fed" stroke-width="1.2" marker-end="url(#rea)"/>
+        <text x="40" y="104" font-size="12.5" fill="#94a3b8">② 逐字符对齐</text>
+        <rect x="40" y="114" width="364" height="30" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+        <rect x="124" y="114" width="280" height="30" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.4"/>
+        <path d="M68 114V144 M96 114V144 M124 114V144 M152 114V144 M180 114V144 M208 114V144 M236 114V144 M264 114V144 M292 114V144 M320 114V144 M348 114V144 M376 114V144 M404 114V144" stroke="#cbd5e1" stroke-width="0.8"/>
+        <text x="54 82 110" y="129" font-size="12.5" fill="#94a3b8" dominant-baseline="central">批次␣</text>
+        <text x="138 166 194 222 250 278 306 334 362 390" y="129" font-size="12.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">2026-09-17</text>
+        <text x="416" y="129" font-size="12" fill="#1a9e5a" dominant-baseline="central">← 第 4 个字符起匹配成功，前缀被跳过</text>
+        <path d="M124 166V180H236V166 M264 166V180H320V166 M348 166V180H404V166" fill="none" stroke="#7c5cff" stroke-width="1.6"/>
+        <text x="180" y="196" font-size="12" fill="#7c5cff" text-anchor="middle">组 1 = 2026</text>
+        <text x="292" y="196" font-size="12" fill="#7c5cff" text-anchor="middle">组 2 = 09</text>
+        <text x="376" y="196" font-size="12" fill="#7c5cff" text-anchor="middle">组 3 = 17</text>
+        <rect x="40" y="214" width="620" height="34" rx="8" fill="#f0fdf6" stroke="#1a9e5a"/>
+        <text x="56" y="231" font-size="12" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">m.group(0) → '2026-09-17'　　m.group(1) → '2026'　　m.group(2) → '09'　　m.group(3) → '17'</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：正则匹配的不是「某个字符串」，而是「一段逐字符对齐的形状」；组 0 永远是整个匹配，子组从左到右按左括号出现顺序编号。示意图，用于帮助理解，非精确结构；实际字符位置以 Python 返回的 <code>span()</code> 为准。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 贪婪与非贪婪：同一段文本，两种匹配范围</div>
+      <div class="vsub">文本「&lt;b&gt;加粗&lt;/b&gt;」下，<code>&lt;.*&gt;</code> 与 <code>&lt;.*?&gt;</code> 命中的范围截然不同。</div>
+      <svg viewBox="0 0 700 288" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>贪婪量词与非贪婪量词匹配范围对比图</title>
+        <desc>同一段带尖括号的文本，贪婪模式匹配到整个字符串，非贪婪模式只匹配到第一个右尖括号为止。</desc>
+        <text x="40" y="16" font-size="12.5" fill="#5b6472">待匹配文本（每个方格一个字符）</text>
+        <rect x="60" y="26" width="306" height="32" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.8"/>
+        <path d="M94 26V58 M128 26V58 M162 26V58 M196 26V58 M230 26V58 M264 26V58 M298 26V58 M332 26V58" stroke="#cbd5e1" stroke-width="0.8"/>
+        <text x="77 111 145 179 213 247 281 315 349" y="42" font-size="13" fill="#1f2430" text-anchor="middle" dominant-baseline="central">&lt;b&gt;加粗&lt;/b&gt;</text>
+        <text x="60" y="84" font-size="12.5" font-weight="700" fill="#b45309">贪婪（默认）&lt;.*&gt;</text>
+        <rect x="60" y="94" width="306" height="32" rx="6" fill="#fff7ed" stroke="#d97706" stroke-width="1.5"/>
+        <text x="213" y="110" font-size="12.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">.* 先吃到末尾，再回退找最后一个 &gt;</text>
+        <text x="60" y="146" font-size="12" fill="#b45309" font-family="ui-monospace,Consolas,monospace">匹配结果：'&lt;b&gt;加粗&lt;/b&gt;'（整个字符串）</text>
+        <text x="60" y="180" font-size="12.5" font-weight="700" fill="#127a44">非贪婪 &lt;.*?&gt;</text>
+        <rect x="60" y="190" width="102" height="32" rx="6" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.5"/>
+        <text x="111" y="206" font-size="12.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">只到第一个 &gt;</text>
+        <text x="176" y="206" font-size="12" fill="#94a3b8" dominant-baseline="central">← 剩余「加粗&lt;/b&gt;」不在本次匹配内</text>
+        <text x="60" y="242" font-size="12" fill="#127a44" font-family="ui-monospace,Consolas,monospace">匹配结果：'&lt;b&gt;'（最短可满足的形状）</text>
+        <text x="60" y="272" font-size="12" fill="#5b6472">切换写法：<tspan font-family="ui-monospace,Consolas,monospace">*?</tspan>　<tspan font-family="ui-monospace,Consolas,monospace">+?</tspan>　<tspan font-family="ui-monospace,Consolas,monospace">??</tspan>　<tspan font-family="ui-monospace,Consolas,monospace">{m,n}?</tspan>　——　量词后加问号即变为非贪婪</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：量词默认贪婪，先匹配尽可能多的文本再回退；处理成对分隔符（尖括号、引号、括号）时，通常需要非贪婪写法才能得到预期的短匹配。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · <code>re</code> 模块各函数返回什么（对比图）</div>
+      <div class="vsub">同一段文本 <code>s = "稿件 12 篇"</code> 与同一个模式 <code>\d+</code>，换不同函数，返回类型完全不同。</div>
+      <svg viewBox="0 0 700 336" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>re 模块八个常用函数返回值对比表</title>
+        <desc>search、match、fullmatch、findall、finditer、sub、split、compile 八个函数在同一输入下各自的返回值与说明。</desc>
+        <rect x="16" y="14" width="668" height="32" rx="7" fill="#eaf1ff" stroke="#2f6fed"/>
+        <text x="30" y="30" font-size="12.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">函数调用（模式 \d+，文本 "稿件 12 篇"）</text>
+        <text x="320" y="30" font-size="12.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">返回什么</text>
+        <rect x="16" y="46" width="668" height="32" fill="#ffffff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="62" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.search(r'\d+', s)</text>
+        <text x="320" y="62" font-size="12" fill="#127a44" dominant-baseline="central">Match 对象　span=(3, 5)　match='12'</text>
+        <rect x="16" y="78" width="668" height="32" fill="#fcfdff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="94" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.match(r'\d+', s)</text>
+        <text x="320" y="94" font-size="12" fill="#b45309" dominant-baseline="central">None　—— 只从字符串开头看，'稿' 不是数字</text>
+        <rect x="16" y="110" width="668" height="32" fill="#ffffff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="126" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.fullmatch(r'\d+', s)</text>
+        <text x="320" y="126" font-size="12" fill="#b45309" dominant-baseline="central">None　—— 要求整个字符串都是数字</text>
+        <rect x="16" y="142" width="668" height="32" fill="#fcfdff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="158" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.findall(r'\d+', s)</text>
+        <text x="320" y="158" font-size="12" fill="#127a44" dominant-baseline="central">['12']　—— 列表，装全部非重叠匹配</text>
+        <rect x="16" y="174" width="668" height="32" fill="#ffffff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="190" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.finditer(r'\d+', s)</text>
+        <text x="320" y="190" font-size="12" fill="#127a44" dominant-baseline="central">迭代器　—— 逐个产出 Match 对象</text>
+        <rect x="16" y="206" width="668" height="32" fill="#fcfdff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="222" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.sub(r'\d+', 'N', s)</text>
+        <text x="320" y="222" font-size="12" fill="#127a44" dominant-baseline="central">'稿件 N 篇'　—— 替换后的新字符串</text>
+        <rect x="16" y="238" width="668" height="32" fill="#ffffff" stroke="#e3e7ee" stroke-width="0.8"/>
+        <text x="30" y="254" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">re.split(r'\d+', s)</text>
+        <text x="320" y="254" font-size="12" fill="#127a44" dominant-baseline="central">['稿件 ', ' 篇']　—— 分割后的列表</text>
+        <rect x="16" y="270" width="668" height="32" rx="6" fill="#f7f5ff" stroke="#7c5cff"/>
+        <text x="30" y="286" font-size="12" fill="#5b47c4" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">p = re.compile(r'\d+')</text>
+        <text x="320" y="286" font-size="12" fill="#5b47c4" dominant-baseline="central">Pattern 对象　—— 可反复调用 p.search / p.findall</text>
+        <text x="16" y="322" font-size="11.5" fill="#5b6472">前七个是模块级便捷函数；compile 先把模式编译成对象，循环中复用可省去重复解析。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：先想清楚要的是「判断有没有」、「要全部结果」还是「要改文本」，再选函数——<code>search</code>/<code>match</code> 给单个 Match，<code>findall</code> 给列表，<code>sub</code> 给新字符串，<code>split</code> 给分割结果。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中的匹配范围、函数返回值与量词行为，均依据官方文档《re — 正则表达式操作》与官方教程《正则表达式指南》整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一个正则表达式由六类可组合的构件搭成：<strong>匹配哪些字符</strong>（字符类）、<strong>重复多少次</strong>（量词）、<strong>限定位置</strong>（锚点）、<strong>划出子结构</strong>（分组）、<strong>给出多选</strong>（或），以及<strong>让元字符回归字面含义</strong>（转义）。</p>
+    <table>
+      <tr><th>构件</th><th>含义 / 说明</th><th>示例</th></tr>
+      <tr><td><code>[abc]</code>、<code>[a-z]</code></td><td>字符类：匹配集合中的<strong>任意一个</strong>字符，可用范围写法；<code>[^...]</code> 取反</td><td><code>[akm$]</code> 中 <code>$</code> 失去特殊含义</td></tr>
+      <tr><td><code>\d</code> / <code>\D</code></td><td>任意一个十进制数字 / 任意一个非数字</td><td>等价于 <code>[0-9]</code> / <code>[^0-9]</code></td></tr>
+      <tr><td><code>\w</code> / <code>\W</code></td><td>字母数字字符 / 其取反。<code>str</code> 模式下按 Unicode 数据库判定，因此能匹配中文</td><td><code>\w+</code> 可匹配「稿件」；加 <code>re.ASCII</code> 后收窄为 <code>[a-zA-Z0-9_]</code></td></tr>
+      <tr><td><code>\s</code> / <code>\S</code></td><td>任意一个空白字符 / 其取反</td><td>等价于 <code>[ \t\n\r\f\v]</code></td></tr>
+      <tr><td><code>.</code></td><td>除换行符外的任意一个字符；加 <code>re.DOTALL</code> 后可匹配换行</td><td>「匹配任意字符」的常用写法</td></tr>
+      <tr><td><code>*</code> <code>+</code> <code>?</code> <code>{m,n}</code></td><td>量词：零次或更多 / 一次或更多 / 零次或一次 / 至少 m 次至多 n 次。默认<strong>贪婪</strong></td><td><code>{0,}</code> 等同 <code>*</code>，<code>{1,}</code> 等同 <code>+</code>，<code>{0,1}</code> 等同 <code>?</code></td></tr>
+      <tr><td><code>*?</code> <code>+?</code> <code>??</code> <code>{m,n}?</code></td><td>非贪婪量词：匹配尽可能少的文本</td><td><code>a{3,5}</code> 在 <code>'aaaaaa'</code> 上匹配 5 个，<code>a{3,5}?</code> 只匹配 3 个</td></tr>
+      <tr><td><code>^</code> <code>$</code></td><td>锚点：字符串开头 / 结尾；多行模式下按行生效</td><td><code>^稿件</code> 只看行首</td></tr>
+      <tr><td><code>(...)</code> / <code>(?:...)</code></td><td>分组并捕获，可用 <code>group(n)</code> 取出，组 0 是整个匹配；<code>(?:...)</code> 只分组不捕获</td><td><code>(a(b)c)d</code> 的组 1 是 <code>abc</code>，组 2 是 <code>b</code></td></tr>
+      <tr><td><code>|</code>　<code>\</code></td><td>或：匹配左侧或右侧；转义：被转义的元字符回归字面含义</td><td><code>cat|dog</code>；<code>\.</code> 匹配一个字面点号</td></tr>
+    </table>
+
+    <h3><code>re</code> 模块常用函数对照</h3>
+    <table>
+      <tr><th>函数</th><th>返回</th><th>说明</th></tr>
+      <tr><td><code>search</code></td><td>Match 或 <code>None</code></td><td>扫描整个字符串，查找第一个匹配位置</td></tr>
+      <tr><td><code>match</code></td><td>Match 或 <code>None</code></td><td><strong>只在字符串开头匹配</strong>，即便开启多行模式也只匹配开头</td></tr>
+      <tr><td><code>fullmatch</code></td><td>Match 或 <code>None</code></td><td>要求整个字符串都与模式匹配</td></tr>
+      <tr><td><code>findall</code></td><td>列表</td><td>无分组 → 字符串列表；<strong>恰好一个分组 → 该组内容的列表</strong>；多个分组 → 元组列表</td></tr>
+      <tr><td><code>finditer</code></td><td>Match 迭代器</td><td>需要每个匹配的位置信息时使用</td></tr>
+      <tr><td><code>sub</code> / <code>subn</code></td><td>新字符串 / 元组</td><td>替换所有匹配；<code>subn</code> 额外返回替换次数</td></tr>
+      <tr><td><code>split</code></td><td>列表</td><td>按模式分割字符串</td></tr>
+      <tr><td><code>compile</code></td><td>Pattern 对象</td><td>预编译模式，循环中复用可减少重复解析</td></tr>
+    </table>
+
+    <h3>转义与原始字符串</h3>
+    <p>模式写在普通字符串里时，反斜杠要经过 Python 字符串和正则引擎<strong>两层转义</strong>：<code>"\n"</code> 是一个换行符，<code>r"\n"</code> 才是「反斜杠 + n」两个字符；要匹配一个字面反斜杠，普通字符串需要写四个反斜杠 <code>"\\\\"</code>，而正则里只写 <code>\\</code>。未识别的转义序列在 3.12 起产生 <code>SyntaxWarning</code>，并计划在未来版本变为错误——这正是官方「高度推荐」原始字符串的原因。</p>
+
+    <p style="font-size:13.5px;color:var(--muted)">以上构件含义与函数返回规则，均引自官方文档《re — 正则表达式操作》与官方教程《正则表达式指南》；由这些规则引出的典型陷阱见第七节，可经第九节链接逐条核查。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      编辑部把某条新闻的评论区导出成文本后，里面混杂着网址、@ 提及、表情符号和数字。要把它变成可统计的数据，第一步就是按形状拆开不同成分——网址有网址的形状，日期有日期的形状，固定字符串替换在这里无能为力。
+    </p>
+    <pre><span class="c"># 清洗一条新闻评论：去网址、去 @ 提及、去表情、提取数字与日期</span>
+import re
+
+text = <span class="s">"转发 @新闻编辑室 这条太赞了👍 https://example.com/news/2026 阅读量 12500，发布日期 2026-09-17 😂"</span>
+
+text = re.sub(r<span class="s">"https?://\S+"</span>, <span class="s">""</span>, text)   <span class="c"># http 或 https（? 让 s 可选）</span>
+text = re.sub(r<span class="s">"@\w+"</span>, <span class="s">""</span>, text)              <span class="c"># str 模式下 \w 能匹配中文</span>
+text = re.sub(r<span class="s">"[\U0001F300-\U0001FAFF\u2600-\u27BF]"</span>, <span class="s">""</span>, text)   <span class="c"># 表情：近似区间，见下方核查说明</span>
+
+numbers = re.findall(r<span class="s">"\d+"</span>, text)   <span class="c"># 无分组 → 字符串列表 ['12500', '2026', '09', '17']</span>
+reads   = int(numbers[0])                   <span class="c"># 12500</span>
+
+m = re.search(r<span class="s">"(\d{4})-(\d{2})-(\d{2})"</span>, text)   <span class="c"># 三个捕获组，把年月日分开</span>
+print(m.group(0))                            <span class="c"># 2026-09-17  整个匹配</span>
+print(m.group(1), m.group(2), m.group(3))    <span class="c"># 2026 09 17  三个捕获组</span>
+
+<span class="c"># 批量场景：模式不变时先编译，循环里复用同一个 Pattern 对象</span>
+date_pat = re.compile(r<span class="s">"(\d{4})-(\d{2})-(\d{2})"</span>)
+for line in [<span class="s">"发版 2026-09-17 归档"</span>, <span class="s">"无日期记录"</span>]:
+    hit = date_pat.search(line)
+    if hit: print(hit.group(1), <span class="s">"年"</span>, hit.group(2), <span class="s">"月"</span>)</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明正则如何批量清洗文本，属辅助理解示例，非某个来源的原文代码。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      <code>\w</code> 在 <code>str</code> 模式下的匹配范围见官方指南「匹配字符」一节；<code>findall</code> 有分组时返回该组内容的列表、多分组时返回元组列表，见官方文档 <code>re.findall</code> 条目；原始字符串建议见官方文档《词法分析》。表情符号的 Unicode 区间为本页演示所取的近似范围，未指向权威区间表，实际项目应另行核对（待核）。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>match</code> 不等于「找到一个匹配」。</strong>常见误解是把它当通用查找函数，官方文档写明它「只在字符串开头匹配」。对 <code>"稿件 12 篇"</code> 取数字，<code>re.match(r"\d+", s)</code> 得到 <code>None</code>，必须改用 <code>search</code>。</li>
+      <li><strong><code>findall</code> 的返回结构会被分组改变。</strong>无分组返回字符串列表，恰好一个分组返回该组内容的列表，多个分组返回元组列表。<code>re.findall(r"(\w+)=(\d+)", "w=20 h=10")</code> 得到 <code>[('w', '20'), ('h', '10')]</code>，而不是 <code>['w=20', 'h=10']</code>。这是最容易被忽略的「静默变形」。</li>
+      <li><strong>量词默认贪婪，处理成对分隔符时必须留意。</strong><code>&lt;.*&gt;</code> 作用于 <code>'&lt;b&gt;加粗&lt;/b&gt;'</code> 返回整个字符串，因为 <code>.*</code> 先吃到末尾再回退；改用 <code>&lt;.*?&gt;</code> 才得到 <code>'&lt;b&gt;'</code>。判据是：模式两端为同一对分隔符时，<code>.*</code> 通常需要改成 <code>.*?</code> 或更精确的字符类。</li>
+      <li><strong>固定字符串替换不该优先用正则。</strong>官方指南在「常见问题」中建议：若匹配的是固定字符串或单个字符类、且不需要 <code>IGNORECASE</code> 这类功能，字符串方法通常快得多。替换固定文本用 <code>str.replace()</code>，只有需要「整词匹配」（如 <code>\bword\b</code>）这类正则独有能力时才转向 <code>re</code>。</li>
+      <li><strong>正则不是万能的解析器。</strong>官方指南指出：正则语言相对较小且受限，并非所有字符串处理任务都能用正则完成；用正则解析 HTML 或 XML「很痛苦」，遇到特殊情况会失效，应改用相应解析器模块。同时，嵌套量词（如 <code>(a+)+</code>）在不匹配输入上可能触发大量回溯而显著变慢。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节五条均以 Python 官方文档为依据。<code>match</code> 只匹配开头、<code>findall</code> 的分组返回规则、非贪婪量词形式，见《re — 正则表达式操作》与《正则表达式指南》；固定字符串应优先用字符串方法、正则不适合解析 HTML/XML、正则语言能力受限，见《正则表达式指南》「Common problems」一节；原始字符串建议与未识别转义序列的告警行为，见同页「反斜杠的麻烦」与官方文档《词法分析 · 原始字符串字面量》。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>1. 在正则表达式中，<code>\d</code> 等价于下列哪个字符类？</div>
+      <button class="opt" data-v="A">A. <code>[a-zA-Z0-9_]</code></button>
+      <button class="opt" data-v="B">B. <code>[0-9]</code></button>
+      <button class="opt" data-v="C">C. <code>[ \t\n\r\f\v]</code></button>
+      <button class="opt" data-v="D">D. <code>[^0-9]</code></button>
+      <div class="fb" data-ok="✅ 正确。官方指南写明：\d 匹配任何十进制数字，等价于字符类 [0-9]；它的取反 \D 才等价于 [^0-9]。选项 A 是 \w 在 ASCII 模式下的等价形式，选项 C 是 \s 的等价形式。"></div>
+      <div class="src">📎 来源：Python 官方教程《正则表达式指南》「匹配字符」一节 — docs.python.org/zh-cn/3/howto/regex.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>2. 模式 <code>ca+t</code> 不能匹配下列哪一个字符串？</div>
+      <button class="opt" data-v="A">A. <code>'ct'</code></button>
+      <button class="opt" data-v="B">B. <code>'cat'</code></button>
+      <button class="opt" data-v="C">C. <code>'caaat'</code></button>
+      <button class="opt" data-v="D">D. <code>'caat'</code></button>
+      <div class="fb" data-ok="✅ 正确。+ 表示「一次或更多次」，它重复的内容必须至少出现一次，因此 'ct'（零个 a）不能被匹配。若换成 * （零次或更多次），'ct' 就能匹配。"></div>
+      <div class="src">📎 来源：Python 官方教程《正则表达式指南》「重复内容」一节 — docs.python.org/zh-cn/3/howto/regex.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 设 <code>s = "稿件 12 篇"</code>，则 <code>re.match(r"\d+", s)</code> 的返回值是？</div>
+      <button class="opt" data-v="A">A. 一个 Match 对象，匹配到的内容是 <code>'12'</code></button>
+      <button class="opt" data-v="B">B. <code>None</code>，因为 <code>match</code> 只从字符串开头尝试匹配</button>
+      <button class="opt" data-v="C">C. 列表 <code>['12']</code></button>
+      <button class="opt" data-v="D">D. 抛出异常，因为模式与字符串类型不匹配</button>
+      <div class="fb" data-ok="✅ 正确。官方文档写明 match 只在字符串开头匹配，即使 MULTILINE 模式也只匹配开头。s 的第一个字符是「稿」而不是数字，所以返回 None。要扫描整串找第一个匹配，应改用 re.search。"></div>
+      <div class="src">📎 来源：Python 官方文档《re — 正则表达式操作》函数一节 — docs.python.org/zh-cn/3/library/re.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 执行 <code>re.findall(r"&lt;.*?&gt;", "&lt;b&gt;加粗&lt;/b&gt;")</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>['&lt;b&gt;', '&lt;/b&gt;']</code></button>
+      <button class="opt" data-v="B">B. <code>['&lt;b&gt;加粗&lt;/b&gt;']</code></button>
+      <button class="opt" data-v="C">C. <code>['加粗']</code></button>
+      <button class="opt" data-v="D">D. <code>[]</code>，因为 <code>.</code> 不匹配尖括号</button>
+      <div class="fb" data-ok="✅ 正确。*? 是非贪婪量词，匹配尽可能少的文本，因此每一处匹配都停在最近的右尖括号，得到两个短匹配。若把问号去掉改成贪婪写法，则只会得到一个覆盖整个字符串的匹配，与选项 B 相符。"></div>
+      <div class="src">📎 来源：Python 官方教程《正则表达式指南》「Greedy versus non-greedy」一节 — docs.python.org/zh-cn/3/howto/regex.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 执行 <code>re.findall(r"(\w+)=(\d+)", "w=20 h=10")</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>['w=20', 'h=10']</code></button>
+      <button class="opt" data-v="B">B. <code>[('w', '20'), ('h', '10')]</code></button>
+      <button class="opt" data-v="C">C. <code>['w', 'h', '20', '10']</code></button>
+      <button class="opt" data-v="D">D. <code>['20', '10']</code>，因为只返回最后一个分组</button>
+      <div class="fb" data-ok="✅ 正确。官方文档规定 findall 的返回结果取决于捕获组数量：没有组时返回整个匹配的字符串列表，恰好一个组时返回该组内容的列表，有多个组时返回元组列表。本模式有两个捕获组，因此得到元组列表。若想让结果变回 'w=20' 这样的整串，可去掉分组或改用非捕获组 (?:...)。"></div>
+      <div class="src">📎 来源：Python 官方文档《re — 正则表达式操作》re.findall 条目 — docs.python.org/zh-cn/3/library/re.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为已核查、可访问的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方文档《re — 正则表达式操作》（元字符与量词语法、八个函数的返回值规则、贪婪与非贪婪、原始字符串建议） — <a href="https://docs.python.org/zh-cn/3/library/re.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/re.html</a></li>
+      <li>Python 官方教程《正则表达式指南》（字符类与预定义字符类、量词、分组与捕获、回溯过程示例、贪婪与非贪婪对比、固定字符串应优先用字符串方法、不适合用正则解析 HTML/XML） — <a href="https://docs.python.org/zh-cn/3/howto/regex.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/howto/regex.html</a></li>
+      <li>Python 官方文档《词法分析 · 字符串与字节串字面量》（原始字符串字面量、转义序列、未识别转义序列的告警行为） — <a href="https://docs.python.org/zh-cn/3/reference/lexical_analysis.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/lexical_analysis.html</a></li>
+      <li>Python 官方文档《内置类型 · 字符串方法》（<code>str.replace</code> / <code>str.split</code> / <code>str.translate</code>，用于与正则能力做对比） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节两张表格中的构件含义与函数返回规则，以及第七节五条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文；示例中表情符号的 Unicode 区间为演示用近似范围，未指向权威区间表（待核）。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

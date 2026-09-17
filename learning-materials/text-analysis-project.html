@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 新闻评论文本分析（综合实践）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  .scope{background:#f5f3ff;border-left:4px solid #7c5cff;border-radius:8px;padding:12px 16px;margin:12px 0}
+  .scope .lbl{font-weight:700;color:#4c3aa8;font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  .concept-map{background:#f0fdf6;border:1px solid #c7ecd9;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:14px}
+  .concept-map .lbl{font-weight:700;color:#127a44;font-size:13px;display:block;margin-bottom:6px}
+  .concept-map a{color:var(--brand);text-decoration:none}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块五 · 选修与综合 ｜ 第 13 课结课项目</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>新闻评论文本分析（综合实践）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础 · 综合实践</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <div class="scope"><span class="lbl">📌 本页的定位</span>
+      本页是<strong>综合实践</strong>性质，不是新概念页：<strong>不引入任何新知识点</strong>，而是把已经学过的<strong>文件读写、正则表达式、字典与集合、pandas、matplotlib</strong>串成一条完整流水线，并把「什么算合格交付」讲清楚。阅读重点不在「又学会了什么新函数」，而在「知道每个环节该调用哪个已学概念、以及每一环的产物长什么样」。
+    </div>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>从一份原始评论 CSV 到一份可交付的分析小结，中间要经过哪六个环节？每个环节的输入与输出分别是什么？</li>
+      <li>每个环节对应到哪一页概念资料？遇到「要去掉网址和表情」这一步时，该回去翻哪一页？</li>
+      <li>一次合格的交付应该包含哪些产物？为什么「有图」不等于「完成」？</li>
+      <li>300 字以内的结论要写哪三件事？为什么「局限」这一段不能省？</li>
+      <li>如果最终结论被质疑，最可能出问题的是流水线上的哪一环？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——单个概念都会用了，但面对一份真实数据仍不知道从哪里下手；一条固定顺序的流水线如何把「会语法」变成「能交付」？</li>
+      <li><strong>它由什么组成</strong>——六个环节各自承担什么职责？哪一环最容易出错、哪一环最需要人来定规则？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——本页与「pandas 与 DataFrame」「正则表达式」「matplotlib 可视化」三页的分工边界在哪里？</li>
+      <li><strong>它的边界在哪</strong>——流水线跑通是否等于结论可靠？一次分析的结论在什么条件下不能外推？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <div class="scope"><span class="lbl">📌 再次提示</span>
+      本页不介绍新概念。下面出现的每个名词——清洗、词频、分组聚合、直方图——都已在各自的资料页里讲过；本页做的事情是把它们按固定顺序排好，并明确每一环的产出规格。
+    </div>
+    <p>
+      一条数据处理流水线，可类比为报纸的编辑生产流程：<strong>收稿 → 校订 → 统计字数与关键词 → 按版面分类 → 排版出图 → 付印归档</strong>。每一环的产出都是下一环的原料，任何一环改了口径，后面的结果都会跟着变。这是本页最需要记住的一句话：<strong>流水线是串联的，不是并联的</strong>。
+    </p>
+    <p>
+      六个环节的具体分工是：<strong>① 读入 CSV</strong>——把文件变成一张 pandas 表；<strong>② 正则清洗</strong>——去掉网址、表情、多余空白等噪声，让文本口径一致；<strong>③ 统计</strong>——算出文本长度分布与词频排行；<strong>④ 分组聚合</strong>——按来源、时间或情感标签分组，比较组间差异；<strong>⑤ 出图</strong>——把统计结果画成可直接作为稿件配图的图形；<strong>⑥ 导出结果</strong>——把清洗后的数据、统计表与结论写成交付物。
+    </p>
+    <p>
+      这六步里，只有 <strong>② 清洗</strong> 需要人来定规则：哪些字符算噪声、空白算不算字数、转发的引用语要不要保留。规则不同，长度分布的形状与词频的排序就会不同。因此这一步也是最需要写进报告的——它决定了后面所有数字的口径。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      流水线可类比为一道装配线：每个工位只做一件事，做完把半成品交给下一个工位。好处是每一环都可以单独检查和替换；代价是某一环的偏差会一路传下去，到最后一环才被发现。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      交付物清单可类比为交稿时要附的一整套材料：正文、图表、数据附件与一段说明。只交一张图，相当于只交了版面而没交稿子；只交数据，相当于只交了素材而没有结论。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面两张图分别回答：六个环节如何串成一条流水线、每一环各用到哪个已学概念；以及一次合格交付到底包含哪些东西。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 六环节流水线：每一步用到哪个已学概念</div>
+      <div class="vsub">上半行是六个环节及其产物形态，下半行标注该环节对应的概念页面。</div>
+      <svg viewBox="0 0 700 286" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>新闻评论文本分析六环节流水线示意图</title>
+        <desc>六个环节横向排列：读入、清洗、统计、分组、出图、导出；每个环节下方标注产物形态与对应的已学概念；底部说明流水线的串联性质。</desc>
+        <defs>
+          <marker id="tpA" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#8b94a3"/>
+          </marker>
+        </defs>
+
+        <text x="20" y="24" font-size="12.5" fill="#5b6472">六个环节串成一条流水线，每一步的产出都是下一步的输入</text>
+
+        <rect x="20" y="40" width="100" height="44" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="70" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① 读入</text>
+        <line x1="124" y1="62" x2="128" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#tpA)"/>
+
+        <rect x="132" y="40" width="100" height="44" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.8"/>
+        <text x="182" y="62" font-size="12.5" font-weight="700" fill="#b45309" text-anchor="middle" dominant-baseline="central">② 清洗</text>
+        <line x1="236" y1="62" x2="240" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#tpA)"/>
+
+        <rect x="244" y="40" width="100" height="44" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="294" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">③ 统计</text>
+        <line x1="348" y1="62" x2="352" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#tpA)"/>
+
+        <rect x="356" y="40" width="100" height="44" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="406" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">④ 分组</text>
+        <line x1="460" y1="62" x2="464" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#tpA)"/>
+
+        <rect x="468" y="40" width="100" height="44" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="518" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">⑤ 出图</text>
+        <line x1="572" y1="62" x2="576" y2="62" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#tpA)"/>
+
+        <rect x="580" y="40" width="100" height="44" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="630" y="62" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">⑥ 导出</text>
+
+        <text x="70" y="102" font-size="11" fill="#5b6472" text-anchor="middle">原始 CSV</text>
+        <text x="182" y="102" font-size="11" fill="#5b6472" text-anchor="middle">干净文本</text>
+        <text x="294" y="102" font-size="11" fill="#5b6472" text-anchor="middle">长度 / 词频</text>
+        <text x="406" y="102" font-size="11" fill="#5b6472" text-anchor="middle">分组统计表</text>
+        <text x="518" y="102" font-size="11" fill="#5b6472" text-anchor="middle">PNG 配图</text>
+        <text x="630" y="102" font-size="11" fill="#5b6472" text-anchor="middle">交付文件</text>
+
+        <text x="70" y="124" font-size="11" fill="#808a99" text-anchor="middle">文本</text>
+        <text x="182" y="124" font-size="11" fill="#808a99" text-anchor="middle">文本</text>
+        <text x="294" y="124" font-size="11" fill="#808a99" text-anchor="middle">表</text>
+        <text x="406" y="124" font-size="11" fill="#808a99" text-anchor="middle">表</text>
+        <text x="518" y="124" font-size="11" fill="#808a99" text-anchor="middle">图</text>
+        <text x="630" y="124" font-size="11" fill="#808a99" text-anchor="middle">文件</text>
+
+        <rect x="16" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="70" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">文件读写与编码</text>
+        <rect x="128" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="182" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">正则表达式</text>
+        <rect x="240" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="294" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">字符串 / 字典</text>
+        <rect x="352" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="406" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">pandas 分组</text>
+        <rect x="464" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="518" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">matplotlib</text>
+        <rect x="576" y="138" width="108" height="28" rx="14" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="630" y="152" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">pandas 导出</text>
+
+        <rect x="20" y="180" width="664" height="94" rx="10" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="36" y="200" font-size="11.5" fill="#4c3aa8" font-weight="700" dominant-baseline="central">三条需要记住的结论</text>
+        <text x="36" y="221" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">1. ①② 处理的是「文本」，③④ 处理的是「表」，⑤ 出「图」，⑥ 出「文件」——处理对象在 ③ 处发生了切换。</text>
+        <text x="36" y="241" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">2. 流水线是串联的：某一环的口径变化会一路传到最后一环的结论，且未必报错。</text>
+        <text x="36" y="261" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">3. 只有 ② 清洗 需要人工定规则，因此它最需要在报告里写明「去掉了什么、保留了什么」。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：不要把六个环节当成六个独立任务——每一步的产物形态不同，而 ③ 是「文本」变成「表」的分水岭；清洗规则一旦变化，后面全部结果都要重算。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="concept-map"><span class="lbl">🔗 环节 → 概念页对照（点击可跳转）</span>
+      ① 读入 → <a href="file-io-and-encoding.html">文件读写与编码</a>、<a href="pandas-dataframe.html">pandas 与 DataFrame</a>　｜　
+      ② 清洗 → <a href="regular-expressions.html">正则表达式</a>、<a href="strings-and-text.html">字符串与文本处理</a>　｜　
+      ③ 统计 → <a href="strings-and-text.html">字符串与文本处理</a>、<a href="dictionaries-and-sets.html">字典与集合</a>　｜　
+      ④ 分组 → <a href="pandas-dataframe.html">pandas 与 DataFrame</a>　｜　
+      ⑤ 出图 → <a href="matplotlib-basics.html">matplotlib 可视化</a>　｜　
+      ⑥ 导出 → <a href="pandas-dataframe.html">pandas 与 DataFrame</a>、<a href="file-io-and-encoding.html">文件读写与编码</a>
+    </div>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 交付物清单：四类产物，缺一不可</div>
+      <div class="vsub">「有图」不等于完成；数据文件、结果表、图表与结论四类产物各有规格。</div>
+      <svg viewBox="0 0 700 330" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>文本分析项目交付物清单结构示意图</title>
+        <desc>顶部是交付包，向下分四支：数据文件、结果表、图表、结论；每支列出具体规格，底部说明结论三段的顺序要求。</desc>
+
+        <rect x="248" y="18" width="204" height="44" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.6"/>
+        <text x="350" y="40" font-size="13" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">分析项目交付包</text>
+
+        <line x1="350" y1="62" x2="350" y2="80" stroke="#b9c9ee" stroke-width="1.3"/>
+        <line x1="95" y1="80" x2="605" y2="80" stroke="#b9c9ee" stroke-width="1.3"/>
+        <line x1="95" y1="80" x2="95" y2="104" stroke="#b9c9ee" stroke-width="1.3"/>
+        <line x1="265" y1="80" x2="265" y2="104" stroke="#b9c9ee" stroke-width="1.3"/>
+        <line x1="435" y1="80" x2="435" y2="104" stroke="#b9c9ee" stroke-width="1.3"/>
+        <line x1="605" y1="80" x2="605" y2="104" stroke="#b9c9ee" stroke-width="1.3"/>
+
+        <rect x="20" y="104" width="150" height="128" rx="9" fill="#fcfdff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="34" y="124" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">① 数据文件</text>
+        <line x1="30" y1="136" x2="160" y2="136" stroke="#e3e7ee"/>
+        <text x="34" y="154" font-size="11" fill="#5b6472" dominant-baseline="central">清洗后的 CSV</text>
+        <text x="34" y="174" font-size="11" fill="#5b6472" dominant-baseline="central">含新增的长度列</text>
+        <text x="34" y="194" font-size="11" fill="#5b6472" dominant-baseline="central">编码与列名固定</text>
+        <text x="34" y="214" font-size="11" fill="#1a9e5a" dominant-baseline="central">← 别人能重跑一遍</text>
+
+        <rect x="190" y="104" width="150" height="128" rx="9" fill="#fcfdff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="204" y="124" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">② 结果表</text>
+        <line x1="200" y1="136" x2="330" y2="136" stroke="#e3e7ee"/>
+        <text x="204" y="154" font-size="11" fill="#5b6472" dominant-baseline="central">长度分布的统计量</text>
+        <text x="204" y="174" font-size="11" fill="#5b6472" dominant-baseline="central">词频排行 Top N</text>
+        <text x="204" y="194" font-size="11" fill="#5b6472" dominant-baseline="central">按来源 / 时间 / 标签</text>
+        <text x="204" y="214" font-size="11" fill="#5b6472" dominant-baseline="central">分组聚合结果</text>
+
+        <rect x="360" y="104" width="150" height="128" rx="9" fill="#fcfdff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="374" y="124" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">③ 图表</text>
+        <line x1="370" y1="136" x2="500" y2="136" stroke="#e3e7ee"/>
+        <text x="374" y="154" font-size="11" fill="#5b6472" dominant-baseline="central">文本长度分布直方图</text>
+        <text x="374" y="174" font-size="11" fill="#5b6472" dominant-baseline="central">词频排行柱状图</text>
+        <text x="374" y="194" font-size="11" fill="#5b6472" dominant-baseline="central">PNG，足够排版</text>
+        <text x="374" y="214" font-size="11" fill="#1a9e5a" dominant-baseline="central">← 中文需正常显示</text>
+
+        <rect x="530" y="104" width="150" height="128" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.4"/>
+        <text x="544" y="124" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">④ 结论 ≤300 字</text>
+        <line x1="540" y1="136" x2="670" y2="136" stroke="#f3c9a3"/>
+        <text x="544" y="154" font-size="11" fill="#78350f" dominant-baseline="central">① 最突出的发现</text>
+        <text x="544" y="174" font-size="11" fill="#78350f" dominant-baseline="central">② 可能意味着什么</text>
+        <text x="544" y="194" font-size="11" fill="#78350f" dominant-baseline="central">③ 结论有什么局限</text>
+        <text x="544" y="214" font-size="11" fill="#b45309" dominant-baseline="central">← 缺第③段最容易被质疑</text>
+
+        <rect x="20" y="248" width="660" height="64" rx="10" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="36" y="268" font-size="11.5" fill="#4c3aa8" font-weight="700" dominant-baseline="central">为什么局限那一段不能省</text>
+        <text x="36" y="288" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">结论只说明「在这批数据上看到了什么」。样本范围、标签来源、清洗规则这三项一变，</text>
+        <text x="36" y="304" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">结论就可能不成立——写清局限，等于把结论的适用范围一并交代了。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：交付包含四类产物，其中「结论」是一段有三段固定顺序的文字；把发现、含义、局限写全，交付才算完整。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>两张图均为帮助理解的示意图，非官方原文插图。图中环节顺序与交付规格属于本项目约定；各环节所依据的技术方法（<code>read_csv</code> 的编码参数、正则替换、分组聚合、直方图与柱状图、<code>to_csv</code> 导出）均可经第九节链接在官方文档中核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>下表把六个环节拆成「输入—动作—输出—用到哪个概念」四列。遇到卡住的一环时，按最后一列回到对应资料页复习即可——这正是本页「建立概念联系」的作用。</p>
+    <table>
+      <tr><th>环节</th><th>输入</th><th>动作与典型调用</th><th>输出</th><th>用到哪个概念</th></tr>
+      <tr>
+        <td><strong>① 读入 CSV</strong></td>
+        <td>原始评论文件 <code>comments.csv</code></td>
+        <td><code>pd.read_csv(路径, encoding="utf-8")</code>；<code>df.head()</code> / <code>df.info()</code> / <code>df.shape</code> 先看清结构</td>
+        <td>一张 pandas 表（行 = 评论，列 = 字段）</td>
+        <td><a href="pandas-dataframe.html">pandas 与 DataFrame</a>；编码问题见 <a href="file-io-and-encoding.html">文件读写与编码</a></td>
+      </tr>
+      <tr>
+        <td><strong>② 正则清洗</strong></td>
+        <td>评论正文字符串列</td>
+        <td><code>re.sub(模式, 替换, 文本)</code> 去掉网址、<code>@</code> 提及、多余空白与连续重复标点；统一全角半角；对无法解析的行做取舍</td>
+        <td>口径一致的干净文本列（通常是新增一列，保留原文）</td>
+        <td><a href="regular-expressions.html">正则表达式</a>；<a href="strings-and-text.html">字符串与文本处理</a></td>
+      </tr>
+      <tr>
+        <td><strong>③ 统计</strong></td>
+        <td>干净文本列</td>
+        <td>长度分布：<code>df["文本长度"] = df["干净文本"].str.len()</code>，再用 <code>describe()</code> 看分位数；词频：分词或按标点切分后计数，得到「词 → 次数」的映射并按次数排序</td>
+        <td>长度统计量（均值、中位数、分位数）与词频排行表</td>
+        <td><a href="strings-and-text.html">字符串与文本处理</a>（<code>len</code> / <code>split</code>）；<a href="dictionaries-and-sets.html">字典与集合</a>（计数与 Top-N）</td>
+      </tr>
+      <tr>
+        <td><strong>④ 分组聚合</strong></td>
+        <td>带「来源 / 时间 / 情感标签」列的表</td>
+        <td><code>df.groupby("来源")["文本长度"].mean()</code>；时间可先按日期截取到「月」再分组；标签可用 <code>value_counts()</code> 先看分布</td>
+        <td>每组一行的汇总表（组数 = 行数）</td>
+        <td><a href="pandas-dataframe.html">pandas 与 DataFrame</a>（<code>groupby</code>、<code>value_counts</code>）</td>
+      </tr>
+      <tr>
+        <td><strong>⑤ 出图</strong></td>
+        <td>③ 与 ④ 的结果</td>
+        <td><code>ax.hist(...)</code> 画长度分布；<code>ax.barh(...)</code> 画词频排行；先设好中文字体与负号参数，再 <code>savefig</code> 输出</td>
+        <td>可直接作为稿件配图的 PNG 文件</td>
+        <td><a href="matplotlib-basics.html">matplotlib 可视化</a></td>
+      </tr>
+      <tr>
+        <td><strong>⑥ 导出结果</strong></td>
+        <td>清洗后的表、统计表、图表</td>
+        <td><code>df.to_csv("out.csv", encoding="utf-8-sig")</code>；图表另存；再把结论写成一段 ≤300 字文字</td>
+        <td>交付包：数据文件 + 结果表 + 图表 + 结论</td>
+        <td><a href="pandas-dataframe.html">pandas 与 DataFrame</a>；<a href="file-io-and-encoding.html">文件读写与编码</a></td>
+      </tr>
+    </table>
+
+    <h3>交付标准：产物清单</h3>
+    <table>
+      <tr><th>产物</th><th>具体要求</th><th>常见不合格情形</th></tr>
+      <tr><td>清洗后的数据文件</td><td>CSV 格式、编码明确、列名清晰；保留原始正文列与清洗后列，便于回溯</td><td>只交代码不交数据；或交出的文件用 Excel 打开是乱码</td></tr>
+      <tr><td>结果表</td><td>长度分布的统计量、词频排行 Top N、按来源 / 时间 / 标签的分组结果</td><td>只给一个总数，没有分布；分组结果不是「每组一行」而是原表</td></tr>
+      <tr><td>图表文件</td><td>PNG，中文正常显示，有标题与轴标签，分辨率足够排版</td><td>中文显示成方块；只有图形没有轴标签，读者不知道横轴是什么</td></tr>
+      <tr><td>结论（≤300 字）</td><td>三段：最突出的发现 → 可能意味着什么 → 结论有什么局限</td><td>只写发现不写局限；把「词频高」直接等同于「重要」</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">表中各环节用到的函数名与参数（<code>read_csv</code> 的 <code>encoding</code>、<code>groupby</code> 的分组聚合、<code>to_csv</code> 的写法、<code>hist</code> 与 <code>barh</code> 的参数、<code>savefig</code> 的输出设置）均已在对应概念页中给出官方文档来源，本页不再重复引用。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 一个具体应用场景</h2>
+    <p>
+      编辑部拿到了一份从后台导出的新闻评论数据集，字段包括「评论编号」「来源」「发布时间」「评论内容」「情感标签」。需要交付的是一份分析小结：说明评论长度的分布特征、最常出现的关键词，以及不同来源之间的差异，并附上两张可直接用于稿件的配图。
+    </p>
+    <pre><span class="c"># 场景：新闻评论文本分析 —— 六环节端到端骨架</span>
+<span class="c"># 依赖：pandas、matplotlib；输入文件 comments.csv 与本脚本同目录</span>
+import re
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+from collections import Counter
+
+<span class="c"># 中文显示（详见 matplotlib 概念页：中文字形与负号是两处独立设置）</span>
+matplotlib.rcParams[<span class="s">"font.family"</span>] = [<span class="s">"Microsoft YaHei"</span>, <span class="s">"sans-serif"</span>]
+matplotlib.rcParams[<span class="s">"axes.unicode_minus"</span>] = False
+
+<span class="c"># ── ① 读入：先看清结构和缺失情况 ────────────────────────</span>
+df = pd.read_csv(<span class="s">"comments.csv"</span>, encoding=<span class="s">"utf-8"</span>)
+print(df.shape)
+print(df.info())
+print(df[<span class="s">"情感标签"</span>].value_counts(dropna=False))
+
+<span class="c"># ── ② 正则清洗：去掉网址、@提及与多余空白，保留原文列 ─────</span>
+URL = re.compile(r<span class="s">"https?://\S+|www\.\S+"</span>)
+AT  = re.compile(r<span class="s">"@[\w\-]+"</span>)
+WS  = re.compile(r<span class="s">"\s+"</span>)
+
+def clean(text):
+    <span class="c"># 非字符串（如缺失值）统一返回空串，避免后续报错</span>
+    if not isinstance(text, str):
+        return <span class="s">""</span>
+    text = URL.sub(<span class="s">""</span>, text)
+    text = AT.sub(<span class="s">""</span>, text)
+    text = WS.sub(<span class="s">""</span>, text)
+    return text.strip()
+
+df[<span class="s">"干净文本"</span>] = df[<span class="s">"评论内容"</span>].apply(clean)
+print((df[<span class="s">"干净文本"</span>] == <span class="s">""</span>).sum())   <span class="c"># 清洗后变空的有多少条</span>
+
+<span class="c"># ── ③ 统计：长度分布 + 词频排行 ──────────────────────────</span>
+df[<span class="s">"文本长度"</span>] = df[<span class="s">"干净文本"</span>].str.len()
+print(df[<span class="s">"文本长度"</span>].describe())            <span class="c"># 均值与分位数</span>
+
+STOP = {<span class="s">"的"</span>, <span class="s">"了"</span>, <span class="s">"是"</span>, <span class="s">"在"</span>, <span class="s">"和"</span>, <span class="s">"也"</span>, <span class="s">"就"</span>, <span class="s">"都"</span>}
+words = [w for text in df[<span class="s">"干净文本"</span>] for w in text.split() if w]
+words = [w for w in words if w not in STOP and len(w) &gt; 1]
+top_words = Counter(words).most_common(10)
+print(top_words)
+
+<span class="c"># ── ④ 分组聚合：按来源 / 时间 / 情感标签比较 ─────────────</span>
+by_source = (df.groupby(<span class="s">"来源"</span>)[<span class="s">"文本长度"</span>]
+               .agg([<span class="s">"count"</span>, <span class="s">"mean"</span>])
+               .sort_values(<span class="s">"mean"</span>, ascending=False))
+print(by_source)
+
+df[<span class="s">"月份"</span>] = pd.to_datetime(df[<span class="s">"发布时间"</span>]).dt.to_period(<span class="s">"M"</span>)
+by_month = df.groupby(<span class="s">"月份"</span>)[<span class="s">"文本长度"</span>].mean()
+print(by_month)
+
+<span class="c"># ── ⑤ 出图：长度分布直方图 + 词频排行柱状图 ──────────────</span>
+fig, axs = plt.subplots(1, 2, figsize=(11, 4), layout=<span class="s">"constrained"</span>)
+
+axs[0].hist(df[<span class="s">"文本长度"</span>].dropna(), bins=20, color=<span class="s">"#2f6fed"</span>)
+axs[0].set_title(<span class="s">"评论文本长度分布"</span>)
+axs[0].set_xlabel(<span class="s">"字数"</span>)
+axs[0].set_ylabel(<span class="s">"评论条数"</span>)
+
+labels = [w for w, _ in top_words][::-1]
+counts = [c for _, c in top_words][::-1]
+axs[1].barh(labels, counts, color=<span class="s">"#7c5cff"</span>)
+axs[1].set_title(<span class="s">"评论高频词 Top 10"</span>)
+axs[1].set_xlabel(<span class="s">"出现次数"</span>)
+
+plt.savefig(<span class="s">"评论分析配图.png"</span>, dpi=200, bbox_inches=<span class="s">"tight"</span>)
+plt.show()
+
+<span class="c"># ── ⑥ 导出：数据文件 + 结果表（编码写明，便于再次打开）────</span>
+df.to_csv(<span class="s">"评论_已清洗.csv"</span>, encoding=<span class="s">"utf-8-sig"</span>, index=False)
+by_source.to_csv(<span class="s">"按来源统计.csv"</span>, encoding=<span class="s">"utf-8-sig"</span>)
+pd.DataFrame(top_words, columns=[<span class="s">"词"</span>, <span class="s">"次数"</span>]).to_csv(
+    <span class="s">"词频排行.csv"</span>, encoding=<span class="s">"utf-8-sig"</span>, index=False)
+
+<span class="c"># ── 结论（≤300 字，三段：发现 / 含义 / 局限）─────────────</span>
+<span class="c"># 这一段需要人工撰写，不能由代码自动生成。</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例骨架，用于展示六个环节的连接方式，属于辅助理解示例，非某个来源的原文代码。各函数与参数的具体含义、默认值请在对应概念页的官方文档链接中核查。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      骨架中的分词方式仅按空白切分，对中文而言只是一个便于跑通的最简处理，不代表规范的中文分词方案。<code>Counter</code> 的导入来自 Python 标准库 <code>collections</code> 模块，本页未展开该模块，使用时按「工具类调用」理解即可。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>「跑通」不等于「可靠」。</strong>流水线没有报错，只说明代码在语法与数据结构上没有冲突；结论是否站得住，取决于数据质量与口径设计。常见误解是「程序跑完了，结论就可以直接发」——两者是不同层面的判断。</li>
+      <li><strong>清洗规则一改，后面全部要重算。</strong>去掉网址、去掉表情、是否把转发引语计入字数，这些选择会直接改变长度分布的形态与词频的排序。因此报告里最好明确写出「去掉了什么、保留了什么」，否则别人无法复现同一份结论。</li>
+      <li><strong>词频高不等于重要。</strong>高频词很可能只是讨论主题的固有词汇（例如全部评论都在谈地铁，那么「地铁」必然排前列）。词频只能说明「出现得多」，不能单独支撑「这个词最重要」这类判断。</li>
+      <li><strong>分组比较要交代分母。</strong><code>groupby</code> 得到的是「每组一行」，不同组的样本量可能相差很大：A 报有 800 条、B 网只有 20 条，两组的平均值放在一起比较就不够稳健。良好做法是同时给出各组的 <code>count</code>（本页骨架中的 <code>.agg(["count", "mean"])</code> 就出于这个目的）。</li>
+      <li><strong>「分组键里的缺失值」会静默改变样本量。</strong>pandas 官方文档说明 <code>groupby</code> 的 <code>dropna</code> 默认为 <code>True</code>，即分组键含缺失值的行会被丢弃。如果「来源」列有空白，这些评论会直接从分组结果里消失，而程序不会报错。</li>
+      <li><strong>时间分组要求整列是时间类型。</strong>直接从 CSV 读进来的「发布时间」通常是字符串，必须先转成时间类型再取月份；否则分组结果会变成「每个不同字符串一组」，行数接近评论条数——这是一个不报错但结果明显不对的典型情形。</li>
+      <li><strong>结论的局限不能省。</strong>样本只覆盖某个时间窗与某些来源，情感标签若是按规则判定而非人工复核，就存在误判。这些信息不写出来，读者会默认结论适用于更广的范围，从而高估其可靠性。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节关于 <code>groupby</code> 的 <code>dropna</code> 默认行为的说明，依据 pandas 官方 <code>DataFrame.groupby</code> 参考页；关于数据口径影响结论、词频不能等同于重要性等判断，属于方法层面的辅助说明，非某一来源的原文结论，可结合本项目的数据实际情况判断。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>1. 本项目六个环节，通常的正确顺序是？</div>
+      <button class="opt" data-v="A">A. 出图 → 读入 → 清洗 → 统计 → 分组聚合 → 导出</button>
+      <button class="opt" data-v="B">B. 读入 CSV → 正则清洗 → 统计（长度分布、词频）→ 分组聚合 → 出图 → 导出结果</button>
+      <button class="opt" data-v="C">C. 清洗 → 读入 → 出图 → 统计 → 导出 → 分组聚合</button>
+      <button class="opt" data-v="D">D. 读入 CSV → 出图 → 清洗 → 导出 → 统计 → 分组聚合</button>
+      <div class="fb" data-ok="✅ 正确。顺序的依据是「每一步的产出必须是下一步的输入」：先读入才能清洗，先清洗才能得到一致口径的统计量，先有统计与分组结果才能出图，最后才谈得上导出。出图若放在清洗之前，画出的分布会被网址与空白污染。"></div>
+      <div class="src">📎 来源：Python 官方教程《7. 输入与输出》（文件读写的先后关系） — docs.python.org/zh-cn/3/tutorial/inputoutput.html ；pandas 官方《IO 工具》 — pandas.pydata.org/docs/user_guide/io.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. 关于本项目的交付物，下列说法通常正确的是？</div>
+      <button class="opt" data-v="A">A. 只要有图就算完成，数据文件与结论都可以省</button>
+      <button class="opt" data-v="B">B. 结论写得越长越能说明分析深入，因此不限字数</button>
+      <button class="opt" data-v="C">C. 交付物通常包括清洗后的数据文件、结果表、图表文件，以及一段说明发现、含义与局限的简短结论（≤300 字）</button>
+      <button class="opt" data-v="D">D. 只需提交代码，结果不需要说明</button>
+      <div class="fb" data-ok="✅ 正确。四类产物各有规格：数据文件让别人能重跑，结果表承载数字，图表承担配图功能，结论用三段固定顺序（发现 / 含义 / 局限）说明判断。缺任何一类，交付都不完整。"></div>
+      <div class="src">📎 来源：本项目交付标准（本页第五节表格）；数据文件导出的写法依据 pandas API 参考 <code>DataFrame.to_csv</code> 所在的 IO 章节 — pandas.pydata.org/docs/user_guide/io.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 要比较「不同来源（如 A 报、B 网）的评论平均字数差异」，主要依赖哪一步？</div>
+      <button class="opt" data-v="A">A. 分组聚合：按「来源」分组后对「文本长度」求均值，例如 <code>df.groupby("来源")["文本长度"].agg(["count","mean"])</code></button>
+      <button class="opt" data-v="B">B. 出图：直接画一张散点图就能得到差异结论</button>
+      <button class="opt" data-v="C">C. 正则清洗：清洗之后均值会自动算出来</button>
+      <button class="opt" data-v="D">D. 导出结果：导出时软件会自动完成比较</button>
+      <div class="fb" data-ok="✅ 正确。「按类别比较某个数值指标」正是分组聚合要回答的问题：groupby 把数据按来源拆开，再对每组应用聚合函数（此处是 mean），得到每组一行。同时给出 count 是为了避免用样本量悬殊的两组均值直接比较。"></div>
+      <div class="src">📎 来源：pandas 官方《Group by: split-apply-combine》— pandas.pydata.org/docs/user_guide/groupby.html ；pandas.DataFrame.groupby — pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 把「正则清洗」放在统计与分组之前，主要原因是？</div>
+      <button class="opt" data-v="A">A. 正则表达式是唯一能统计字数的工具</button>
+      <button class="opt" data-v="B">B. 放在后面会让程序必然报错</button>
+      <button class="opt" data-v="C">C. 清洗的目的只是让文件变小，便于传输</button>
+      <button class="opt" data-v="D">D. 网址、表情、多余空白等噪声若不清除，会直接影响字数统计与词频排序等后续结果</button>
+      <div class="fb" data-ok="✅ 正确。清洗的作用是统一口径。一条带网址的评论与一条不带网址的评论，其「长度」并不在同一个尺度上；词频排序同样会被 @提及、链接域名等噪声干扰。先清洗再统计，后续数字才有可比性。"></div>
+      <div class="src">📎 来源：Python 官方文档《re — 正则表达式操作》（<code>re.sub</code> 用于替换） — docs.python.org/zh-cn/3/library/re.html ；环节顺序依据本页第五节流水线</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 结课结论里要写一段局限说明。下列写法通常更符合要求的是？</div>
+      <button class="opt" data-v="A">A.「本结论绝对可靠，可直接推广到所有平台的评论」</button>
+      <button class="opt" data-v="B">B.「样本仅来自本次采集的时间窗与这几个来源，情感标签由规则判定而非人工复核，因此结论不宜直接外推到全部新闻评论」</button>
+      <button class="opt" data-v="C">C.「因为数据量不大，所以本结论毫无价值」</button>
+      <button class="opt" data-v="D">D.「局限部分可以省略，结论只写最突出的发现即可」</button>
+      <div class="fb" data-ok="✅ 正确。局限说明要做的是「交代结论的适用范围」，也就是把样本范围、标签来源与清洗口径讲清楚，让读者知道该结论在什么条件下成立。选项 A 过度外推，选项 C 把「适用范围有限」误写成「没有价值」，选项 D 省略的恰恰是最容易被质疑的一段。"></div>
+      <div class="src">📎 来源：本项目交付标准（本页第五节与图 2）；数据口径与样本量的相关说明可对照 pandas 官方《Group by: split-apply-combine》与 <code>DataFrame.groupby</code>（<code>dropna</code> 默认行为会影响参与统计的行数） — pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>本页是综合实践页，不引入新概念；技术方法的具体依据请见各概念页。以下链接分为两类：</p>
+    <h3>本项目涉及的概念页（同目录，可直接跳转）</h3>
+    <ul class="source-list">
+      <li>字符串与文本处理（<code>len</code> / <code>split</code> / <code>strip</code> 等文本操作） — <a href="strings-and-text.html">learning-materials/strings-and-text.html</a></li>
+      <li>正则表达式（元字符、字符类、量词、<code>re.sub</code> 批量清洗） — <a href="regular-expressions.html">learning-materials/regular-expressions.html</a></li>
+      <li>字典与集合（词频计数与 Top-N 排行） — <a href="dictionaries-and-sets.html">learning-materials/dictionaries-and-sets.html</a></li>
+      <li>文件读写与编码（CSV 读写与 utf-8 / gbk 中文乱码） — <a href="file-io-and-encoding.html">learning-materials/file-io-and-encoding.html</a></li>
+      <li>pandas 与 DataFrame（<code>read_csv</code> / <code>to_csv</code>、筛选、<code>groupby</code>、<code>value_counts</code>） — <a href="pandas-dataframe.html">learning-materials/pandas-dataframe.html</a></li>
+      <li>matplotlib 可视化（直方图、柱状图、中文字体、<code>savefig</code>） — <a href="matplotlib-basics.html">learning-materials/matplotlib-basics.html</a></li>
+    </ul>
+    <h3>支撑本页关键论断的官方来源（生成时已逐条访问确认）</h3>
+    <ul class="source-list">
+      <li>pandas 官方《IO 工具》（<code>read_csv</code> / <code>to_csv</code> 与 <code>encoding</code> 参数；中文乱码的处理依据） — <a href="https://pandas.pydata.org/docs/user_guide/io.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/io.html</a></li>
+      <li>pandas 官方《Group by: split-apply-combine》（分组聚合的「拆分—应用—合并」模型） — <a href="https://pandas.pydata.org/docs/user_guide/groupby.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/groupby.html</a></li>
+      <li>pandas API 参考：<code>pandas.DataFrame.groupby</code>（<code>as_index</code> 与 <code>dropna</code> 的默认值及其对参与统计行数的影响） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html</a></li>
+      <li>pandas 官方《Chart visualization》（<code>df.plot()</code> 与 matplotlib 的衔接、hist 的用法） — <a href="https://pandas.pydata.org/docs/user_guide/visualization.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/visualization.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.hist</code>（<code>bins</code>、<code>density</code> 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.hist.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.hist.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.bar</code>（<code>x</code>、<code>height</code>、<code>tick_label</code> 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.savefig</code>（<code>dpi</code>、<code>bbox_inches</code> 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html</a></li>
+      <li>matplotlib 官方《Text properties and layout》（中文字形缺失的表现与设字体族的办法） — <a href="https://matplotlib.org/stable/users/explain/text/text_props.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/text/text_props.html</a></li>
+      <li>Python 官方文档《re — 正则表达式操作》（<code>re.sub</code> 的替换语义与原始字符串写法） — <a href="https://docs.python.org/zh-cn/3/library/re.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/re.html</a></li>
+      <li>Python 官方文档《7. 输入与输出》（文件读写模式与 <code>encoding</code> 的说明） — <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/inputoutput.html</a></li>
+      <li>Python 官方文档《5. 数据结构》（字典与集合，用于理解词频计数） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节表格中的函数名、参数与默认值，以及第七节关于 <code>groupby</code> 默认行为的说明，均可在上述官方文档中逐条核查。本页的六环节划分、产物清单与 <code>≤300</code> 字结论的三段结构，属于本项目约定的交付标准，不是官方文档的规定；第三节的两个类比、第四节两张示意图、第六节的示例骨架，均为辅助理解的通俗化产物。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

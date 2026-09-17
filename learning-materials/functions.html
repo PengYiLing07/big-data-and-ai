@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 函数</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块三 · 函数与工程化 ｜ 第 7 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>函数</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：Python 基础（13 次课 · 新闻学专业定制）</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>一条 <code>def</code> 语句由哪几个部分组成？「定义函数」与「调用函数」在什么时候发生？</li>
+      <li>参数有哪几种写法，分别适合什么场合？实参是怎样绑定到形参上的？</li>
+      <li>为什么没有写 <code>return</code> 的函数也会返回一个值？它返回的究竟是什么？</li>
+      <li>「默认值只在定义时求值一次」会造成什么后果？为什么可变对象不适合直接当默认值？</li>
+      <li>函数内部的名字从哪里找？LEGB 的查找顺序是什么，<code>global</code> 改变了哪一步？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——同一段处理逻辑在一篇稿件里写三遍、在一百篇稿件里写一百遍时，如何只写一次并反复使用？</li>
+      <li><strong>它由什么组成</strong>——一个函数包含函数名、形参列表、文档字符串、函数体与返回语句，这几部分各由谁负责？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——函数与调用、<code>print</code> 与 <code>return</code>、形参与实参、函数与「一段被复制粘贴的代码」之间的边界在哪里？</li>
+      <li><strong>它的边界在哪</strong>——函数能改变外部状态吗？默认参数与全局变量在什么情况下会带来难以察觉的错误？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      函数是<strong>一段被起了名字、并且留好了出入口的代码</strong>。名字让这段代码可以被反复呼叫；入口是形参列表，用来把外面的数据递进去；出口是 <code>return</code>，用来把处理结果递出来。写 <code>def clean_text(raw):</code> 时，Python 并没有执行函数体里的任何一行，它只是把这段代码打包成一个函数对象，并让 <code>clean_text</code> 这个名字指向它。只有写成 <code>clean_text("  地铁调价  ")</code>——名字后面跟上一对括号——才会真正发生调用：实参被绑定到形参，函数体从头执行一遍，<code>return</code> 把结果交回给调用处。
+    </p>
+    <p>
+      函数体里如果没有 <code>return</code>，函数<strong>依然会返回一个值</strong>，只是这个值是 <code>None</code>。这一点解释了初学者最常见的一类困惑：一个只在函数里 <code>print</code> 的函数，屏幕上明明有输出，写 <code>x = 该函数(...)</code> 之后 <code>x</code> 却是 <code>None</code>，因为 <code>print</code> 只负责把内容送到屏幕，不负责把内容交回调用处。
+    </p>
+    <p>
+      函数在 Python 里还是<strong>一等对象</strong>：函数名只是一个指向函数对象的名称，可以把同一个函数对象绑定到另一个名字上，也可以把函数当作值传来传去。同时，函数有自己的<strong>作用域</strong>：函数体内引用的名字按「由内向外」的顺序查找，而函数体内的赋值默认只写进最内层作用域——这两件事的不对称，是许多作用域错误的根源。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      函数可类比为编辑部里一份写好并编号的「标准处理工序单」：工序单上写明了投入什么（形参）、怎么做（函数体）、产出什么（返回值）。工序单被写好放在抽屉里时（定义）什么都不会发生；每次照着它实际加工一份稿件时（调用），才会真正走一遍流程。同一份工序单可以加工一万份稿件，工序单本身不会因为加工过而改变。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      函数的返回值可类比为「交回给下一道工序的成品」，而 <code>print</code> 可类比为「在墙上贴一张进度公告」：公告人人可看，但不会被当作成品继续流转。凡是要让结果被后续步骤接着使用，就必须走返回值这条路。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：函数由哪些部分组成、定义与调用之间到底发生了什么；名字是按什么顺序被找到的；默认参数为什么会引起跨调用的串味。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 函数的五个组成部分，以及「定义」与「调用」两件事的分工</div>
+      <div class="vsub">左栏是 <code>def</code> 语句的组成部分，右栏是一次调用实际发生的三步；底部一行说明没有 <code>return</code> 时的返回值。</div>
+      <svg viewBox="0 0 700 352" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>函数定义的组成部分与调用过程示意图</title>
+        <desc>左栏列出 def、函数名、形参表、文档字符串、函数体加 return 五个组成部分；右栏展示一次调用中实参绑定形参、执行函数体、返回结果三步；底部说明没有 return 时返回 None。</desc>
+        <defs>
+          <marker id="fa1" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="10" width="332" height="284" rx="10" fill="#f7faff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="28" y="32" font-size="13" font-weight="700" fill="#1c4fb8" dominant-baseline="central">① 定义：打包代码，并给它起一个名字</text>
+        <line x1="24" y1="46" x2="332" y2="46" stroke="#c9dcff" stroke-width="0.8"/>
+
+        <rect x="24" y="56" width="308" height="42" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="36" y="70" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">def 关键字</text>
+        <text x="36" y="87" font-size="11.5" fill="#1f2430" dominant-baseline="central">声明「这是一个函数定义」，不是调用</text>
+
+        <rect x="24" y="104" width="308" height="42" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="36" y="118" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">函数名（如 clean_text）</text>
+        <text x="36" y="135" font-size="11.5" fill="#1f2430" dominant-baseline="central">之后靠这个名字来呼叫这段代码</text>
+
+        <rect x="24" y="152" width="308" height="42" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="36" y="166" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">形参表（如 raw, strip=True）</text>
+        <text x="36" y="183" font-size="11.5" fill="#1f2430" dominant-baseline="central">外部数据进入函数的入口</text>
+
+        <rect x="24" y="200" width="308" height="42" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="36" y="214" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">文档字符串（第一行的字符串）</text>
+        <text x="36" y="231" font-size="11.5" fill="#1f2430" dominant-baseline="central">存在 __doc__ 里，供代码内省与查阅</text>
+
+        <rect x="24" y="248" width="308" height="38" rx="7" fill="#fff7ed" stroke="#d97706" stroke-width="0.9"/>
+        <text x="36" y="261" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">函数体 + return</text>
+        <text x="36" y="277" font-size="11.5" fill="#78350f" dominant-baseline="central">每次调用都执行；return 决定交回什么</text>
+
+        <line x1="348" y1="152" x2="376" y2="152" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#fa1)"/>
+        <text x="362" y="140" font-size="11" fill="#5b6472" text-anchor="middle">调用</text>
+
+        <rect x="384" y="10" width="304" height="284" rx="10" fill="#f7faff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="400" y="32" font-size="13" font-weight="700" fill="#1c4fb8" dominant-baseline="central">② 调用：实参绑定 → 执行 → 返回</text>
+        <line x1="396" y1="46" x2="676" y2="46" stroke="#c9dcff" stroke-width="0.8"/>
+
+        <rect x="396" y="56" width="280" height="52" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="408" y="72" font-size="11.5" fill="#1f2430" dominant-baseline="central">clean_text("  地铁调价  ")</text>
+        <text x="408" y="92" font-size="11.5" fill="#5b6472" dominant-baseline="central">实参按位置绑定到形参 raw</text>
+
+        <rect x="396" y="114" width="280" height="52" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="408" y="130" font-size="11.5" fill="#1f2430" dominant-baseline="central">strip=True（未传值）</text>
+        <text x="408" y="150" font-size="11.5" fill="#5b6472" dominant-baseline="central">没传的关键字参数取默认值</text>
+
+        <rect x="396" y="172" width="280" height="52" rx="7" fill="#eefaf3" stroke="#1a9e5a" stroke-width="0.9"/>
+        <text x="408" y="188" font-size="11.5" fill="#127a44" dominant-baseline="central">执行函数体 → return</text>
+        <text x="408" y="208" font-size="11.5" fill="#127a44" dominant-baseline="central">交回 "地铁调价"，赋给左侧变量</text>
+
+        <rect x="396" y="230" width="280" height="56" rx="7" fill="#fff7ed" stroke="#d97706" stroke-width="0.9"/>
+        <text x="408" y="248" font-size="11.5" fill="#b45309" dominant-baseline="central">没有走到 return 就结束</text>
+        <text x="408" y="268" font-size="11.5" fill="#78350f" dominant-baseline="central">仍然返回值，只是这个值是 None</text>
+
+        <rect x="12" y="302" width="676" height="40" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="28" y="322" font-size="12" fill="#1c4fb8" dominant-baseline="central">关键区别：光写函数名（不加括号）只是引用这个函数对象；名字后面加上一对括号才会发生调用。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>def</code> 只做「打包 + 起名」，不执行函数体；返回值由 <code>return</code> 决定，没有 <code>return</code> 时返回值是 <code>None</code>，而 <code>print</code> 的输出不会成为返回值。示意图，用于帮助理解，非 Python 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 名字查找的顺序：由内向外，赋值却只写最内层</div>
+      <div class="vsub">左栏是查找的四个层次与先后次序；右栏是这四层在代码结构上的嵌套关系。</div>
+      <svg viewBox="0 0 700 340" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>Python 名字查找的四个层次与嵌套作用域示意图</title>
+        <desc>左栏按顺序列出局部作用域、外层函数作用域、模块全局作用域、内置作用域；右栏用嵌套方框展示这四层的包含关系，并说明赋值默认写入最内层。</desc>
+        <defs>
+          <marker id="fa2" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#7c5cff"/>
+          </marker>
+        </defs>
+
+        <text x="16" y="24" font-size="12.5" fill="#5b6472" dominant-baseline="central">查找顺序（由内向外）</text>
+
+        <rect x="16" y="38" width="228" height="44" rx="8" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="30" y="54" font-size="12" font-weight="700" fill="#127a44" dominant-baseline="central">① Local —— 当前函数内的名字</text>
+        <text x="30" y="70" font-size="11.5" fill="#127a44" dominant-baseline="central">含形参与函数体内赋值的名字</text>
+
+        <rect x="16" y="88" width="228" height="44" rx="8" fill="#f3efff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="30" y="104" font-size="12" font-weight="700" fill="#5b3fd6" dominant-baseline="central">② Enclosing —— 外层函数的名字</text>
+        <text x="30" y="120" font-size="11.5" fill="#5b3fd6" dominant-baseline="central">嵌套函数时向外一层找</text>
+
+        <rect x="16" y="138" width="228" height="44" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="30" y="154" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">③ Global —— 当前模块的名字</text>
+        <text x="30" y="170" font-size="11.5" fill="#1c4fb8" dominant-baseline="central">模块里定义的那些名字</text>
+
+        <rect x="16" y="188" width="228" height="44" rx="8" fill="#f1f4f9" stroke="#8b93a1" stroke-width="1.1"/>
+        <text x="30" y="204" font-size="12" font-weight="700" fill="#40485a" dominant-baseline="central">④ Built-in —— 内置名字</text>
+        <text x="30" y="220" font-size="11.5" fill="#40485a" dominant-baseline="central">如 len、print、ValueError</text>
+
+        <line x1="252" y1="60" x2="252" y2="212" stroke="#7c5cff" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#fa2)"/>
+        <text x="266" y="248" font-size="11" fill="#5b6472" dominant-baseline="central">四层都找不到 → NameError</text>
+
+        <rect x="286" y="38" width="398" height="196" rx="10" fill="#f1f4f9" stroke="#8b93a1" stroke-width="1.2"/>
+        <text x="300" y="58" font-size="11.5" fill="#40485a" dominant-baseline="central">Built-in：解释器启动时创建，一直存在</text>
+        <rect x="302" y="70" width="366" height="152" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="316" y="90" font-size="11.5" fill="#1c4fb8" dominant-baseline="central">Global：模块命名空间，读模块定义时创建</text>
+        <rect x="318" y="102" width="334" height="106" rx="8" fill="#f3efff" stroke="#7c5cff" stroke-width="1.2"/>
+        <text x="332" y="122" font-size="11.5" fill="#5b3fd6" dominant-baseline="central">Enclosing：外层函数的命名空间</text>
+        <rect x="334" y="134" width="302" height="60" rx="7" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="348" y="152" font-size="11.5" fill="#127a44" dominant-baseline="central">Local：函数被调用时创建</text>
+        <text x="348" y="172" font-size="11.5" fill="#127a44" dominant-baseline="central">函数返回或异常退出时被删除</text>
+
+        <rect x="16" y="266" width="668" height="62" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="30" y="286" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">⚠ 不对称之处：查找是「由内向外」，赋值却总是写进最内层作用域。</text>
+        <text x="30" y="308" font-size="11.5" fill="#78350f" dominant-baseline="central">要用 global 声明才会直接改写模块层的名字；要改写外层函数的名字，用 nonlocal 声明。不声明而直接赋值，只会在最内层新建一个局部名字。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：查找顺序由内向外、逐层外扩，最后才到内置名字；而赋值默认只落在最内层，两者的不对称正是「函数里改了全局变量却没生效」这类问题的来源。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 默认参数只在定义时求值一次：可变对象的串味对比</div>
+      <div class="vsub">左栏是默认值为可变对象时的连续三次调用；右栏是改用 <code>None</code> 占位的写法。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>可变对象作为默认参数值导致跨调用共享的对比示意图</title>
+        <desc>左侧展示默认值为空列表时三次调用依次得到累积的结果，因为同一个列表对象被所有调用共享；右侧展示改用 None 作默认值并在函数体内新建列表后，三次调用结果互不影响。</desc>
+
+        <rect x="12" y="10" width="338" height="234" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.2"/>
+        <text x="28" y="32" font-size="13" font-weight="700" fill="#b45309" dominant-baseline="central">默认值是可变对象：列表被共享</text>
+        <text x="28" y="56" font-size="11.5" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">def add_tag(tags=[]):</text>
+        <text x="28" y="74" font-size="11.5" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    tags.append("热点")</text>
+        <text x="28" y="92" font-size="11.5" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    return tags</text>
+        <line x1="24" y1="106" x2="338" y2="106" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="28" y="126" font-size="11.5" fill="#78350f" dominant-baseline="central">第 1 次调用 → ['热点']</text>
+        <text x="28" y="148" font-size="11.5" fill="#78350f" dominant-baseline="central">第 2 次调用 → ['热点', '热点']</text>
+        <text x="28" y="170" font-size="11.5" fill="#78350f" dominant-baseline="central">第 3 次调用 → ['热点', '热点', '热点']</text>
+        <text x="28" y="200" font-size="11.5" fill="#b45309" dominant-baseline="central">结果被上一次调用「串味」了：</text>
+        <text x="28" y="220" font-size="11.5" fill="#b45309" dominant-baseline="central">三次调用拿到的是同一个列表对象。</text>
+
+        <rect x="362" y="10" width="326" height="234" rx="10" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="378" y="32" font-size="13" font-weight="700" fill="#127a44" dominant-baseline="central">改用 None 占位：每次新建</text>
+        <text x="378" y="56" font-size="11.5" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">def add_tag(tags=None):</text>
+        <text x="378" y="74" font-size="11.5" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    if tags is None:</text>
+        <text x="378" y="92" font-size="11.5" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">        tags = []</text>
+        <line x1="374" y1="106" x2="676" y2="106" stroke="#c7ebd7" stroke-width="0.8"/>
+        <text x="378" y="126" font-size="11.5" fill="#127a44" dominant-baseline="central">第 1 次调用 → ['热点']</text>
+        <text x="378" y="148" font-size="11.5" fill="#127a44" dominant-baseline="central">第 2 次调用 → ['热点']</text>
+        <text x="378" y="170" font-size="11.5" fill="#127a44" dominant-baseline="central">第 3 次调用 → ['热点']</text>
+        <text x="378" y="200" font-size="11.5" fill="#127a44" dominant-baseline="central">每次调用都在局部命名空间里</text>
+        <text x="378" y="220" font-size="11.5" fill="#127a44" dominant-baseline="central">新建一个列表，互不影响。</text>
+
+        <rect x="12" y="256" width="676" height="34" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="28" y="273" font-size="12" fill="#1c4fb8" dominant-baseline="central">默认值在「定义作用域」中的函数定义里求值，只计算一次；不可变对象（数字、字符串、元组、None）改动起来是安全的。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：默认值只在定义时创建一次，可变对象因此被所有调用共享；把默认值写成 <code>None</code>、在函数体内判空后新建对象，可以避开这一陷阱。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中 <code>def</code> 的组成部分、默认值只在定义时求值一次、可变默认值被多次调用共享、作用域的四层结构与 <code>global</code> / <code>nonlocal</code> 的行为，均依据 Python 官方教程第 4 章与第 9 章整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一条 <code>def</code> 语句把「名字」「入口」「流程」「出口」四件事绑定在一起；一次调用则把「实参绑定 → 执行函数体 → 交回返回值」三步连起来。下面三张表分别拆解这三组关系。</p>
+
+    <h3>函数的组成部分</h3>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>函数名</strong></td><td>在定义所在的作用域里，把函数名与函数对象关联起来。可用其他名称指向同一个函数对象，也可把函数对象作为值传递。命名通常使用小写加下划线。</td></tr>
+      <tr><td><strong>形参列表</strong></td><td>写在括号内，声明函数可以接收哪些数据。形参是函数定义中的命名实体，实参是调用时真正传入的数据；一般同时出现「必选参数」与「可选参数」。</td></tr>
+      <tr><td><strong>文档字符串</strong></td><td>函数体第一条语句若是字符串，它就是文档字符串，会被放入该对象的 <code>__doc__</code> 属性，供代码内省与文档生成使用。</td></tr>
+      <tr><td><strong>函数体</strong></td><td>缩进的语句块。定义时不执行，每次调用时从头执行一遍；每次调用都有自己的局部命名空间。</td></tr>
+      <tr><td><strong>返回语句</strong></td><td><code>return</code> 决定函数交回什么。不带表达式参数时返回 <code>None</code>；函数执行完毕退出也返回 <code>None</code>。即使没有 <code>return</code>，函数依然有返回值。</td></tr>
+    </table>
+
+    <h3>参数的五种写法与绑定规则</h3>
+    <table>
+      <tr><th>写法</th><th>绑定规则</th><th>常见用途</th><th>需要注意</th></tr>
+      <tr><td>位置参数 <code>clean_text(raw)</code></td><td>按出现顺序依次绑定</td><td>最必需、最常传的数据</td><td>顺序错位时类型可能仍然合法，错误不会当场报出</td></tr>
+      <tr><td>关键字参数 <code>clean_text(text, strip=True)</code></td><td>按名称绑定，顺序不重要</td><td>参数较多、只想改其中一两个</td><td>关键字参数必须跟在位置参数后面；名称必须与形参匹配</td></tr>
+      <tr><td>默认参数 <code>def f(raw, strip=True)</code></td><td>调用时未传值就取默认值</td><td>给出常用取值，简化调用</td><td>默认值只在定义时求值一次；不要用列表、字典等可变对象作默认值</td></tr>
+      <tr><td>可变位置参数 <code>*args</code></td><td>收集所有剩余位置实参，装成一个元组</td><td>参数个数不确定时</td><td>通常放在形参列表的末尾；<code>*args</code> 之后的形式参数只能作关键字参数</td></tr>
+      <tr><td>可变关键字参数 <code>**kwargs</code></td><td>收集所有未匹配的关键字实参，装成一个字典</td><td>转发配置项、透传参数</td><td>必须是最后一个形参，<code>*args</code> 要写在它之前</td></tr>
+    </table>
+
+    <h3>作用域与名字查找</h3>
+    <table>
+      <tr><th>层次</th><th>包含哪些名字</th><th>生命周期</th></tr>
+      <tr><td><strong>Local（局部）</strong></td><td>当前函数调用里的名字，含形参与函数体内赋值的名字</td><td>函数被调用时创建，函数返回或抛出未处理的异常时被删除</td></tr>
+      <tr><td><strong>Enclosing（外层函数）</strong></td><td>嵌套结构中外层函数的名字，「非局部、非全局」</td><td>随外层函数的调用而存在</td></tr>
+      <tr><td><strong>Global（模块全局）</strong></td><td>当前模块里定义的名字</td><td>读取模块定义时创建，通常持续到解释器退出</td></tr>
+      <tr><td><strong>Built-in（内置）</strong></td><td>如 <code>len</code>、<code>print</code>、内置异常的名称</td><td>解释器启动时创建，永不被删除</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">查找从最内层作用域开始，逐层向外，内置名称最后被搜索；四层都没有找到时会引发 <code>NameError</code>。上述内容引自 Python 官方教程第 9 章「Python 作用域和命名空间」与第 4 章「定义函数」。<code>global</code> 语句表明某个名字属于全局作用域，引用与赋值都直接指向模块层；<code>nonlocal</code> 表明某个名字在外层作用域，并应在外层作用域中重新绑定。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      前 6 课留下的代码往往是一段一段散装的：清洗文本的几行、统计字数的几行、切分句子的几行、统计高频词的几行、生成短标题的几行。这些代码每次都跟着具体的那份稿件走，换一份数据就要复制一遍。把它们各自封装成一个函数之后，五段逻辑就变成五个可以反复呼叫的「工序」，一条记录跑完全流程只需要按顺序调用这五个名字。
+    </p>
+    <p>下面这段代码可以直接运行，用到的全部是内置能力，不需要安装任何第三方库。</p>
+    <pre><span class="c"># news_text.py —— 把第 1~6 课的散装代码收拢成 5 个可复用函数</span>
+
+def clean_text(raw):
+    <span class="s">"""把一段原始稿件文本清洗成规范形式并返回。"""</span>
+    text = raw.replace(<span class="s">"　"</span>, <span class="s">" "</span>)     <span class="c"># 全角空格换成半角</span>
+    text = <span class="s">" "</span>.join(text.split())     <span class="c"># 连续空白压缩成一个空格</span>
+    return text.strip()
+
+def count_chars(text, exclude_space=True):
+    <span class="s">"""统计字符数；exclude_space 为 True 时不把空格计入。"""</span>
+    if exclude_space:
+        return len(text.replace(<span class="s">" "</span>, <span class="s">""</span>))
+    return len(text)
+
+def split_sentences(text, seps=<span class="s">"。！？"</span>):
+    <span class="s">"""按中文句末标点切句，返回句子列表。"""</span>
+    buf, out = <span class="s">""</span>, []
+    for ch in text:
+        buf += ch
+        if ch in seps:
+            out.append(buf.strip())
+            buf = <span class="s">""</span>
+    if buf.strip():
+        out.append(buf.strip())
+    return out
+
+def top_words(texts, n=3, win=2):
+    <span class="s">"""按固定长度滑窗粗粒度切词，返回出现次数最多的前 n 个 (词, 次数)。"""</span>
+    freq = {}
+    for t in texts:
+        for i in range(len(t) - win + 1):
+            w = t[i:i + win]
+            if <span class="s">" "</span> in w:
+                continue
+            freq[w] = freq.get(w, 0) + 1
+    return sorted(freq.items(), key=lambda kv: kv[1], reverse=True)[:n]
+
+def make_title(text, max_len=12, ellipsis=<span class="s">"…"</span>):
+    <span class="s">"""把长标题截断为不超过 max_len 个字符的短标题。"""</span>
+    text = clean_text(text)
+    if len(text) &lt;= max_len:
+        return text
+    return text[:max_len] + ellipsis
+
+<span class="c"># —— 一条记录跑完全流程 ——</span>
+raw  = <span class="s">" 　地铁票价调整方案 公布，首周客流下降 3%。  相关部门表示将继续观察。 "</span>
+text = clean_text(raw)
+print(make_title(text))        <span class="c"># 地铁票价调整方案 公布，…</span>
+print(count_chars(text))       <span class="c"># 32（不计空格的字符数）</span>
+print(split_sentences(text))   <span class="c"># ['地铁票价调整方案 公布，首周客流下降 3%。', '相关部门表示将继续观察。']</span>
+print(top_words([<span class="s">"地铁调价 客流下降"</span>, <span class="s">"地铁调价 方案公布"</span>, <span class="s">"公交调价"</span>]))</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明「把重复代码打包成函数」在流程上的收益，属于辅助理解示例，非某个来源的原文代码。其中 <code>top_words</code> 采用固定长度滑窗切分，只是一种便于演示的粗略做法；中文分词的正式工具见第 9 课列出的第三方库。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>函数名与函数调用是两件事。</strong>写 <code>clean_text</code> 只是引用这个函数对象，什么都不会发生；写成 <code>clean_text("  地铁调价  ")</code> 才会执行函数体。把函数当参数传来传去时依赖的是前者，需要执行结果时用的是后者。</li>
+      <li><strong><code>print</code> 不是 <code>return</code>。</strong>屏幕上出现内容，说明 <code>print</code> 完成了「把内容送到标准输出」这件事；函数的返回值仍然由 <code>return</code> 决定。一个只 <code>print</code> 而不 <code>return</code> 的函数，返回值是 <code>None</code>，它无法被后续计算继续使用。</li>
+      <li><strong>没有 <code>return</code> 并不等于「没有返回值」。</strong>官方教程明确说明：即使没有 <code>return</code> 语句的函数也有返回值，这个值被称为 <code>None</code>；<code>return</code> 语句不带表达式参数时返回 <code>None</code>，函数执行完毕退出也返回 <code>None</code>。</li>
+      <li><strong>默认值只在定义时求值一次。</strong>默认值在定义作用域里的函数定义中求值，因此 <code>i = 5</code> 之后定义 <code>def f(arg=i)</code> 再把 <code>i</code> 改成 6，调用 <code>f()</code> 得到的仍是 5。默认值为列表、字典或类实例等可变对象时，还会产生跨调用的累加效果；常见做法是改用 <code>None</code> 作默认值，在函数体内判空后新建对象。</li>
+      <li><strong>函数内的赋值默认只写最内层作用域。</strong>不写 <code>global</code> 而直接给一个与全局同名的名字赋值，只会在函数内新建一个局部名字，模块层那个名字保持不变。<code>global</code> 使引用与赋值都指向模块全局作用域；要改写外层函数的名字则用 <code>nonlocal</code>。这类语句会让数据流向变得难以追踪，通常只在确有必要时使用。</li>
+      <li><strong>函数是一等对象。</strong>函数名只是指向函数对象的名称，同一个函数对象可以被绑定到其他名称上，也可以被赋值、放进容器、当作参数传给另一个函数。理解这一点，是理解后续 <code>sorted(key=...)</code>、装饰器、回调等写法的前提。</li>
+      <li><strong>纯函数与副作用是一条边界，不是一条禁令。</strong>把结果全部通过返回值交回、不修改函数之外状态的写法，通常称为纯函数，重复调用结果一致、更容易测试；而写文件、改全局变量、<code>print</code> 等对函数之外产生影响的行为属于副作用。读全局变量同样属于依赖外部状态，只是它不改变外部，因此更不容易被察觉。文档字符串的规范中要求记录「副作用」，正是因为没有副作用的函数并非全部情形。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节七条均以 Python 官方文档为依据。<code>def</code> 的含义、无 <code>return</code> 时返回 <code>None</code>、默认值只在定义时求值一次、可变默认值被共享、<code>*args</code> 与 <code>**kwargs</code> 的规则，见官方教程第 4 章 4.8、4.9.1、4.9.2、4.9.4 节；作用域四层结构、<code>global</code> 与 <code>nonlocal</code> 的行为，见官方教程第 9 章 9.2 节；可变对象作为默认值的成因与推荐写法，另见官方《编程常见问题》「为什么对象之间会共享默认值？」条目；文档字符串的规范见 PEP 257。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 在 <code>def report_title(text, max_len=20):</code> 这一行里，<code>max_len=20</code> 属于哪一类参数？</div>
+      <button class="opt" data-v="A">A. 位置参数，调用时必须按顺序传入</button>
+      <button class="opt" data-v="B">B. 关键字参数，只能在调用时写成 <code>max_len=20</code></button>
+      <button class="opt" data-v="C">C. 带有默认值的参数，调用时不传就取 20</button>
+      <button class="opt" data-v="D">D. 可变参数，可以收集任意多个长度值</button>
+      <div class="fb" data-ok="✅ 正确。为参数指定默认值后，调用函数时可以使用比定义时更少的参数；未传入时 <code>max_len</code> 取默认值 20，需要时也可以用关键字形式 <code>max_len=12</code> 覆盖它。"></div>
+      <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.9.1 默认值参数 —— docs.python.org/zh-cn/3/tutorial/controlflow.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 执行下面这段代码后，<code>x</code> 的值是什么？<br><code>def show(t):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(t)<br>x = show("地铁调价")</code></div>
+      <button class="opt" data-v="A">A. <code>"地铁调价"</code></button>
+      <button class="opt" data-v="B">B. <code>None</code></button>
+      <button class="opt" data-v="C">C. 报错，因为没有写 return 就不能赋值</button>
+      <button class="opt" data-v="D">D. <code>0</code></button>
+      <div class="fb" data-ok="✅ 正确。屏幕上的 <code>地铁调价</code> 来自 <code>print</code>，那是送到标准输出的内容，不是返回值。官方教程明确写道：即使没有 return 语句的函数也有返回值，这个值被称为 None。"></div>
+      <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.8 定义函数（无 return 时返回 None；return 不带表达式参数时返回 None）</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 下面这段代码会打印出什么？<br><code>i = 5<br>def f(arg=i):<br>&nbsp;&nbsp;&nbsp;&nbsp;return arg<br>i = 6<br>print(f())</code></div>
+      <button class="opt" data-v="A">A. <code>5</code>，因为默认值在函数定义时就已经求值</button>
+      <button class="opt" data-v="B">B. <code>6</code>，因为调用时 <code>i</code> 已经变成 6</button>
+      <button class="opt" data-v="C">C. <code>None</code>，因为 <code>i</code> 被重新赋值了</button>
+      <button class="opt" data-v="D">D. 报错，因为形参不能写别的变量名</button>
+      <div class="fb" data-ok="✅ 正确。默认值在定义作用域里的函数定义中求值，所以 <code>arg</code> 在定义那一刻就已经绑定了当时的 5；之后把 <code>i</code> 改成 6，不会回头影响已经算好的默认值。"></div>
+      <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.9.1 默认值参数（「默认值在定义作用域里的函数定义中求值」示例）</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 下面这段代码两次打印的结果分别是？<br><code>def add_tag(tags=[]):<br>&nbsp;&nbsp;&nbsp;&nbsp;tags.append("热点")<br>&nbsp;&nbsp;&nbsp;&nbsp;return tags<br>print(add_tag())<br>print(add_tag())</code></div>
+      <button class="opt" data-v="A">A. <code>['热点']</code> 与 <code>['热点']</code>，每次调用都会新建一个空列表</button>
+      <button class="opt" data-v="B">B. <code>['热点']</code> 与 <code>['热点', '热点']</code>，两次调用共享同一个列表对象</button>
+      <button class="opt" data-v="C">C. 两次都报错，因为列表不能作为默认值</button>
+      <button class="opt" data-v="D">D. <code>[]</code> 与 <code>['热点']</code>，第一次调用后才创建列表</button>
+      <div class="fb" data-ok="✅ 正确。官方文档把这一点列为「重要警告」：默认值只计算一次，默认值为列表、字典或类实例等可变对象时，会在后续调用之间共享。常见做法是改用 None 作默认值，并在函数体内判断为 None 时新建列表或字典。"></div>
+      <div class="src">📎 来源：Python 官方教程 4.9.1「重要警告：默认值只计算一次」；Python 官方《编程常见问题》「为什么对象之间会共享默认值？」—— docs.python.org/zh-cn/3/faq/programming.html#why-are-default-values-shared-between-objects</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 关于函数中的名字查找与赋值，下列哪一项表述与 Python 官方文档一致？</div>
+      <button class="opt" data-v="A">A. 函数内部给某个名称赋值，默认会修改模块级的同名变量</button>
+      <button class="opt" data-v="B">B. 名字从最内层作用域开始逐层向外查找，内置名称最后被搜索；只有用 <code>global</code> 声明，引用与赋值才直接指向模块全局作用域</button>
+      <button class="opt" data-v="C">C. 函数内部使用内置函数 <code>len</code> 之前，必须先写 <code>global len</code></button>
+      <button class="opt" data-v="D">D. <code>nonlocal</code> 用于把名称声明为模块级变量</button>
+      <div class="fb" data-ok="✅ 正确。官方教程给出的搜索顺序是：最内层局部作用域 → 外层闭包函数的作用域 → 当前模块的全局名称 → 内置名称命名空间；并指出「如果不存在生效的 global 或 nonlocal 语句，则对名称的赋值总是会进入最内层作用域」。<code>nonlocal</code> 的指向是外层函数作用域，不是模块级。"></div>
+      <div class="src">📎 来源：Python 官方教程《9. 类》9.2 Python 作用域和命名空间 —— docs.python.org/zh-cn/3/tutorial/classes.html#python-scopes-and-namespaces</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《4. 更多控制流工具》—— 4.8 定义函数（<code>def</code> 语法、无 <code>return</code> 时返回 <code>None</code>、文档字符串）、4.9.1 默认值参数、4.9.2 关键字参数、4.9.4 任意实参列表、4.9.7 文档字符串 — <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/controlflow.html</a></li>
+      <li>Python 官方教程《9. 类》—— 9.2 Python 作用域和命名空间（四层嵌套作用域、<code>global</code> 与 <code>nonlocal</code>） — <a href="https://docs.python.org/zh-cn/3/tutorial/classes.html#python-scopes-and-namespaces" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/classes.html#python-scopes-and-namespaces</a></li>
+      <li>Python 官方文档《编程常见问题》—— 「为什么对象之间会共享默认值？」（可变默认值的成因与推荐写法） — <a href="https://docs.python.org/zh-cn/3/faq/programming.html#why-are-default-values-shared-between-objects" target="_blank" rel="noopener">docs.python.org/zh-cn/3/faq/programming.html#why-are-default-values-shared-between-objects</a></li>
+      <li>PEP 257 —— Docstring Conventions（文档字符串规范；状态 Active；第一行摘要、需记录副作用等内容） — <a href="https://peps.python.org/pep-0257/" target="_blank" rel="noopener">peps.python.org/pep-0257/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格、第七节七条辨析中的技术结论，均可在上述官方文档中逐条核查；其中作用域四层结构以官方教程第 9 章 9.2 节的表述为准。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 基础学习地图（13 次课版）· 新闻学专业定制</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --purple:#7c5cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px;margin-bottom:24px}
+  header.hero .kicker{font-size:13px;opacity:.88;letter-spacing:1px}
+  header.hero h1{margin:8px 0 6px;font-size:28px}
+  header.hero .meta{font-size:13.5px;opacity:.92;margin-top:10px;line-height:1.9}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.42);border-radius:20px;padding:2px 12px;font-size:12px;margin:4px 6px 0 0}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+  section h2{margin-top:0;font-size:20px}
+  section h3{font-size:16px;color:var(--brand);margin:18px 0 6px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  .board{border-radius:12px;padding:14px 18px;margin:16px 0}
+  .board h3{margin:0 0 4px;font-size:17px}
+  .b1,.b2,.b3{background:#eff6ff;border-left:5px solid #2f6fed}
+  .b4{background:#f5f3ff;border-left:5px solid var(--purple)}
+  .b4 h3{color:#5b21b6}
+  .lesson{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0;background:#fcfdff}
+  .lesson .lt{font-weight:700;font-size:15px;margin-bottom:6px}
+  .lesson .lt .lv{font-size:11.5px;color:var(--warn);margin-left:6px;font-weight:600}
+  .lesson .row{font-size:13.5px;color:#374151;margin:3px 0}
+  .lesson .row b{color:var(--brand)}
+  .lesson .out{font-size:13px;color:var(--ok);margin-top:6px;font-weight:600}
+  .lesson .hw{font-size:13px;color:var(--muted);margin-top:3px}
+  .idea{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .idea .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  .warn{background:#fff7ed;border-left:4px solid var(--warn);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px}
+  .warn .lbl{font-weight:700;color:#b45309;font-size:13px;display:block;margin-bottom:4px}
+  .ok{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px}
+  .ok .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:4px}
+  ul{padding-left:22px}li{margin-bottom:5px}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">📚 课程学习地图</div>
+    <h1>Python 基础学习地图 · 13 次课版</h1>
+    <div class="meta">
+      新闻学专业定制 ｜ 13 次课 × 90 分钟（上半场 45′ + 下半场 45′）= 19.5 小时<br>
+      阶段目标：为后续「人工智能理论与应用」储备足够用的 Python 能力
+    </div>
+    <div>
+      <span class="badge">贯穿项目：新闻评论文本分析工程</span>
+      <span class="badge">产出：13 个脚本 + 1 个完整项目</span>
+      <span class="badge">v1.0 · 2026-09-17</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>⚠️ 开始之前，先说清四件事</h2>
+    <ol>
+      <li><strong>环境搭建必须放在课前</strong>——安装 Anaconda 或使用在线 Notebook，跑通 <code>print("hello")</code>，约 40 分钟，不占课时。这是 90 分钟里最容易失控的一环。</li>
+      <li><strong>课堂不追求「理解全部语法」，只追求「能跑出结果」</strong>——看不懂的先记便签，继续跟着敲。死磕细节会挤掉整节课的动手时间。</li>
+      <li><strong>每次课都必须当堂敲完，课后作业是「换自己的数据重跑」</strong>——只看不敲等于没学。</li>
+      <li><strong>本次 13 次课只做 Python 基础</strong>——人工智能在其后单独展开；第 3 课会留下「规则法做不到的事」的伏笔，第 13 课交付的清洗后数据集就是给 AI 阶段的接口。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>🗺 四大板块总览</h2>
+    <table>
+      <tr><th>板块</th><th>课次</th><th>能力目标</th><th>对应教材概念</th></tr>
+      <tr><td><strong>板块一 · Python 起步</strong></td><td>1–3</td><td>能写能跑，看得懂报错</td><td>变量与数据类型、字符串与文本处理、布尔逻辑与条件判断</td></tr>
+      <tr><td><strong>板块二 · 循环与容器</strong></td><td>4–6</td><td>批量处理，替代手工</td><td>列表、循环（for / while）、字典与集合、推导式</td></tr>
+      <tr><td><strong>板块三 · 函数与工程化</strong></td><td>7–9</td><td>代码可复用，能读写文件</td><td>函数、文件读写与编码、异常处理、模块与包</td></tr>
+      <tr><td><strong>板块四 · AI 前置数据能力</strong></td><td>10–13</td><td>会正则、NumPy、pandas</td><td>正则表达式、NumPy 与向量化、pandas 与 DataFrame、matplotlib 可视化</td></tr>
+    </table>
+    <div class="idea"><span class="lbl">💡 贯穿项目</span>
+      新闻评论文本分析工程——由「单篇稿件处理」逐课长大为「新闻评论数据概览报告」，直接作为 AI 阶段的训练输入。
+    </div>
+    <p style="font-size:13.5px;color:var(--muted)">课堂节奏统一为：<strong>上半场</strong> = 讲解 20′ + 现场演示 15′ + 互动 10′；<strong>下半场</strong> = 跟着做 + 自己改 30′ + 讲评答疑 15′。作业在下次课开场 5 分钟内讲评。</p>
+  </section>
+
+  <section>
+    <h2>📘 13 次课详细安排</h2>
+
+    <div class="board b1">
+      <h3>板块一 · Python 起步（第 1–3 课）</h3>
+      <p style="margin:2px 0 0;font-size:13.5px;color:var(--muted)">目标：能写能跑，看得懂报错</p>
+
+      <div class="lesson">
+        <div class="lt">第 1 课 · 环境与第一个程序<span class="lv">★☆☆☆☆</span></div>
+        <div class="row"><b>上半场：</b>Python 能替记者做什么；Jupyter Notebook 单元格用法；<code>print()</code> 与注释；变量与命名规范</div>
+        <div class="row"><b>下半场：</b>四种基础类型 <code>str</code>/<code>int</code>/<code>float</code>/<code>bool</code>；<code>type()</code>；<code>input()</code>；类型转换</div>
+        <div class="out">📦 产出：lesson01.py 稿件字数统计器</div>
+        <div class="hw">作业：拿自己写的 3 段导语各跑一次，记下字数与句数</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 2 课 · 字符串与文本清洗<span class="lv">★★☆☆☆</span></div>
+        <div class="row"><b>上半场：</b>索引与切片；<code>len()</code>/<code>split()</code>/<code>join()</code>/<code>strip()</code>/<code>replace()</code>/<code>find()</code>；f-string 格式化</div>
+        <div class="row"><b>下半场：</b>把一篇脏稿件（多余空格、换行、全角标点混用）清洗成规范文本</div>
+        <div class="out">📦 产出：lesson02.py 文本清洗器</div>
+        <div class="hw">作业：把一篇真实稿件丢进去清洗，记录哪些脏东西没处理掉</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 3 课 · 条件判断与规则打标<span class="lv">★★☆☆☆</span></div>
+        <div class="row"><b>上半场：</b>布尔值、比较运算符；<code>if</code>/<code>elif</code>/<code>else</code>；<code>and</code>/<code>or</code>/<code>not</code>；<code>in</code> 成员判断</div>
+        <div class="row"><b>下半场：</b>按关键词给标题和评论打标签（正面 / 负面 / 中性）——情感分析最原始的形态</div>
+        <div class="out">📦 产出：lesson03.py 关键词规则版情感倾向判断器</div>
+        <div class="hw">作业：找 10 条自己的判断与程序判断不一致的评论，说明原因</div>
+      </div>
+      <div class="warn"><span class="lbl">🔑 关键伏笔</span>
+        第 3 课最后留 10 分钟讨论「规则法漏判了什么」——为何「这条明明是负面的却没命中关键词」。这是为 AI 阶段建立真实痛点，而不是凭空讲算法。
+      </div>
+    </div>
+
+    <div class="board b2">
+      <h3>板块二 · 循环与容器（第 4–6 课）</h3>
+      <p style="margin:2px 0 0;font-size:13.5px;color:var(--muted)">目标：批量处理，替代手工</p>
+
+      <div class="lesson">
+        <div class="lt">第 4 课 · 列表与循环遍历<span class="lv">★★☆☆☆</span></div>
+        <div class="row"><b>上半场：</b>列表增删改查、索引切片；<code>for</code> 遍历、<code>range()</code>、<code>enumerate()</code>；<code>sort()</code>/<code>sorted()</code></div>
+        <div class="row"><b>下半场：</b>遍历一批新闻标题，按关键词筛选、按长度排序</div>
+        <div class="out">📦 产出：lesson04.py 标题批量筛选排序器</div>
+        <div class="hw">作业：换成自己收集的 50 条标题，筛出与选题相关的部分</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 5 课 · 字典与词频统计<span class="lv">★★★☆☆</span></div>
+        <div class="row"><b>上半场：</b>字典键值对、增删改查、遍历；<code>get()</code>/<code>setdefault()</code>；<code>set</code> 去重</div>
+        <div class="row"><b>下半场：</b>统计语料词频，排序取 Top20</div>
+        <div class="out">📦 产出：lesson05.py 词频排行工具</div>
+        <div class="hw">作业：对同一选题的 30 条标题跑词频，看最突出的词是什么</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 6 课 · while 循环与推导式<span class="lv">★★★☆☆</span></div>
+        <div class="row"><b>上半场：</b><code>while</code> 循环、<code>break</code>/<code>continue</code>；嵌套循环；列表推导式、字典推导式</div>
+        <div class="row"><b>下半场：</b>用推导式重写第 4、5 课代码并对比可读性；写一个交互式循环小程序</div>
+        <div class="out">📦 产出：lesson06.py 精简版数据处理脚本</div>
+        <div class="hw">作业：把以前写的循环改写成推导式，体会代码变短但没变难懂</div>
+      </div>
+    </div>
+
+    <div class="board b3">
+      <h3>板块三 · 函数与工程化（第 7–9 课）</h3>
+      <p style="margin:2px 0 0;font-size:13.5px;color:var(--muted)">目标：代码可复用，能读写文件</p>
+
+      <div class="lesson">
+        <div class="lt">第 7 课 · 函数与参数<span class="lv">★★★☆☆</span></div>
+        <div class="row"><b>上半场：</b><code>def</code> 定义、参数与返回值；默认参数、关键字参数；作用域；docstring</div>
+        <div class="row"><b>下半场：</b>把前 6 课的散装代码封装成 5 个函数</div>
+        <div class="out">📦 产出：text_tools.py 个人文本处理函数库</div>
+        <div class="hw">作业：给函数库补上 2 个自己最常用的功能</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 8 课 · 文件读写与异常处理<span class="lv">★★★☆☆</span></div>
+        <div class="row"><b>上半场：</b><code>open()</code>/<code>with</code>；读 txt 与 CSV（<code>csv.DictReader</code>）；写文件；utf-8 与 gbk 编码；<code>try</code>/<code>except</code></div>
+        <div class="row"><b>下半场：</b>读采访记录 CSV → 清洗统计 → 结果写回新文件</div>
+        <div class="out">📦 产出：lesson08.py 采访记录统计脚本 + 统计结果.csv</div>
+        <div class="hw">作业：把 CSV 换成发稿台账或活动名单，只改字段名就能跑通</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 9 课 · 模块、包与调试<span class="lv">★★★☆☆</span></div>
+        <div class="row"><b>上半场：</b><code>import</code> 机制；<code>pip</code> 安装第三方库；<code>__name__</code>；报错信息解读（从最后一行往上读）；常见报错类型</div>
+        <div class="row"><b>下半场：</b>把函数库拆成模块导入使用；故意制造 5 种报错并逐个修复</div>
+        <div class="out">📦 产出：多文件项目结构 + 《报错自查手册》一页</div>
+        <div class="hw">作业：整理这段时间遇到的所有报错，归类成表格</div>
+      </div>
+    </div>
+
+    <div class="board b4">
+      <h3>板块四 · AI 前置数据能力（第 10–13 课）</h3>
+      <p style="margin:2px 0 0;font-size:13.5px;color:var(--muted)">目标：会正则、NumPy、pandas</p>
+
+      <div class="lesson">
+        <div class="lt">第 10 课 · 正则表达式<span class="lv">★★★★☆</span></div>
+        <div class="row"><b>上半场：</b>元字符、字符类、量词、分组；<code>re</code> 模块常用函数（<code>search</code>/<code>findall</code>/<code>sub</code>）</div>
+        <div class="row"><b>下半场：</b>清洗真实新闻评论——去表情、去网址、去 @、提取数字与日期</div>
+        <div class="out">📦 产出：lesson10.py 文本清洗规则集</div>
+        <div class="hw">作业：为评论数据集写 5 条清洗规则</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 11 课 · NumPy 与向量化<span class="lv">★★★★☆</span></div>
+        <div class="row"><b>上半场：</b><code>ndarray</code> 创建、形状与维度、索引切片、广播机制；向量化 vs 循环</div>
+        <div class="row"><b>下半场：</b>统计一批新闻的标题长度、正文长度的均值 / 中位数 / 分位数</div>
+        <div class="out">📦 产出：lesson11.py 长度统计脚本</div>
+        <div class="hw">作业：同一批数据分别用循环和向量化各算一次，比较耗时</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 12 课 · pandas 入门<span class="lv">★★★★☆</span></div>
+        <div class="row"><b>上半场：</b><code>Series</code> 与 <code>DataFrame</code>；读写 CSV / Excel；<code>head()</code>/<code>info()</code>/<code>describe()</code>；筛选排序；缺失值处理</div>
+        <div class="row"><b>下半场：</b>加载新闻评论数据集，看正负样本分布与文本长度分布</div>
+        <div class="out">📦 产出：lesson12.py 数据概览报告</div>
+        <div class="hw">作业：把专业的真实表格用 pandas 读一遍，回答 3 个问题</div>
+      </div>
+
+      <div class="lesson">
+        <div class="lt">第 13 课 · 分组统计、可视化与综合交付<span class="lv">★★★★☆</span></div>
+        <div class="row"><b>上半场：</b><code>groupby</code> 聚合、<code>apply</code>、新增列；matplotlib 基础图表与中文乱码解决</div>
+        <div class="row"><b>下半场：</b>综合实战——读入评论 CSV → 清洗 → 统计 → 出图 → 导出结果</div>
+        <div class="out">📦 产出：完整项目 + 一份可直接交的数据分析小结</div>
+        <div class="hw">小结：用一段话说明最突出的发现、可能意味着什么、结论有什么局限</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>✂️ 两条明确的取舍</h2>
+    <div class="ok"><span class="lbl">① 面向对象列为选修，不占正课</span>
+      做 AI 应用只需要能读懂别人代码里的 <code>class</code>（例如 sklearn 的模型对象），不需要自己从零设计类。附一份自学材料即可。
+    </div>
+    <div class="ok"><span class="lbl">② 不自己训练深度学习模型</span>
+      没有 GPU、课时也不够。AI 阶段只讲原理直觉 + 调用现成预训练模型，这是投入产出比最高的教法。
+    </div>
+  </section>
+
+  <section>
+    <h2>✂️ 若课时口径为 45 分钟：裁切方案</h2>
+    <p>保留每次课上半场的核心讲解 + 一个最小动手任务，砍掉以下内容：</p>
+    <table>
+      <tr><th>课次</th><th>45 分钟版保留</th><th>移出正课</th></tr>
+      <tr><td>1</td><td>环境 + 变量 + 四种类型</td><td><code>input()</code> 交互</td></tr>
+      <tr><td>2</td><td><code>split</code> / <code>strip</code> / <code>replace</code> + f-string</td><td>索引切片、<code>join</code></td></tr>
+      <tr><td>3</td><td><code>if</code> / <code>else</code> + <code>in</code> 判断</td><td><code>elif</code> 多层嵌套</td></tr>
+      <tr><td>4</td><td>列表基础 + <code>for</code> 遍历</td><td>切片、<code>enumerate</code></td></tr>
+      <tr><td>5</td><td>字典基础 + 计数</td><td><code>set</code> 去重、<code>setdefault</code></td></tr>
+      <tr><td>6</td><td>推导式</td><td><code>while</code> 与嵌套循环</td></tr>
+      <tr><td>7</td><td><code>def</code> + 返回值</td><td>默认参数、作用域</td></tr>
+      <tr><td>8</td><td><code>with open</code> 读 CSV</td><td>写文件、<code>try/except</code></td></tr>
+      <tr><td>9</td><td>报错解读 + <code>pip</code></td><td>模块拆分</td></tr>
+      <tr><td>10</td><td><code>re.sub</code> 清洗</td><td>复杂分组与断言</td></tr>
+      <tr><td>11</td><td><code>ndarray</code> 与统计函数</td><td>广播机制</td></tr>
+      <tr><td>12</td><td>读 CSV + 筛选排序</td><td>缺失值处理</td></tr>
+      <tr><td>13</td><td><code>groupby</code> + 一张图</td><td>综合实战走完整流程</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">按此裁切，13 × 45 分钟 = 9.75 小时仍可覆盖「足够用」的下限，但上手深度会明显下降。</p>
+  </section>
+
+  <section>
+    <h2>📊 13 次课后的能力边界</h2>
+    <table>
+      <tr><th>能力</th><th>状态</th><th>说明</th></tr>
+      <tr><td>独立写脚本完成文本清洗、筛选、统计、出图</td><td>✅ 能</td><td>几十到几万条文本的处理都没有问题</td></tr>
+      <tr><td>读写 CSV / Excel，做分组聚合分析</td><td>✅ 能</td><td>日常台账、评论数据、选题统计类需求够用</td></tr>
+      <tr><td>读懂并改写一段 Python 代码</td><td>✅ 能</td><td>知道该改哪几个地方：字段名、关键词、文件名</td></tr>
+      <tr><td>看懂报错并自行修复常见错误</td><td>✅ 能</td><td>复杂报错建议直接问 AI</td></tr>
+      <tr><td>承接 AI 阶段所需的全部数据准备工作</td><td>✅ 能</td><td>这是本阶段最重要的交付</td></tr>
+      <tr><td>从零设计类与面向对象程序</td><td>⬜ 选修</td><td>附自学材料，不占正课</td></tr>
+      <tr><td>独立训练深度学习模型</td><td>⬜ 尚未</td><td>由 AI 阶段讲调用方式，不做训练</td></tr>
+      <tr><td>网页抓取与反爬应对</td><td>⬜ 尚未</td><td>涉及请求头、反爬与合规判断，属拓展方向</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>🔗 第 14 次课起的 AI 阶段（衔接说明）</h2>
+    <table>
+      <tr><th>顺序</th><th>内容</th><th>与 Python 阶段的接口</th></tr>
+      <tr><td>1</td><td>AI、机器学习、深度学习的基础概念</td><td>复用第 3 课的「规则法局限」痛点</td></tr>
+      <tr><td>2</td><td>监督学习流程与数据划分（训练 / 验证 / 测试）</td><td>复用第 12 课的 pandas 数据加载能力</td></tr>
+      <tr><td>3</td><td>中文分词 jieba + TF-IDF 特征</td><td>复用第 5 课词频、第 10 课正则清洗</td></tr>
+      <tr><td>4</td><td>朴素贝叶斯与逻辑回归文本分类</td><td>复用第 7 课函数、第 11 课向量化</td></tr>
+      <tr><td>5</td><td>预训练模型情感分析</td><td>复用第 8 课文件读写做批量预测</td></tr>
+      <tr><td>6</td><td>大模型 API 应用与提示工程</td><td>综合应用</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>🧰 课前准备清单（一次性，不占课时）</h2>
+    <ul>
+      <li><strong>环境</strong>：Anaconda 或在线 Notebook（百度 AI Studio / Cloud Studio）</li>
+      <li><strong>依赖包</strong>：<code>jieba</code>、<code>pandas</code>、<code>numpy</code>、<code>matplotlib</code>、<code>scikit-learn</code></li>
+      <li><strong>数据集</strong>：新闻评论 CSV（第 2 课即可用上，第 12 课正式派上用场）</li>
+      <li><strong>目录结构</strong>：每次课的脚本按 <code>lessonNN.py</code> 命名，统一放在一个课程文件夹里</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🧭 三条纪律</h2>
+    <h3>课上坚决不做</h3>
+    <ol>
+      <li>不现场装环境——课前必须解决，否则一次课就没了</li>
+      <li>不追求理解全部语法——先记下来，继续跟着敲</li>
+      <li>不在课上查复杂问题——卡住超过 3 分钟就举手或先跳过</li>
+    </ol>
+    <h3>课后必须做</h3>
+    <ol>
+      <li>把示例换成自己的数据重跑——这是「学会」的唯一标志</li>
+      <li>把代码文件存好——13 个脚本是以后抄改的模板库</li>
+      <li>每次报错都截图留存——同一个坑踩两次才是浪费</li>
+    </ol>
+    <h3>常见的四个坑</h3>
+    <ol>
+      <li>只看不敲——看懂了不等于会写</li>
+      <li>忽略缩进——Python 靠缩进划分代码块，空格和 Tab 混用必报错</li>
+      <li>乱码就放弃——多半是 <code>encoding</code> 该填 <code>gbk</code></li>
+      <li>怕报错——从最后一行往上读，它才是原因</li>
+    </ol>
+  </section>
+
+  <footer>📎 Python 基础学习地图（13 次课版）· 2026-09-17 · v1.0 · 配套概念资料见 learning-materials/index.html</footer>
+</div>
+</body>
+</html>

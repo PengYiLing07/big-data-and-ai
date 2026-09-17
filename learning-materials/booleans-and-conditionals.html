@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 布尔逻辑与条件判断</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  pre .k{color:#f0abfc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .warnbox{background:#fff7ed;border-left:4px solid var(--warn);border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px}
+  .warnbox .lbl{font-weight:700;color:#b45309;font-size:13px;display:block;margin-bottom:4px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块一 · Python 起步 ｜ 第 3 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>布尔逻辑与条件判断</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：Python 基础（13 次课 · 新闻学专业定制）</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>比较运算符一共有哪几类、分别比较什么？为什么 <code>5 == 5.0</code> 的结果是 <code>True</code>？</li>
+      <li><code>if</code> / <code>elif</code> / <code>else</code> 三个分支按什么顺序被检查？缩进在什么情况下会导致程序报错？</li>
+      <li><code>and</code> / <code>or</code> 返回的为什么可能不是 <code>True</code> / <code>False</code>？「短路求值」节省的到底是什么？</li>
+      <li>在条件判断里，哪些值会被当成「假」？为什么 <code>'False'</code> 反而算「真」？</li>
+      <li>用关键词给评论打标签这套规则法，能覆盖到什么程度、在哪里开始失效？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——程序如何根据数据的不同情况走不同分支，而不是每次都执行同一串语句？</li>
+      <li><strong>它由什么组成</strong>——一次条件判断包含哪几个部分？比较运算、布尔运算、缩进三者如何配合？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——<code>=</code> 与 <code>==</code>、<code>==</code> 与 <code>is</code>、<code>in</code> 与 <code>find()</code>、布尔运算与布尔值，边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——基于关键词的规则法为什么必然漏判？哪些语言现象是它天生处理不了的？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      <code>True</code> 与 <code>False</code> 是 Python 的两个内置常量，官方文档把它们与 <code>None</code> 一起列为<strong>关键字</strong>，因此不能被赋值。它们属于 <code>bool</code> 类型，只有两个取值，用来表示「成立 / 不成立」。
+    </p>
+    <p>
+      比较运算负责把数据「换算成」真假。官方文档指出，<code>&lt;</code>、<code>&gt;</code>、<code>==</code>、<code>&gt;=</code>、<code>&lt;=</code>、<code>!=</code> 这六个运算符比较两个对象的<strong>值</strong>，而 <code>is</code> / <code>is not</code> 比较对象的<strong>标识号</strong>（是不是同一个对象），<code>in</code> / <code>not in</code> 则做<strong>成员检测</strong>。三者常被统称为比较运算，但它们回答的是三个不同的问题。
+    </p>
+    <p>
+      <code>and</code> / <code>or</code> / <code>not</code> 负责把多个真假条件组合起来。这里有一个最容易踩空的地方：官方文档明确写道，「<code>and</code> 和 <code>or</code> 都不限制其返回的值和类型必须为 <code>False</code> 和 <code>True</code>，而是<strong>返回最后被求值的操作数</strong>」。因此 <code>"标题" and "导语"</code> 的结果是字符串 <code>"导语"</code>，而不是 <code>True</code>。只有 <code>not</code> 例外，它必须创建新值，所以总是返回布尔值。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      条件判断可类比为编辑部的<strong>分稿流程</strong>：稿件先送第一道审核（<code>if</code>），不符合条件就转到下一道（<code>elif</code>），全部不符合才进入兜底通道（<code>else</code>）。每一道审核只回答「是 / 否」，但决定后续走向。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      短路求值可类比为<strong>值班主任的逐条确认</strong>：<code>and</code> 是从左往右逐条检查，只要有一条不成立就当场叫停，后面的条目不再检查；<code>or</code> 则是一旦有条成立就当场放行。被跳过的条目根本没有被求值，因此它内部的计算不会发生。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：比较运算有哪些种类、分支语句按什么顺序走、以及关键词规则法会在哪里开始失效。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 八类比较运算与「假值」清单</div>
+      <div class="vsub">上半部分按「比较什么」把比较运算分成三类，用不同颜色区分；下半部分是条件判断中会被当成「假」的全部常见值。</div>
+      <svg viewBox="0 0 700 350" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>Python 比较运算分类与假值清单示意图</title>
+        <desc>六种值比较运算符、两种标识号比较运算符与两种成员检测运算符的用途对照；下方列出 None、False、各类零值与各类空容器，它们在条件判断中均为假。</desc>
+
+        <text x="10" y="20" font-size="12" fill="#5b6472">比较值（6 个）</text>
+        <text x="360" y="20" font-size="12" fill="#5b3fd6">比较标识号（2 个）</text>
+        <text x="540" y="20" font-size="12" fill="#127a44">成员检测（2 个）</text>
+
+        <rect x="8" y="30" width="164" height="56" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="24" y="52" font-size="14" fill="#1c4fb8" font-family="ui-monospace,Consolas,monospace">&lt;　&lt;=</text>
+        <text x="24" y="72" font-size="11" fill="#1f2430">小于、小于等于</text>
+
+        <rect x="182" y="30" width="164" height="56" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="198" y="52" font-size="14" fill="#1c4fb8" font-family="ui-monospace,Consolas,monospace">&gt;　&gt;=</text>
+        <text x="198" y="72" font-size="11" fill="#1f2430">大于、大于等于</text>
+
+        <rect x="182" y="94" width="164" height="56" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="198" y="116" font-size="14" fill="#1c4fb8" font-family="ui-monospace,Consolas,monospace">==　!=</text>
+        <text x="198" y="136" font-size="11" fill="#1f2430">相等、不相等</text>
+
+        <rect x="8" y="94" width="164" height="56" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="24" y="116" font-size="11" fill="#1c4fb8">跨类型比较</text>
+        <text x="24" y="136" font-size="11" fill="#1f2430">5 == 5.0 为真</text>
+
+        <rect x="356" y="30" width="160" height="120" rx="9" fill="#f3efff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="436" y="58" font-size="14" fill="#5b3fd6" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">is　is not</text>
+        <text x="374" y="86" font-size="11" fill="#1f2430">判断是否为同一个对象</text>
+        <text x="374" y="106" font-size="11" fill="#1f2430">依据是对象的标识号 id()</text>
+        <text x="374" y="130" font-size="11" fill="#5b3fd6">PEP 8 建议单例用 is 比较</text>
+
+        <rect x="526" y="30" width="166" height="120" rx="9" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="609" y="58" font-size="14" fill="#127a44" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">in　not in</text>
+        <text x="544" y="86" font-size="11" fill="#1f2430">判断成员是否存在</text>
+        <text x="544" y="106" font-size="11" fill="#1f2430">对字符串即「是否为子串」</text>
+        <text x="544" y="130" font-size="11" fill="#127a44">空字符串被视为任何串的子串</text>
+
+        <rect x="8" y="168" width="684" height="172" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="28" y="194" font-size="13.5" font-weight="700" fill="#b45309">⚠ 在条件判断中会被当成「假」的值</text>
+        <line x1="24" y1="208" x2="676" y2="208" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="28" y="232" font-size="12" fill="#78350f" font-family="ui-monospace,Consolas,monospace">None　｜　False　｜　0　｜　0.0　｜　0j　（任何数值类型的零）</text>
+        <text x="28" y="258" font-size="12" fill="#78350f" font-family="ui-monospace,Consolas,monospace">''　空字符串　｜　()　｜　[]　｜　{}　｜　set()　｜　range(0)</text>
+        <line x1="24" y1="276" x2="676" y2="276" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="28" y="298" font-size="12" fill="#127a44" font-family="ui-monospace,Consolas,monospace">'0'　'False'　[0]　　→ 这些算「真」：非空字符串、非空列表</text>
+        <text x="28" y="322" font-size="11.5" fill="#b45309">判定依据是「数值为零」或「容器为空」，不是字面看起来像不像否定。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：比较运算不是一个整体，<code>==</code> 比的是值、<code>is</code> 比的是同一个对象、<code>in</code> 比的是「在不在里面」；而「假值」的判断依据是「空」或「零」，所以 <code>'False'</code> 是非空字符串，反而算真。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · if / elif / else 的走向与缩进</div>
+      <div class="vsub">分支自上而下依次检查，第一个成立的分支执行完即跳出；缩进决定哪些语句属于这个分支。</div>
+      <svg viewBox="0 0 700 380" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>if、elif、else 分支走向与缩进层级示意图</title>
+        <desc>条件自上而下依次判断，命中正面词则打正面标签，命中负面词则打负面标签，都不命中则落入 else 打中性标签；下方示意缩进决定语句归属哪个分支。</desc>
+        <defs>
+          <marker id="bl-a" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#2f6fed"/>
+          </marker>
+          <marker id="bl-g" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#1a9e5a"/>
+          </marker>
+          <marker id="bl-w" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#d97706"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="24" width="240" height="48" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="140" y="46" font-size="12.5" fill="#1c4fb8" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">if 命中正面词:</text>
+        <text x="140" y="63" font-size="11" fill="#5b6472" text-anchor="middle">第一个被检查的条件</text>
+        <line x1="266" y1="48" x2="396" y2="48" stroke="#1a9e5a" stroke-width="1.6" marker-end="url(#bl-g)"/>
+        <text x="331" y="40" font-size="11" fill="#127a44" text-anchor="middle">条件为真</text>
+        <rect x="404" y="24" width="200" height="48" rx="9" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="504" y="53" font-size="12.5" fill="#127a44" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">标签 = "正面"</text>
+
+        <line x1="140" y1="78" x2="140" y2="106" stroke="#d97706" stroke-width="1.6" marker-end="url(#bl-w)"/>
+        <text x="150" y="98" font-size="11" fill="#b45309">条件为假</text>
+        <rect x="20" y="112" width="240" height="48" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="140" y="134" font-size="12.5" fill="#1c4fb8" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">elif 命中负面词:</text>
+        <text x="140" y="151" font-size="11" fill="#5b6472" text-anchor="middle">上一个不成立才检查</text>
+        <line x1="266" y1="136" x2="396" y2="136" stroke="#1a9e5a" stroke-width="1.6" marker-end="url(#bl-g)"/>
+        <text x="331" y="128" font-size="11" fill="#127a44" text-anchor="middle">条件为真</text>
+        <rect x="404" y="112" width="200" height="48" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.2"/>
+        <text x="504" y="141" font-size="12.5" fill="#b45309" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">标签 = "负面"</text>
+
+        <line x1="140" y1="166" x2="140" y2="194" stroke="#d97706" stroke-width="1.6" marker-end="url(#bl-w)"/>
+        <text x="150" y="186" font-size="11" fill="#b45309">条件为假</text>
+        <rect x="20" y="200" width="240" height="48" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="140" y="222" font-size="12.5" fill="#1c4fb8" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">else:</text>
+        <text x="140" y="239" font-size="11" fill="#5b6472" text-anchor="middle">兜底分支，可省略</text>
+        <line x1="266" y1="224" x2="396" y2="224" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#bl-a)"/>
+        <text x="331" y="216" font-size="11" fill="#1c4fb8" text-anchor="middle">默认执行</text>
+        <rect x="404" y="200" width="200" height="48" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="504" y="229" font-size="12.5" fill="#1c4fb8" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">标签 = "中性"</text>
+
+        <text x="620" y="48" font-size="11" fill="#5b6472" text-anchor="middle">执行完</text>
+        <text x="620" y="66" font-size="11" fill="#5b6472" text-anchor="middle">即跳出</text>
+        <line x1="612" y1="26" x2="612" y2="246" stroke="#b9c9ee" stroke-width="1.2" stroke-dasharray="4 4"/>
+
+        <rect x="8" y="266" width="684" height="106" rx="10" fill="#fafbfc" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="26" y="290" font-size="12.5" font-weight="700" fill="#1f2430">缩进决定语句归属：同一分支内的语句缩进必须一致</text>
+        <text x="26" y="314" font-size="11.5" fill="#1f2430" font-family="ui-monospace,Consolas,monospace">if hits &gt; 0:            <tspan fill="#5b6472">← 冒号结尾</tspan></text>
+        <text x="26" y="334" font-size="11.5" fill="#127a44" font-family="ui-monospace,Consolas,monospace">    tag = "正面"       <tspan fill="#5b6472">← 缩进 4 个空格，属于 if 分支</tspan></text>
+        <text x="26" y="354" font-size="11.5" fill="#b03a36" font-family="ui-monospace,Consolas,monospace">tag = "中性"           <tspan fill="#5b6472">← 未缩进，已跳出分支</tspan></text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>elif</code> 只有在前面所有条件都不成立时才会被检查，第一个成立的分支执行完后整个 <code>if</code> 语句即结束；缩进不是排版偏好，而是 Python 用来分组语句的语法。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 关键词打标签：规则法能覆盖什么、漏掉什么</div>
+      <div class="vsub">上一条评论被关键词命中，规则法判断正确；下一条评论不含任何负面词，规则法给出「中性」，而人工判断是差评。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>关键词规则法打标签的正确命中与漏判对比示意图</title>
+        <desc>含正面关键词的评论被规则法正确判为正面；不含任何负面关键词但语义为差评的评论被规则法判为中性，形成漏判。</desc>
+        <defs>
+          <marker id="bl-b" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="8" y="14" width="684" height="118" rx="10" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="26" y="38" font-size="12.5" font-weight="700" fill="#127a44">✓ 命中情形：关键词出现，规则法判断与人工一致</text>
+        <rect x="26" y="50" width="320" height="40" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="40" y="75" font-size="12" fill="#1f2430">评论：「主持人的表现太好了，现场秩序也好」</text>
+        <line x1="352" y1="70" x2="392" y2="70" stroke="#5b6472" stroke-width="1.4" marker-end="url(#bl-b)"/>
+        <rect x="400" y="50" width="270" height="40" rx="8" fill="#d6f5e6" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="414" y="75" font-size="12" fill="#127a44">命中关键词「好」→ 标签 = 正面</text>
+        <text x="26" y="112" font-size="11.5" fill="#5b6472">依据：字符串成员检测 in，或 str.find() 的返回值大于等于 0。</text>
+
+        <rect x="8" y="146" width="684" height="118" rx="10" fill="#fdf0ef" stroke="#d9534f" stroke-width="1.2"/>
+        <text x="26" y="170" font-size="12.5" font-weight="700" fill="#b03a36">✗ 漏判情形：关键词一个都没出现，规则法判为中性</text>
+        <rect x="26" y="182" width="320" height="40" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="40" y="207" font-size="12" fill="#1f2430">评论：「这服务真是绝了」</text>
+        <line x1="352" y1="202" x2="392" y2="202" stroke="#5b6472" stroke-width="1.4" marker-end="url(#bl-b)"/>
+        <rect x="400" y="182" width="270" height="40" rx="8" fill="#ffd9d6" stroke="#d9534f" stroke-width="1.1"/>
+        <text x="414" y="207" font-size="12" fill="#b03a36">零命中 → 落入 else → 标签 = 中性</text>
+        <text x="26" y="244" font-size="11.5" fill="#78350f">但人工判断是差评：反讽、程度副词与语境都不在关键词表里，规则法无从下手。</text>
+
+        <rect x="8" y="272" width="684" height="22" rx="6" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="26" y="288" font-size="11.5" fill="#b45309">这就是规则法的边界：命中就能用，不命中不等于中性，只等于「规则没覆盖到」。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：规则法给出的「中性」有两种完全不同的来源——一种是确实没有情感倾向，另一种只是关键词表没覆盖到，两者在结果上无法区分，这是后续必须引入机器学习方法的原因。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图 1 的比较运算分类、图 2 的分支顺序与缩进规则，依据 Python 官方文档《表达式》6.10 节、6.11 节、《内置类型》真值检测一节与《更多控制流工具》整理；图 3 属于对规则法局限的通俗化概括，为辅助说明。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一次条件判断由三部分配合完成：<strong>比较运算</strong>把数据换算成真假，<strong>布尔运算</strong>把多个真假组合成一个，<strong>缩进与分支语句</strong>决定按这个结果执行哪一段代码。</p>
+
+    <h3>比较运算符的分类与职责</h3>
+    <table>
+      <tr><th>运算符</th><th>比较什么</th><th>说明</th></tr>
+      <tr><td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td><td>两个对象的值（次序）</td><td>官方文档指出，次序比较默认没有提供，未实现比较方法的内置类型会引发 <code>TypeError</code>；字符串按 Unicode 码位数字值进行字典序比较。</td></tr>
+      <tr><td><code>==</code> <code>!=</code></td><td>两个对象的值（相等性）</td><td>两个对象不要求类型相同，因此 <code>5 == 5.0</code> 为真；数值类型可进行类型内部与跨类型的比较。</td></tr>
+      <tr><td><code>is</code> <code>is not</code></td><td>对象的标识号</td><td>当且仅当 <code>x</code> 与 <code>y</code> 是同一对象时为真，标识号可用 <code>id()</code> 获取。PEP 8 建议单例对象（如 <code>None</code>）的比较总是用 <code>is</code> 或 <code>is not</code>。</td></tr>
+      <tr><td><code>in</code> <code>not in</code></td><td>成员是否存在于容器中</td><td>对字符串而言，当且仅当 <code>x</code> 是 <code>y</code> 的子串时为真；空字符串被视为任何字符串的子串，因此 <code>"" in "abc"</code> 为真。</td></tr>
+    </table>
+
+    <h3>布尔运算与短路求值</h3>
+    <table>
+      <tr><th>写法</th><th>求值结果（官方文档表述）</th><th>短路行为</th></tr>
+      <tr><td><code>x or y</code></td><td>先对 <code>x</code> 求值；如果 <code>x</code> 为真则返回该值，否则对 <code>y</code> 求值并返回其结果值</td><td>仅当 <code>x</code> 为假时才求值 <code>y</code></td></tr>
+      <tr><td><code>x and y</code></td><td>先对 <code>x</code> 求值；如果 <code>x</code> 为假则返回该值，否则对 <code>y</code> 求值并返回其结果值</td><td>仅当 <code>x</code> 为真时才求值 <code>y</code></td></tr>
+      <tr><td><code>not x</code></td><td>如果 <code>x</code> 为假则产生 <code>True</code>，否则产生 <code>False</code></td><td>总是返回布尔值，不返回操作数</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">官方文档补充说明：<code>and</code> 与 <code>or</code> 都不限制返回值必须为 <code>False</code> 和 <code>True</code>，而是返回最后被求值的操作数。这一性质使 <code>s or 'foo'</code> 这类写法可以用于给空字符串设置默认值。</p>
+
+    <h3>分支语句与真值检测</h3>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><code>if</code> 条件:</td><td>必备的第一个分支。官方教程说明：可有零个或多个 <code>elif</code> 部分，<code>else</code> 部分也是可选的。</td></tr>
+      <tr><td><code>elif</code> 条件:</td><td><code>else if</code> 的缩写，用于避免过多缩进；只有在前面所有条件都不成立时才会被检查。</td></tr>
+      <tr><td><code>else</code>:</td><td>兜底分支，不带条件，前面全部不成立时执行。</td></tr>
+      <tr><td>缩进</td><td>Python 用来组织语句的方式，同一块语句的每一行缩进必须相同。官方教程的编码风格建议是用 4 个空格，不要用制表符。</td></tr>
+      <tr><td>真值检测</td><td>条件位置上并不要求出现布尔值：<code>False</code>、<code>None</code>、任何数值类型的零、以及空字符串与空容器都被解读为假，其他值都被解读为真。</td></tr>
+      <tr><td>条件表达式</td><td>官方文档定义：<code>x if C else y</code> 首先对条件 <code>C</code> 而非 <code>x</code> 求值；<code>C</code> 为真则求值并返回 <code>x</code>，否则求值并返回 <code>y</code>。</td></tr>
+    </table>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      给一批稿件标题和评论打上「正面 / 负面 / 中性」标签，是内容运营与舆情梳理中最常见的整理工作。在还没有学习任何机器学习方法之前，最原始的实现方式就是准备两张关键词表，再用条件判断逐条比对——这可以看作情感分析最初级的形态。
+    </p>
+    <pre><span class="c"># 场景：按关键词给标题与评论打标签</span>
+POSITIVE = [<span class="s">"好"</span>, <span class="s">"赞"</span>, <span class="s">"顺利"</span>, <span class="s">"提升"</span>, <span class="s">"满意"</span>]
+NEGATIVE = [<span class="s">"差"</span>, <span class="s">"糟"</span>, <span class="s">"拥堵"</span>, <span class="s">"投诉"</span>, <span class="s">"不满"</span>]
+
+<span class="k">def</span> tag_by_keyword(text):
+    <span class="c"># in 做成员检测：对字符串而言即「是否为子串」</span>
+    hit_pos = [w <span class="k">for</span> w <span class="k">in</span> POSITIVE <span class="k">if</span> w <span class="k">in</span> text]
+    hit_neg = [w <span class="k">for</span> w <span class="k">in</span> NEGATIVE <span class="k">if</span> w <span class="k">in</span> text]
+
+    <span class="c"># 先判负面：负面词一旦出现即优先，避免被正面词冲淡</span>
+    <span class="k">if</span> hit_neg:
+        tag = <span class="s">"负面"</span>
+    <span class="k">elif</span> hit_pos:
+        tag = <span class="s">"正面"</span>
+    <span class="k">else</span>:
+        tag = <span class="s">"中性"</span>       <span class="c"># 兜底：也可能只是「没覆盖到」，见下文说明</span>
+
+    <span class="k">return</span> tag, hit_pos, hit_neg
+
+<span class="c"># 批量处理一批标题与评论</span>
+texts = [
+    <span class="s">"地铁票价调整方案公布，市民表示满意"</span>,
+    <span class="s">"施工期间道路拥堵，接到的投诉明显增加"</span>,
+    <span class="s">"这服务真是绝了"</span>,
+]
+
+<span class="k">for</span> t <span class="k">in</span> texts:
+    tag, pos, neg = tag_by_keyword(t)
+    print(<span class="s">f"{tag}｜命中 正面{pos} 负面{neg}｜{t}"</span>)
+
+<span class="c"># 输出：</span>
+<span class="c"># 正面｜命中 正面['满意'] 负面[]｜地铁票价调整方案公布，市民表示满意</span>
+<span class="c"># 负面｜命中 正面[] 负面['拥堵', '投诉']｜施工期间道路拥堵，接到的投诉明显增加</span>
+<span class="c"># 中性｜命中 正面[] 负面[]｜这服务真是绝了      ← 明显判错</span>
+
+<span class="c"># 短路求值的常见用法：先判空，避免对空字符串做无意义操作</span>
+title = <span class="s">""</span>
+<span class="k">if</span> title <span class="k">and</span> <span class="s">"地铁"</span> <span class="k">in</span> title:
+    print(<span class="s">"命中选题"</span>)
+<span class="k">else</span>:
+    print(<span class="s">"标题为空或未命中，跳过"</span>)   <span class="c"># title 为空字符串即「假」，右侧不再求值</span>
+
+<span class="c"># 条件表达式：一行内完成二选一</span>
+name = <span class="s">""</span>
+author = name <span class="k">or</span> <span class="s">"未署名"</span>            <span class="c"># or 返回操作数本身，空字符串被替换为默认值</span>
+print(author)                          <span class="c"># 未署名</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明条件判断在打标签任务中的实际写法，属于辅助理解示例，非某个来源的原文代码。</p>
+
+    <div class="warnbox">
+      <span class="lbl">🔚 收尾 · 规则法为什么不够</span>
+      上面的实现把「不命中」直接等同于「中性」，而这两件事并不是一回事。评论「这服务真是绝了」不含任何负面词，规则法给出「中性」，但人工阅读会判断为差评——这不是代码写错了，而是方法本身的边界。规则法能看到的只有「某个词是否出现过」这一个信号，它看不见词与词之间的关系，也看不见语气。
+    </div>
+    <p>
+      具体地说，规则法至少在三类语言现象上会系统性失效。<strong>第一类是反讽与语义反转</strong>：「绝了」「真有你的」这类表达没有固定的情感极性，褒贬完全取决于语境，任何固定关键词表都无法同时覆盖两种用法。<strong>第二类是否定与双重否定</strong>：「不满意」里的「满意」是正面词，但前缀「不」把它翻转了；如果只做子串匹配，<code>"满意" in "不满意"</code> 仍然为真，判断会直接反向。<strong>第三类是程度与语境依赖</strong>：「票价调整」本身不含情感，但放在涨价语境里往往引发负面情绪，这类判断需要读完上下文才能做出。
+    </p>
+    <p>
+      更关键的是，规则法的输出里，「真的没有情感倾向」和「关键词表没覆盖到」这两种情况<strong>结果完全相同</strong>，都是「中性」，因此无法仅凭输出判断系统在哪里失效，也就无法通过加词表来彻底修好它。这种「靠人写出全部规则」的路线在真实文本上的天花板，正是后续引入统计方法与机器学习方法的出发点：那类方法不再依赖人工枚举关键词，而是从大量已标注的文本中自动学习「什么样的表达通常对应什么样的情感」。本页的规则法示例因此有双重作用——它既是马上可用的打标签工具，也是理解后续 AI 方法要解决什么问题的最直接对照。
+    </p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>=</code> 是赋值，<code>==</code> 才是判断相等。</strong><code>x = 5</code> 让名字指向 5，本身不产生真假值；<code>x == 5</code> 才是一个比较表达式。把 <code>==</code> 误写成 <code>=</code> 在 <code>if</code> 条件中是直接的语法错误，常见的报错是 <code>SyntaxError: invalid syntax</code>。</li>
+      <li><strong><code>and</code> 与 <code>or</code> 返回的是操作数本身，不是布尔值。</strong>官方文档写明二者「返回最后被求值的操作数」。例如 <code>"" or "未署名"</code> 得到字符串 <code>"未署名"</code>，<code>"标题" and "导语"</code> 得到字符串 <code>"导语"</code>。只有在条件位置被使用时，它们才被解读为真假。要确保拿到布尔值，应显式套一层 <code>bool()</code>。而 <code>not</code> 是例外，它总是返回布尔值。</li>
+      <li><strong><code>not a == b</code> 等价于 <code>not (a == b)</code>。</strong>官方文档的备注指出，<code>not</code> 的优先级低于非布尔运算符，因此 <code>not a == b</code> 被解释为 <code>not (a == b)</code>；而 <code>a == not b</code> 则是语法错误。同样地，在所有运算符中，比较运算的优先级低于任何算术、移位或位运算。</li>
+      <li><strong>空字符串为假，<code>'False'</code> 却为真。</strong>假值的判定依据是「数值为零」或「容器为空」，与字面内容无关。<code>''</code> 是空字符串，为假；<code>'False'</code> 与 <code>'0'</code> 都是<strong>非空</strong>字符串，为真；<code>[0]</code> 是含一个元素的非空列表，同样为真。从文件读到的字符串如果内容是 <code>"0"</code>，在条件里会走「真」分支，需要先转成数字再判断。</li>
+      <li><strong><code>==</code> 比较值，<code>is</code> 比较是不是同一个对象。</strong>官方文档说明 <code>is</code> 检测的是标识号。<code>None</code> 与 <code>NotImplemented</code> 是单例对象，PEP 8 建议单例比较总是通过 <code>is</code> 或 <code>is not</code>，绝不要用等于运算符。字符串与整数这类不可变对象的比较，通常应使用 <code>==</code>。</li>
+      <li><strong>缩进错误不会被当成「格式问题」轻轻放过。</strong>官方教程说明「同一块语句的每一行的缩进相同」，缩进不一致会直接触发 <code>IndentationError</code>。官方编码风格建议是每层缩进用 4 个空格而非制表符，因为混用制表符与空格会产生难以肉眼分辨的对齐问题。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条均以 Python 官方文档为依据。<code>and</code> / <code>or</code> 返回操作数、<code>not a == b</code> 的优先级、<code>is</code> 与 <code>==</code> 的区别、假值清单，见《表达式》6.10 至 6.11 节与《内置类型》真值检测一节；<code>if</code> / <code>elif</code> / <code>else</code> 的结构与缩进要求，见官方教程《4. 更多控制流工具》4.1 节与 4.10 节；单例比较用 <code>is</code> 的建议见 PEP 8。第六节关于规则法局限的讨论属于辅助说明，非官方结论。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>1. 执行 <code>print(5 == 5.0)</code> 的输出是什么？</div>
+      <button class="opt" data-v="A">A. <code>True</code></button>
+      <button class="opt" data-v="B">B. <code>False</code></button>
+      <button class="opt" data-v="C">C. 抛出 <code>TypeError</code>，因为 <code>int</code> 与 <code>float</code> 类型不同</button>
+      <button class="opt" data-v="D">D. <code>None</code></button>
+      <div class="fb" data-ok="✅ 正确。官方文档说明：运算符 &lt;, &gt;, ==, &gt;=, &lt;= 和 != 将比较两个对象的值，两个对象不要求为相同类型；内置数值类型可进行类型内部和跨类型的比较，按数学规则正确比较且不会有精度损失。因此 5 == 5.0 为真。"></div>
+      <div class="src">📎 来源：Python 官方文档《6. 表达式 · 6.10.1 值比较》—— docs.python.org/zh-cn/3/reference/expressions.html#value-comparisons</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-e">入门</span>2. 下列哪个值放在 <code>if</code> 条件中会被当成「假」？</div>
+      <button class="opt" data-v="A">A. <code>"0"</code></button>
+      <button class="opt" data-v="B">B. <code>[0]</code></button>
+      <button class="opt" data-v="C">C. <code>"False"</code></button>
+      <button class="opt" data-v="D">D. <code>[]</code></button>
+      <div class="fb" data-ok="✅ 正确。官方文档列出的假值包括：None 与 False、任何数值类型的零、以及空序列与空集合（''、()、[]、{}、set()、range(0)）。[] 是空列表，为假；'0' 与 'False' 都是非空字符串，为真；[0] 是含一个元素的非空列表，也为真。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型 · 真值检测（Truth Value Testing）》—— docs.python.org/zh-cn/3/library/stdtypes.html#truth-value-testing</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 已知 <code>a = ""</code>、<code>b = "未署名"</code>，表达式 <code>a or b</code> 与 <code>a and b</code> 的结果分别是？</div>
+      <button class="opt" data-v="A">A. <code>True</code> 与 <code>False</code></button>
+      <button class="opt" data-v="B">B. <code>True</code> 与 <code>""</code></button>
+      <button class="opt" data-v="C">C. <code>"未署名"</code> 与 <code>""</code></button>
+      <button class="opt" data-v="D">D. <code>""</code> 与 <code>"未署名"</code></button>
+      <div class="fb" data-ok="✅ 正确。官方文档写的是：x or y 先对 x 求值，如果 x 为真则返回该值，否则对 y 求值并返回其结果值；x and y 先对 x 求值，如果 x 为假则返回该值，否则对 y 求值并返回其结果值。空字符串为假，所以 a or b 返回 b 本身即 '未署名'，a and b 返回 a 本身即 ''。and 与 or 返回的是操作数，不是 True/False。"></div>
+      <div class="src">📎 来源：Python 官方文档《6. 表达式 · 6.11 布尔运算》—— docs.python.org/zh-cn/3/reference/expressions.html#boolean-operations</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 表达式 <code>not a == b</code> 按照 Python 的优先级会被解释为？</div>
+      <button class="opt" data-v="A">A. <code>(not a) == b</code></button>
+      <button class="opt" data-v="B">B. <code>not (a == b)</code></button>
+      <button class="opt" data-v="C">C. 语法错误，<code>not</code> 不能与 <code>==</code> 连用</button>
+      <button class="opt" data-v="D">D. <code>a != b</code></button>
+      <div class="fb" data-ok="✅ 正确。官方文档的备注明确写道：not 的优先级低于非布尔运算符，所以 not a == b 被解释为 not (a == b)，而 a == not b 是语法错误。也就是说比较运算先算，not 最后作用于比较结果。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型 · 布尔运算》优先级备注 — docs.python.org/zh-cn/3/library/stdtypes.html#boolean-operations-and-or-not；并见《表达式 · 6.17 运算符优先级》</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 阅读代码：<br><code>text = "地铁票价调整"</code><br><code>if "票价" in text and text.find("导语") &gt; 0:</code><br><code>　　tag = "含导语"</code><br><code>else:</code><br><code>　　tag = "不含导语"</code><br>执行后 <code>tag</code> 的值，以及 <code>find()</code> 是否被求值，分别是？</div>
+      <button class="opt" data-v="A">A. <code>"含导语"</code>；短路求值使 <code>find()</code> 被跳过</button>
+      <button class="opt" data-v="B">B. <code>"不含导语"</code>；第一个条件为真，因此 <code>and</code> 继续求值第二个条件，<code>find()</code> 返回 <code>-1</code>，<code>-1 &gt; 0</code> 为假</button>
+      <button class="opt" data-v="C">C. <code>"含导语"</code>；<code>find()</code> 找不到时会抛异常并被当作真值</button>
+      <button class="opt" data-v="D">D. <code>"不含导语"</code>；<code>and</code> 在第一个操作数为真时直接返回 <code>False</code></button>
+      <div class="fb" data-ok="✅ 正确。and 只在第一个操作数为假时才短路，这里「票价」in text 为真，所以第二个操作数会被求值。find() 找不到子串时返回 -1（官方文档明确写出这一点），-1 > 0 为假，整个 and 表达式为假，进入 else 分支。D 的错误在于 and 在两个操作数都为真时返回的是最后一个操作数本身，而不是布尔 False。"></div>
+      <div class="src">📎 来源：Python 官方文档《6. 表达式 · 6.11 布尔运算》（短路求值与操作数返回值）—— docs.python.org/zh-cn/3/reference/expressions.html#boolean-operations；《内置类型 · str.find()》返回 -1 —— docs.python.org/zh-cn/3/library/stdtypes.html#string-methods</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为已逐条访问核查过的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方文档《6. 表达式 · 6.11 布尔运算》（<code>and</code> / <code>or</code> / <code>not</code> 的求值规则、短路求值、返回最后被求值的操作数、假值清单） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html#boolean-operations" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html#boolean-operations</a></li>
+      <li>Python 官方文档《6. 表达式 · 6.10 比较运算》（<code>&lt;</code> <code>&gt;</code> <code>==</code> <code>&gt;=</code> <code>&lt;=</code> <code>!=</code> 比较值、<code>is</code> / <code>is not</code> 比较标识号、<code>in</code> / <code>not in</code> 成员检测、跨类型比较与字典序规则） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html#comparisons" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html#comparisons</a></li>
+      <li>Python 官方文档《6. 表达式 · 6.13 条件表达式》（<code>x if C else y</code> 的求值顺序） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html#conditional-expressions" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html#conditional-expressions</a></li>
+      <li>Python 官方文档《内置类型 · 真值检测与布尔运算》（假值清单、<code>not a == b</code> 的优先级备注） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#truth-value-testing" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html#truth-value-testing</a></li>
+      <li>Python 官方教程《4. 更多控制流工具 · 4.1 if 语句》（<code>if</code> / <code>elif</code> / <code>else</code> 结构与示例、4.10 编码风格中的缩进建议） — <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html#if-statements" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/controlflow.html#if-statements</a></li>
+      <li>Python 官方教程《3. Python 速览 · 3.2 走向编程的第一步》（缩进是 Python 组织语句的方式、比较运算符写法与「长度非零就为真，空序列则为假」） — <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html#first-steps-towards-programming" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/introduction.html#first-steps-towards-programming</a></li>
+      <li>PEP 8 —— Style Guide for Python Code（Indentation 一节：每层缩进用 4 个空格，不要用制表符；单例对象应用 <code>is</code> / <code>is not</code> 比较） — <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">peps.python.org/pep-0008/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格中的技术结论、第七节六条辨析，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码与关于「规则法局限」的讨论，均为辅助理解的通俗化产物，非官方原文；其中规则法局限一节属于对方法边界的常识性概括，其解决方案（统计方法与机器学习）将在后续课程阶段展开，不在本页范围内。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

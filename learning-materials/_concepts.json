@@ -1,0 +1,189 @@
+{
+  "course": "Python 基础（13 次课 · 新闻学专业定制）",
+  "generatedBy": "concept-learner",
+  "version": "v1.0",
+  "date": "2026-09-17",
+  "outputDir": "learning-materials/",
+  "templatePath": "D:/大数据与人工智能/big-data-and-ai/.workbuddy/skills/concept-learner/assets/learning-template.html",
+  "skillPath": "D:/大数据与人工智能/big-data-and-ai/.workbuddy/skills/concept-learner/SKILL.md",
+  "sourcePolicyPath": "D:/大数据与人工智能/big-data-and-ai/.workbuddy/skills/concept-learner/references/source-policy.md",
+  "boards": [
+    { "id": "b1", "name": "板块一 · Python 起步", "lessons": "第 1–3 课", "goal": "能写能跑，看得懂报错" },
+    { "id": "b2", "name": "板块二 · 循环与容器", "lessons": "第 4–6 课", "goal": "批量处理，替代手工" },
+    { "id": "b3", "name": "板块三 · 函数与工程化", "lessons": "第 7–9 课", "goal": "代码可复用，能读写文件" },
+    { "id": "b4", "name": "板块四 · AI 前置数据能力", "lessons": "第 10–13 课", "goal": "会正则、NumPy、pandas" },
+    { "id": "b5", "name": "选修 / 综合", "lessons": "不占正课", "goal": "按需自学与结课项目" }
+  ],
+  "concepts": [
+    {
+      "id": "variables-and-data-types",
+      "name": "变量与数据类型",
+      "file": "variables-and-data-types.html",
+      "board": "b1",
+      "lesson": "第 1 课",
+      "prereq": [],
+      "next": ["strings-and-text", "booleans-and-conditionals", "lists"],
+      "summary": "把「标题」「字数」这些概念装进变量；str / int / float / bool 四种基础类型与其转换规则。"
+    },
+    {
+      "id": "strings-and-text",
+      "name": "字符串与文本处理",
+      "file": "strings-and-text.html",
+      "board": "b1",
+      "lesson": "第 2 课",
+      "prereq": ["variables-and-data-types"],
+      "next": ["booleans-and-conditionals", "regular-expressions"],
+      "summary": "索引切片、split / join / strip / replace、f-string；把脏稿件清洗成规范文本。"
+    },
+    {
+      "id": "booleans-and-conditionals",
+      "name": "布尔逻辑与条件判断",
+      "file": "booleans-and-conditionals.html",
+      "board": "b1",
+      "lesson": "第 3 课",
+      "prereq": ["variables-and-data-types", "strings-and-text"],
+      "next": ["loops", "comprehensions"],
+      "summary": "True / False 与比较运算；if / elif / else；and / or / not；用规则给文本打标签及其局限。"
+    },
+    {
+      "id": "lists",
+      "name": "列表",
+      "file": "lists.html",
+      "board": "b2",
+      "lesson": "第 4 课",
+      "prereq": ["variables-and-data-types"],
+      "next": ["loops", "dictionaries-and-sets", "comprehensions"],
+      "summary": "有序容器：增删改查、索引与切片、sort / sorted，一次装一批数据。"
+    },
+    {
+      "id": "loops",
+      "name": "循环（for / while）",
+      "file": "loops.html",
+      "board": "b2",
+      "lesson": "第 4、6 课",
+      "prereq": ["lists"],
+      "next": ["dictionaries-and-sets", "comprehensions", "functions"],
+      "summary": "for 与 while、range、enumerate、break / continue；从处理一条数据到处理一万条。"
+    },
+    {
+      "id": "dictionaries-and-sets",
+      "name": "字典与集合",
+      "file": "dictionaries-and-sets.html",
+      "board": "b2",
+      "lesson": "第 5 课",
+      "prereq": ["lists", "loops"],
+      "next": ["comprehensions", "pandas-dataframe"],
+      "summary": "键值对映射与去重集合；get / setdefault；词频统计与 Top-N 排行的基本工具。"
+    },
+    {
+      "id": "comprehensions",
+      "name": "推导式",
+      "file": "comprehensions.html",
+      "board": "b2",
+      "lesson": "第 6 课",
+      "prereq": ["lists", "loops", "dictionaries-and-sets"],
+      "next": ["functions"],
+      "summary": "列表推导式与字典推导式：把「建容器 + 循环 + 判断」三件事写成一行。"
+    },
+    {
+      "id": "functions",
+      "name": "函数",
+      "file": "functions.html",
+      "board": "b3",
+      "lesson": "第 7 课",
+      "prereq": ["comprehensions"],
+      "next": ["exceptions", "modules-and-packages"],
+      "summary": "def、参数与返回值、默认参数、作用域、docstring；把重复代码打包成可复用单元。"
+    },
+    {
+      "id": "file-io-and-encoding",
+      "name": "文件读写与编码",
+      "file": "file-io-and-encoding.html",
+      "board": "b3",
+      "lesson": "第 8 课",
+      "prereq": ["strings-and-text", "dictionaries-and-sets"],
+      "next": ["exceptions", "pandas-dataframe"],
+      "summary": "open / with、读写 txt 与 CSV、utf-8 与 gbk 中文乱码的成因与解决。"
+    },
+    {
+      "id": "exceptions",
+      "name": "异常处理",
+      "file": "exceptions.html",
+      "board": "b3",
+      "lesson": "第 8 课",
+      "prereq": ["functions"],
+      "next": ["modules-and-packages"],
+      "summary": "try / except / else / finally；读懂报错栈，让程序在遇到坏数据时不整体崩掉。"
+    },
+    {
+      "id": "modules-and-packages",
+      "name": "模块与包",
+      "file": "modules-and-packages.html",
+      "board": "b3",
+      "lesson": "第 9 课",
+      "prereq": ["functions"],
+      "next": ["numpy-and-vectorization", "pandas-dataframe"],
+      "summary": "import 机制、pip 安装第三方库、__name__、虚拟环境；从单文件脚本走向多文件项目。"
+    },
+    {
+      "id": "regular-expressions",
+      "name": "正则表达式",
+      "file": "regular-expressions.html",
+      "board": "b4",
+      "lesson": "第 10 课",
+      "prereq": ["strings-and-text"],
+      "next": ["numpy-and-vectorization", "pandas-dataframe"],
+      "summary": "元字符、字符类、量词、分组；用 re 批量清洗评论：去表情、去网址、提取数字与日期。"
+    },
+    {
+      "id": "numpy-and-vectorization",
+      "name": "NumPy 与向量化",
+      "file": "numpy-and-vectorization.html",
+      "board": "b4",
+      "lesson": "第 11 课",
+      "prereq": ["lists", "loops"],
+      "next": ["pandas-dataframe"],
+      "summary": "ndarray、形状与维度、索引切片、广播；为什么向量化比 for 循环快得多。"
+    },
+    {
+      "id": "pandas-dataframe",
+      "name": "pandas 与 DataFrame",
+      "file": "pandas-dataframe.html",
+      "board": "b4",
+      "lesson": "第 12–13 课",
+      "prereq": ["dictionaries-and-sets", "numpy-and-vectorization"],
+      "next": ["matplotlib-basics"],
+      "summary": "Series 与 DataFrame、读写 CSV/Excel、筛选排序、缺失值处理、groupby 分组聚合。"
+    },
+    {
+      "id": "matplotlib-basics",
+      "name": "matplotlib 可视化",
+      "file": "matplotlib-basics.html",
+      "board": "b4",
+      "lesson": "第 13 课",
+      "prereq": ["pandas-dataframe"],
+      "next": [],
+      "summary": "用直方图 / 柱状图 / 折线图把统计结果画出来，以及中文乱码的解决办法。"
+    },
+    {
+      "id": "classes-and-objects",
+      "name": "类与对象（选修）",
+      "file": "classes-and-objects.html",
+      "board": "b5",
+      "lesson": "不占正课",
+      "prereq": ["functions", "dictionaries-and-sets"],
+      "next": [],
+      "summary": "读懂别人代码里的 class：属性、方法、实例化；做 AI 应用只需能读懂，不必从零设计。"
+    },
+    {
+      "id": "text-analysis-project",
+      "name": "新闻评论文本分析（综合实践）",
+      "file": "text-analysis-project.html",
+      "board": "b5",
+      "lesson": "第 13 课结课项目",
+      "prereq": ["pandas-dataframe", "matplotlib-basics", "regular-expressions"],
+      "next": [],
+      "summary": "把清洗、统计、分组、出图串成一条完整流水线，产出一份可交付的数据分析小结。"
+    }
+  ]
+}

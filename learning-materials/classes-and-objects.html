@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 类与对象（选修）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  .scope{background:#f5f3ff;border-left:4px solid #7c5cff;border-radius:8px;padding:12px 16px;margin:12px 0}
+  .scope .lbl{font-weight:700;color:#4c3aa8;font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块五 · 选修与综合 ｜ 选修，不占正课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>类与对象（选修）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础 · 面向对象</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <div class="scope"><span class="lbl">📌 本页的定位</span>
+      本页面向的是「<strong>能读懂别人写的代码</strong>」，而不是「从零设计一个类」。目标是：翻到任何一份第三方库文档或示例代码，能看出哪一行在创建对象、哪一行在调用方法、括号里的东西对应文档中的哪张参数表，从而照着文档改参数、把示例跑通。因此本页不展开特殊方法重载、元类、抽象基类等设计话题。
+    </div>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>类和实例是什么关系？为什么说「类是模具，实例是产品」？</li>
+      <li><code>__init__</code> 在什么时候被调用？<code>self</code> 到底指向谁、为什么不用手动传？</li>
+      <li>类属性与实例属性有什么区别？为什么有时改一个实例的属性能影响另一个实例、有时又不会？</li>
+      <li>读第三方库代码时，<code>model = SomeModel(...)</code>、<code>model.fit(X, y)</code>、<code>model.predict(X)</code> 这三步分别在做什么？</li>
+      <li>为什么做 AI 应用通常只需要「读懂」对象，而不必自己写类？读懂之后能获得什么能力？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——当「一批数据」和「能对这批数据做的操作」需要绑在一起反复使用时，函数与字典的组合会变得松散；类提供了什么组织方式？</li>
+      <li><strong>它由什么组成</strong>——一个类里通常包含哪几类成员？谁负责存数据、谁负责做事？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——类与函数、类与字典、类属性与实例属性，边界分别在哪里？</li>
+      <li><strong>它的边界在哪</strong>——既然 AI 库都以对象形式提供接口，为什么本页仍把「从零设计类」列为不必掌握的内容？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <div class="scope"><span class="lbl">📌 阅读范围提示</span>
+      这一节的读法建议是：<strong>把重点放在「怎么读」而不是「怎么写」</strong>。下面出现的每一段代码，都要能回答两个问题——哪一部分是「一只模具」，哪一部分是「用这只模具造出来的东西」；哪些名字挂在模具上，哪些名字挂在具体产品上。这两问能答上来，第三方库的文档就读得动了。
+    </div>
+    <p>
+      Python 官方教程《类》的开篇说明：类把数据与功能打包在一起，创建新类就是创建一种新的<strong>对象类型</strong>，从而可以创建该类型的<strong>实例</strong>。类定义本身不产生任何数据，它只是一份说明；真正持有数据的是实例。
+    </p>
+    <p>
+      一份典型的类定义包含两种成员。<strong>属性</strong>负责存数据，例如一条评论记录会有「来源」「字数」「标签」；<strong>方法</strong>负责做事，例如「算不算长评论」「生成一行摘要」。方法定义在类里，但它的第一个参数总是 <code>self</code>——官方教程把它解释为指向调用该方法的那一个实例本身，由 Python 在调用时自动传入，因此写代码时不需要（也不应该）手动填。
+    </p>
+    <p>
+      <code>__init__</code> 是一个特殊名字的方法，在<strong>创建实例的那一刻自动被调用</strong>，用来给这个新实例挂上初始属性。因此 <code>Comment("A 报", 86)</code> 这样的写法会先造出一个空实例，再立刻执行 <code>__init__</code>，把参数写进实例自己的属性里。这也是为什么「创建对象」这一步在括号里可以填参数——那些参数实际上是传给 <code>__init__</code> 的。
+    </p>
+    <p>
+      最后是「为什么要懂这个」。以机器学习库 scikit-learn 为例，官方《Getting Started》给出的用法是：先 <code>clf = RandomForestClassifier(random_state=0)</code> 创建一个估计器对象，再 <code>clf.fit(X, y)</code> 用数据拟合它，之后 <code>clf.predict(X)</code> 直接对同一对象调用预测方法——文档明确说明「一旦估计器完成拟合，就可以用于预测新数据的目标值，不需要重新训练」。也就是说，<strong>训练得到的中间结果保存在对象内部</strong>，靠的就是「对象既能存数据、又能提供方法」这一条。看清这一点，绝大多数 AI 库的示例代码都能读通了。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      类可类比为一只模具或一张图纸，实例可类比为按这只模具做出来的具体产品：模具只有一副，产品可以有很多件；每件产品身上刻的字（属性值）可以各不相同，但形状与可做的动作（方法）都由模具决定。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      <code>self</code> 可类比为「当前这件产品指的是它自己」：写「把重量记到自己的属性上」时，这句话对每一件产品都成立，因此不必逐一写死。<code>model.fit(X, y)</code> 这类调用，相当于对某一件具体的产品下令「用这批数据训练你自己」。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面两张图分别回答：类与实例到底是什么关系，以及第三方库里的对象式调用在对象层面发生了什么。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 类与实例：一副模具，多件产品</div>
+      <div class="vsub">左侧是类定义（属性槽与方法槽）；右侧是按它创建出来的三个实例，各自的属性值不同。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>类与实例关系示意图</title>
+        <desc>左侧矩形表示类定义，内含属性说明与方法说明；一条箭头指向右侧三个实例矩形，三个实例的属性和取值各不相同。</desc>
+        <defs>
+          <marker id="coA" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#7c5cff"/>
+          </marker>
+        </defs>
+
+        <text x="24" y="26" font-size="12.5" fill="#5b6472">类 = 模具（只有一份，不含具体数据）</text>
+        <text x="380" y="26" font-size="12.5" fill="#5b6472">实例 = 产品（可以有很多件，各有各的属性值）</text>
+
+        <rect x="24" y="44" width="186" height="182" rx="11" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.7"/>
+        <text x="38" y="66" font-size="12.5" font-weight="700" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">class Comment:</text>
+        <line x1="36" y1="80" x2="198" y2="80" stroke="#cfc4f7"/>
+        <text x="38" y="100" font-size="11.5" fill="#4c3aa8" font-weight="700" dominant-baseline="central">属性（存数据）</text>
+        <text x="38" y="120" font-size="11" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">来源 / 字数 / 标签</text>
+        <text x="38" y="142" font-size="11.5" fill="#4c3aa8" font-weight="700" dominant-baseline="central">方法（做事）</text>
+        <text x="38" y="162" font-size="11" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">summary() / is_long()</text>
+        <text x="38" y="184" font-size="11.5" fill="#1a9e5a" font-weight="700" dominant-baseline="central">self</text>
+        <text x="38" y="202" font-size="11" fill="#1a9e5a" dominant-baseline="central">→ 指代「当前这一个实例」</text>
+
+        <line x1="216" y1="135" x2="288" y2="135" stroke="#7c5cff" stroke-width="1.7" marker-end="url(#coA)"/>
+        <text x="252" y="124" font-size="11" fill="#4c3aa8" text-anchor="middle">创建实例</text>
+        <text x="252" y="152" font-size="11" fill="#4c3aa8" text-anchor="middle">（实例化）</text>
+
+        <rect x="296" y="44" width="382" height="52" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="310" y="64" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">a = Comment("A 报", 86, "正面")</text>
+        <text x="310" y="83" font-size="11" fill="#5b6472" dominant-baseline="central">a.来源 = "A 报"　a.字数 = 86</text>
+
+        <rect x="296" y="108" width="382" height="52" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="310" y="128" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">b = Comment("B 网", 42, "未标注")</text>
+        <text x="310" y="147" font-size="11" fill="#5b6472" dominant-baseline="central">b.来源 = "B 网"　b.字数 = 42</text>
+
+        <rect x="296" y="172" width="382" height="52" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="310" y="192" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">c = Comment("A 报", 25, "负面")</text>
+        <text x="310" y="211" font-size="11" fill="#5b6472" dominant-baseline="central">c.来源 = "A 报"　c.字数 = 25</text>
+
+        <rect x="24" y="240" width="654" height="48" rx="9" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="38" y="258" font-size="11.5" fill="#127a44" dominant-baseline="central">三个实例共享同一批方法（都来自 Comment 这个类），但各自的属性值互相独立；</text>
+        <text x="38" y="276" font-size="11.5" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">a.is_long() 与 b.is_long() 走的是同一段代码，只是 self 分别指向 a 和 b。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：类定义里只有「有哪些属性、能做哪些动作」的说明，具体数值挂在每个实例上；读代码时先分清「这一行是在定义模具，还是在造产品」。示意图，用于帮助理解，非 Python 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 第三方库里的对象式调用：创建 → 拟合 → 预测</div>
+      <div class="vsub">以 scikit-learn 风格的估计器为例，三步都作用在同一个对象上，中间结果由对象自己保存。</div>
+      <svg viewBox="0 0 700 252" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>scikit-learn 风格的对象式调用流程示意图</title>
+        <desc>三个步骤横向排列：创建估计器对象、调用 fit 方法拟合、调用 predict 方法预测；每步下方标注括号里的参数对应什么，底部说明中间结果保存在对象内部。</desc>
+        <defs>
+          <marker id="coB" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#8b94a3"/>
+          </marker>
+        </defs>
+
+        <text x="24" y="26" font-size="12.5" fill="#5b6472">三步都作用在同一个对象上</text>
+
+        <rect x="24" y="44" width="196" height="82" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="38" y="64" font-size="11.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">① 创建（实例化）</text>
+        <text x="38" y="86" font-size="11" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">model = LogisticRegression()</text>
+        <text x="38" y="108" font-size="11" fill="#5b6472" dominant-baseline="central">括号里的内容 → 文档的 Parameters</text>
+
+        <line x1="226" y1="85" x2="248" y2="85" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#coB)"/>
+
+        <rect x="254" y="44" width="196" height="82" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="268" y="64" font-size="11.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">② 拟合（训练）</text>
+        <text x="268" y="86" font-size="11" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">model.fit(X, y)</text>
+        <text x="268" y="108" font-size="11" fill="#5b6472" dominant-baseline="central">结果存进对象内部，不靠返回值传递</text>
+
+        <line x1="456" y1="85" x2="478" y2="85" stroke="#8b94a3" stroke-width="1.4" marker-end="url(#coB)"/>
+
+        <rect x="484" y="44" width="194" height="82" rx="10" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1.4"/>
+        <text x="498" y="64" font-size="11.5" font-weight="700" fill="#127a44" dominant-baseline="central">③ 预测</text>
+        <text x="498" y="86" font-size="11" fill="#127a44" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">model.predict(X_new)</text>
+        <text x="498" y="108" font-size="11" fill="#5b6472" dominant-baseline="central">无需重新训练，直接用已保存的结果</text>
+
+        <rect x="24" y="142" width="654" height="96" rx="10" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="38" y="162" font-size="11.5" font-weight="700" fill="#4c3aa8" dominant-baseline="central">读懂这段代码需要的三个判断</text>
+        <text x="38" y="184" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">1. 看到「类名后带括号」，判断这是创建一个实例，括号里是构造参数；</text>
+        <text x="38" y="204" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">2. 看到「对象.方法名(...)」，判断这是调用该对象的方法，括号里是方法参数；</text>
+        <text x="38" y="224" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">3. 看到「对象.属性名」，判断这是读取存在对象里的数据，例如拟合后产生的统计量。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>fit</code> 与 <code>predict</code> 是同一个对象上的两次方法调用，训练得到的信息保存在对象内部；因此只要记住「创建对象 → 调用方法」这个句式，就能照着文档把示例跑起来。示意图，用于帮助理解，非 scikit-learn 官方插图。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>两张图均为帮助理解的示意图，非官方原文插图。类的定义与 <code>self</code> 的说明依据 Python 官方教程《类》，估计器的 <code>fit</code> / <code>predict</code> 用法依据 scikit-learn 官方《Getting Started》，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一个类通常由下面这些成员组成。读懂第三方库文档时，只需要抓住「哪些名字属于类、哪些属于实例」这一条线索。</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th><th>读代码时的识别要点</th></tr>
+      <tr><td><strong>类 <code>class</code></strong></td><td>一种自定义类型的说明，规定该类实例拥有哪些属性、能做哪些动作。类定义本身不产生具体数据。</td><td>看到 <code>class 名字:</code> 即开始一份说明</td></tr>
+      <tr><td><strong>实例</strong></td><td>按类创建出来的具体对象，真正持有数据。同一个类可以创建任意多个实例。</td><td>看到 <code>名字 = 类名(参数)</code> 即在创建实例</td></tr>
+      <tr><td><strong><code>__init__</code></strong></td><td>创建实例时自动调用的初始化方法，用于给新实例挂上初始属性。它<strong>不是</strong>「手动调用的构造函数」。</td><td>看到类名括号里有参数，说明参数传给了 <code>__init__</code></td></tr>
+      <tr><td><strong>实例属性</strong></td><td>挂在某一个实例上的数据，通常写作 <code>self.属性名 = 值</code>。各实例之间互不影响。</td><td>读法：<code>对象.属性名</code></td></tr>
+      <tr><td><strong>方法</strong></td><td>定义在类里的函数，第一个参数通常命名为 <code>self</code>，由 Python 在调用时自动传入，指向调用该方法的那一个实例。</td><td>读法：<code>对象.方法名(参数)</code>，调用时不用写 <code>self</code></td></tr>
+      <tr><td><strong>类属性</strong></td><td>直接写在类里（不在 <code>__init__</code> 里）的变量，所有实例默认共享同一个值。</td><td>注意：通过某个实例对它赋值，会在该实例上新建一个同名实例属性</td></tr>
+      <tr><td><strong>继承</strong></td><td>在类名后写父类名，使新类自动获得父类的属性与方法，并可覆盖其中一部分。</td><td>看到 <code>class 子类(父类):</code></td></tr>
+      <tr><td><strong><code>super()</code></strong></td><td>在内置函数文档中给出用法：<code>super().method(arg)</code> 等价于 <code>super(类, self).method(arg)</code>，用于在子类中调用父类的实现。</td><td>常见于子类的 <code>__init__</code> 第一行</td></tr>
+      <tr><td><strong><code>__str__</code> / <code>__repr__</code></strong></td><td>官方《数据模型》3.3.1 节说明：<code>__repr__</code> 由内置函数 <code>repr()</code> 调用，输出偏「官方」的表示，主要用于调试；<code>__str__</code> 由 <code>str()</code>、<code>print()</code> 与默认的 <code>__format__()</code> 调用，输出适合阅读的表示。若只定义了 <code>__repr__</code>，<code>__str__</code> 也会用它。</td><td>决定 <code>print(对象)</code> 打印出什么</td></tr>
+    </table>
+
+    <h3>为什么 AI 应用只需要「读懂对象」</h3>
+    <table>
+      <tr><th>观察到的写法</th><th>在对象层面发生了什么</th><th>读者需要做的事</th></tr>
+      <tr><td><code>LogisticRegression(C=1.0)</code></td><td>创建一个估计器实例，括号里的 <code>C</code> 是构造参数</td><td>到文档的 Parameters 表里找 <code>C</code> 的含义与取值范围</td></tr>
+      <tr><td><code>model.fit(X, y)</code></td><td>调用实例的 <code>fit</code> 方法，用特征矩阵 X 与标签 y 拟合模型</td><td>确认 X、y 的形状要求；知道拟合结果保存在对象里</td></tr>
+      <tr><td><code>model.predict(X_new)</code></td><td>调用同一个实例的 <code>predict</code> 方法，返回预测结果</td><td>知道不需要重新训练；确认输入的特征顺序与训练时一致</td></tr>
+      <tr><td><code>model.classes_</code>、<code>model.coef_</code></td><td>读取拟合后产生的属性。<code>LogisticRegression</code> 的官方文档把它们列在 Attributes 一项下</td><td>知道这些属性要先 <code>fit</code> 之后才存在；按 scikit-learn 术语表的约定，在 <code>fit</code> 中设置的公共属性以单个下划线结尾</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上类与实例、<code>self</code>、<code>__init__</code> 的说明依据 Python 官方教程《类》；<code>__str__</code> 与 <code>__repr__</code> 的分工依据 Python 官方文档《数据模型》3.3.1 节；<code>super()</code> 的写法依据 Python 官方文档《内置函数》；估计器的 <code>fit</code> / <code>predict</code> 与 Attributes 依据 scikit-learn 官方文档，可经第九节链接逐条核查。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 一个具体应用场景</h2>
+    <p>
+      编辑部希望用「评论字数」与「是否含链接」两个特征，给评论的正面 / 负面倾向做一个最简的自动判别。文档里给出的是一段对象式调用的示例代码；照着文档改参数、把它跑通，就是这个场景要完成的事。
+    </p>
+    <pre><span class="c"># 场景：读懂第三方库文档里的对象式调用，照着文档改参数跑通示例</span>
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+<span class="c"># ① 创建对象：括号里的内容对应文档 Parameters 表</span>
+model = LogisticRegression()
+
+<span class="c"># ② 准备数据：X 每行一条评论（字数、是否含链接），y 是对应的标签</span>
+X = np.array([[86, 0], [42, 1], [25, 0], [120, 1], [15, 0], [95, 1]])
+y = np.array([<span class="s">"正面"</span>, <span class="s">"负面"</span>, <span class="s">"负面"</span>, <span class="s">"正面"</span>, <span class="s">"负面"</span>, <span class="s">"正面"</span>])
+
+<span class="c"># ③ 调用方法：fit 用数据拟合；结果保存在 model 这个对象内部</span>
+model.fit(X, y)
+
+<span class="c"># ④ 调用同一对象的另一个方法：不需要重新训练，直接预测新数据</span>
+print(model.predict([[70, 0], [30, 1]]))
+
+<span class="c"># ⑤ 读取属性：属性和方法一样，都用「对象.名字」的写法</span>
+print(model.classes_)   <span class="c"># 模型认识的类别标签</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明「创建对象 → 调用方法」这一句式，属于辅助理解示例，非某个来源的原文代码。其中「先创建估计器、再调 <code>fit</code>、之后可直接 <code>predict</code> 而无需重新训练」的流程与「<code>classes_</code> 属于拟合后才有的属性」两点，依据 scikit-learn 官方《Getting Started》与 <code>LogisticRegression</code> 参考页。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      上述示例只演示调用形式，不涉及模型效果的评估。真实任务中，样本量、标签来源、特征选择都会显著影响结果，本节不对其预测质量作任何判断。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>「读懂对象」与「从零设计类」是两件事。</strong>本页的定位是前者。做 AI 应用时，绝大多数对象来自第三方库，使用者的工作是「按文档填参数、按顺序调用方法」，而不是决定类该怎么设计。常见误解是「不懂面向对象就没法用 AI 库」——实际情况恰好相反：只要抓住「创建对象 → 调用方法」这一句式，示例代码就能跑通。</li>
+      <li><strong>类属性与实例属性容易混。</strong>直接写在类里的变量是类属性，所有实例默认<strong>共享</strong>同一个值；写在 <code>__init__</code> 里、以 <code>self.属性名</code> 形式赋值的才是实例属性。需要留意的情形是：通过某个实例给一个类属性赋值，Python 会在<strong>该实例上新建一个同名实例属性</strong>，此后这个实例读到的就是自己的值，其他实例与类本身都不受影响——这会造成「看起来只改了 a，结果 a 和 b 表现不同」的困惑。</li>
+      <li><strong><code>__init__</code> 不是「构造函数」，也不应手动调用。</strong>它在创建实例时由 Python 自动执行。常见误解是「必须自己写一行 <code>obj.__init__()</code> 才算初始化完成」——手动调用通常会导致重复初始化，甚至覆盖已有属性。</li>
+      <li><strong><code>self</code> 不出现在调用处。</strong>方法定义里第一个参数是 <code>self</code>，但调用时写成 <code>obj.method(x)</code>，不需要、也不应写成 <code>obj.method(obj, x)</code>。<code>self</code> 的名字只是惯例（官方教程也说明它只是一个普通参数名，虽可改成别的名字但会降低可读性），真正起作用的是「它是第一个参数」这个位置。</li>
+      <li><strong>属性不一定在创建时就存在。</strong>scikit-learn 的术语表说明：在 <code>fit</code> 中设置的公共属性以单个下划线结尾（如 <code>coef_</code>、<code>classes_</code>），而它们只在拟合之后才存在；术语表还注明，未拟合的估计器不应拥有这类属性。因此直接读取 <code>model.coef_</code> 之前，要先确认已经调用过 <code>fit</code>。</li>
+      <li><strong>能读懂≠能改对。</strong>第三方库的对象内部通常有大量约定（例如 <code>predict</code> 要求输入的特征顺序与 <code>fit</code> 时一致）。读懂调用形式只解决了「怎么用」，特征是否对齐、标签是否可靠，属于数据层面的事，文本层面的「能读通代码」在这里并不构成质量的保证。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条的技术结论均以官方文档为依据。类与实例、类属性与实例属性、<code>self</code> 的说明见 Python 官方教程《类》；<code>__init__</code> 与特殊方法<code>__str__</code> / <code>__repr__</code> 见官方《数据模型》3.3.1 节；<code>super()</code> 见官方《内置函数》；估计器的拟合与预测流程、带下划线属性的约定见 scikit-learn 官方《Getting Started》与术语表。具体链接见第九节。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>1. 用一句话描述类与实例的关系，下列表述通常正确的是？</div>
+      <button class="opt" data-v="A">A. 类是具体的数据，实例是类的一种名字</button>
+      <button class="opt" data-v="B">B. 类可类比为模具或图纸，实例是按它制造出来的具体产品；同一个类可以创建多个实例</button>
+      <button class="opt" data-v="C">C. 一个类只能创建一个实例</button>
+      <button class="opt" data-v="D">D. 必须先有实例，类才会存在</button>
+      <div class="fb" data-ok="✅ 正确。Python 官方教程《类》说明：类把数据与功能打包在一起，创建新类就是创建一种新的对象类型，从而可以创建该类型的实例。类定义本身不持有具体数据，数据在实例上。"></div>
+      <div class="src">📎 来源：Python 官方教程《9. 类》— docs.python.org/zh-cn/3/tutorial/classes.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>2. 关于 <code>__init__</code>，下列说法通常正确的是？</div>
+      <button class="opt" data-v="A">A. 在创建实例时被自动调用，用于给实例设置初始属性</button>
+      <button class="opt" data-v="B">B. 必须先手动调用 <code>__init__()</code>，实例才会被创建</button>
+      <button class="opt" data-v="C">C. 它就是类的名字，必须与类名完全相同</button>
+      <button class="opt" data-v="D">D. 只有在使用继承时才需要写 <code>__init__</code></button>
+      <div class="fb" data-ok="✅ 正确。__init__ 是实例创建过程中自动执行的初始化方法，用来设置实例的初始属性；因此类名后括号里的参数实际上是传给 __init__ 的。手动再调一次通常会导致重复初始化。"></div>
+      <div class="src">📎 来源：Python 官方教程《9. 类》— docs.python.org/zh-cn/3/tutorial/classes.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 在类的方法定义中，第一个参数 <code>self</code> 的含义通常是？</div>
+      <button class="opt" data-v="A">A. 类的名字</button>
+      <button class="opt" data-v="B">B. 一个必须由调用者手动传入的普通参数</button>
+      <button class="opt" data-v="C">C. 指向「调用这个方法的那个实例本身」，由 Python 在调用时自动传入</button>
+      <button class="opt" data-v="D">D. 指向父类</button>
+      <div class="fb" data-ok="✅ 正确。官方教程把方法定义中的第一个参数解释为指向调用该方法的实例本身，并在调用时自动传入。因此调用处写作 obj.method(x)，不需要写成 obj.method(obj, x)；换成父类引用是 super() 的作用，与此不是一回事。"></div>
+      <div class="src">📎 来源：Python 官方教程《9. 类》— docs.python.org/zh-cn/3/tutorial/classes.html ；Python 官方文档《内置函数》中的 <code>super</code> — docs.python.org/zh-cn/3/library/functions.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 一个类中定义了类属性 <code>count = 0</code>，又创建了两个实例 <code>a</code> 与 <code>b</code>。关于 <code>a.count</code> 与 <code>b.count</code>，下列说法通常正确的是？</div>
+      <button class="opt" data-v="A">A. 每个实例天生都有各自独立的 <code>count</code>，两者互不影响</button>
+      <button class="opt" data-v="B">B. 访问 <code>a.count</code> 会直接报错，因为实例不能读取类属性</button>
+      <button class="opt" data-v="C">C. 只能通过 <code>类名.count</code> 访问，实例无法访问类属性</button>
+      <button class="opt" data-v="D">D. 二者默认指向同一个类属性；若通过某个实例对它赋值，会在该实例上新建一个同名实例属性，其他实例不受影响</button>
+      <div class="fb" data-ok="✅ 正确。这正是「类属性 vs 实例属性」最容易踩的一个点：类属性被所有实例共享，但一旦通过实例赋值，就会在该实例上产生一个同名的实例属性，此后该实例读自己的、其他实例仍读类属性。这也是「看似只改了一个，结果两个实例表现不同」的常见来源。"></div>
+      <div class="src">📎 来源：Python 官方教程《9. 类》（类定义与实例属性、类属性） — docs.python.org/zh-cn/3/tutorial/classes.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 阅读第三方库文档时看到 <code>clf = RandomForestClassifier(random_state=0)</code>，随后 <code>clf.fit(X, y)</code>、<code>clf.predict(X)</code>。这三步在对象层面通常对应什么？</div>
+      <button class="opt" data-v="A">A. 三次彼此独立的函数调用，中间结果通过 return 值手工传递</button>
+      <button class="opt" data-v="B">B. 创建一个对象（实例化）→ 调用该对象的方法完成拟合 → 调用同一对象的另一个方法做预测；拟合得到的信息保存在对象内部</button>
+      <button class="opt" data-v="C">C. 把 <code>X</code> 与 <code>y</code> 定义成两个类</button>
+      <button class="opt" data-v="D">D. 必须先手动调用 <code>__init__(X, y)</code>，拟合才能开始</button>
+      <div class="fb" data-ok="✅ 正确。scikit-learn 官方《Getting Started》的表述是：每个估计器都可以用它的 fit 方法拟合数据；一旦完成拟合，就可以用于预测新数据的目标值，而且不需要重新训练。也就是说训练结果保存在对象内部，靠的是「对象既存数据、又提供方法」这一机制。random_state 这类括号里的内容对应文档的构造参数。"></div>
+      <div class="src">📎 来源：scikit-learn 官方《Getting Started》（Fitting and predicting: estimator basics） — scikit-learn.org/stable/getting_started.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处（生成时已逐条访问确认）：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《9. 类》（类定义、作用域与命名空间、实例、类属性与实例属性、继承、<code>self</code>） — <a href="https://docs.python.org/zh-cn/3/tutorial/classes.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/classes.html</a></li>
+      <li>Python 官方文档《3. 数据模型 · 3.3.1 基本定制》（<code>__repr__</code> 与 <code>__str__</code> 的分工） — <a href="https://docs.python.org/zh-cn/3/reference/datamodel.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/datamodel.html</a></li>
+      <li>Python 官方文档《内置函数》（<code>super</code>、<code>type</code>、<code>isinstance</code>、<code>getattr</code> 等） — <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/functions.html</a></li>
+      <li>Python 官方教程《5. 数据结构》（字典，本概念的前置知识） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+      <li>scikit-learn 官方《Getting Started》（估计器的 <code>fit</code> 与 <code>predict</code> 用法：「一旦拟合完成即可用于预测新数据，不需要重新训练」） — <a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">scikit-learn.org/stable/getting_started.html</a></li>
+      <li>scikit-learn 官方《Glossary of Common Terms and API Elements》（attribute 词条：在 <code>fit</code> 中设置的公共属性以单个下划线结尾；未拟合的估计器不应有这类属性） — <a href="https://scikit-learn.org/stable/glossary.html" target="_blank" rel="noopener">scikit-learn.org/stable/glossary.html</a></li>
+      <li>scikit-learn 官方参考《<code>LogisticRegression</code>》（Methods 中的 <code>fit(X, y)</code> 与 <code>predict(X)</code>；Attributes 中的 <code>classes_</code> 与 <code>coef_</code>） — <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank" rel="noopener">scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节两张表格中的成员定义与对象式调用说明，以及第七节六条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节两张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

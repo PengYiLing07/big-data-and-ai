@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · NumPy 与向量化</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块四 · AI 前置数据能力 ｜ 第 11 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>NumPy 与向量化</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>用 Python 列表做数值计算会遇到什么问题？NumPy 的 <code>ndarray</code> 与列表有哪几处本质差别？</li>
+      <li>如何创建数组（<code>array</code> / <code>zeros</code> / <code>ones</code> / <code>arange</code> / <code>linspace</code>），并读懂 <code>shape</code> / <code>ndim</code> / <code>dtype</code> / <code>size</code>？</li>
+      <li>一维与二维的索引、切片怎么写？布尔索引与花式索引怎么用？</li>
+      <li>广播机制的三条规则是什么？什么形状能算、什么形状会报 <code>ValueError</code>？</li>
+      <li><code>axis</code> 参数到底指什么？<code>mean</code> / <code>median</code> / <code>std</code> / <code>percentile</code> 怎么按轴统计？</li>
+      <li><strong>向量化为什么比 for 循环快</strong>——快在哪里、又有什么代价？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——对几千条稿件的字数做统计时，为什么逐元素 for 循环又慢又啰嗦？</li>
+      <li><strong>它由什么组成</strong>——一个 <code>ndarray</code> 由哪几样东西描述：数据缓冲区、<code>shape</code>、<code>dtype</code>、<code>strides</code>？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——列表与数组、切片视图与副本、逐元素运算与矩阵乘法，边界分别在哪？</li>
+      <li><strong>它的边界在哪</strong>——数组为什么必须同类型、为什么创建后大小固定？广播在什么情况下反而更耗内存？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      NumPy（Numerical Python）是 Python 科学计算的基础库，核心是一个多维数组对象 <code>ndarray</code>，以及一大批高效操作它的函数。它的定位很明确：<strong>当需要处理大量「同类型」数据时</strong>，用数组比用列表更快、更省内存，代码也更短。
+    </p>
+    <p>
+      列表的问题出在「逐个处理」上。官方文档举过一个例子：把两个列表逐元素相乘，需要写 <code>for i in range(len(a))</code> 再 <code>append</code>；如果 <code>a</code>、<code>b</code> 各有上百万个数，就要为 Python 逐元素循环的低效付出代价。同样的事用 C 写只要一行循环，但写 Python 的便利也就失去了。NumPy 的做法是「取两者之长」：<strong>代码仍然写成 <code>c = a * b</code> 这样的一行，但逐元素运算由预编译的 C 代码高速执行</strong>——这就是向量化（vectorization）。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      Python 列表可类比为一排各自独立包装的快递包裹，取每一件都要拆一次外包装；<code>ndarray</code> 可类比为一整箱规格统一的货物，箱子上标着「几行几列、每件多大」。要按件处理时，前者只能一件件拆，后者可以直接整箱交给传送带。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      广播机制可类比为「表格自动补齐」：一张只有一列的对照表和一张只有一行的对照表相加时，规则允许把那一列沿横向复制、把那一行沿纵向复制，从而拼成一整张结果表。差别在于 NumPy 并不会真的复制数据，只是在计算时按规则重复取用同一个值。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <p>
+      需要同时记住的是它的<strong>两条硬约束</strong>：数组在创建时大小固定，改动大小会新建一个数组并删除原来的；数组的元素必须同类型、因而在内存中占用同样的字节数。这两条约束正是「能整箱交给 C 层处理」的前提。
+    </p>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：<code>ndarray</code> 的「逻辑形状」和「内存布局」是什么关系、广播的形状怎么对齐、向量化到底快在哪里。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · <code>ndarray</code> 的内存布局与形状示意</div>
+      <div class="vsub">同一个 3 行 4 列的数组，既有「行列」的逻辑视图，也有「一段连续线性内存」的物理布局，两者由 <code>shape</code> 与 <code>dtype</code> 联系起来。</div>
+      <svg viewBox="0 0 700 292" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>ndarray 逻辑形状与连续内存布局对照示意图</title>
+        <desc>左侧为三行四列的逻辑视图，下方为十二个元素按行优先顺序排成的一整段内存；用两个下标可以算出元素在内存中的位置。</desc>
+        <defs><marker id="npa" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#2f6fed"/></marker></defs>
+        <text x="20" y="16" font-size="12.5" fill="#5b6472">① 逻辑视图：shape=(3, 4)　ndim=2　size=12</text>
+        <text x="90" y="38" font-size="11.5" fill="#5b6472">轴 1（列）→　最右一维在内存中变化最快</text>
+        <text x="16" y="105" font-size="11.5" fill="#5b6472">轴 0（行）↓</text>
+        <rect x="90" y="48" width="240" height="108" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.9"/>
+        <rect x="210" y="84" width="60" height="36" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <path d="M150 48V156 M210 48V156 M270 48V156 M90 84H330 M90 120H330" stroke="#cbd5e1" stroke-width="0.9"/>
+        <text x="120 180 240 300" y="66" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">1 2 3 4</text>
+        <text x="120 180 240 300" y="102" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">5 6 7 8</text>
+        <text x="120 180 240 300" y="138" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">9 10 11 12</text>
+        <text x="342" y="78" font-size="11.5" fill="#2f6fed">a[1, 2] = 7</text>
+        <text x="20" y="176" font-size="12.5" fill="#5b6472">② 内存视图：一整段连续的线性内存（C 序，按行依次存放）</text>
+        <rect x="76" y="188" width="540" height="36" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.9"/>
+        <rect x="346" y="188" width="45" height="36" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.3"/>
+        <path d="M121 188V224 M166 188V224 M211 188V224 M256 188V224 M301 188V224 M346 188V224 M391 188V224 M436 188V224 M481 188V224 M526 188V224 M571 188V224" stroke="#cbd5e1" stroke-width="0.9"/>
+        <text x="98 143 188 233 278 323 368 413 458 503 548 593" y="206" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">1 2 3 4 5 6 7 8 9 10 11 12</text>
+        <path d="M240 156V172H368V186" fill="none" stroke="#2f6fed" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#npa)"/>
+        <text x="20" y="248" font-size="12" fill="#5b6472">两个下标被换算成一个内存下标：行 1 × 4 列 + 列 2 = 6。</text>
+        <text x="20" y="272" font-size="12" fill="#5b6472">dtype 决定每个元素占几字节，strides 决定「下一行 / 下一列」在内存里跳几字节。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：数组的「几行几列」是逻辑视图，真实数据始终是一段连续内存；切片之所以能返回视图而不复制，正是因为只改 <code>shape</code> 与 <code>strides</code> 就能在同一段内存上换个看法。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 广播机制：形状如何对齐</div>
+      <div class="vsub">形状 <code>(3, 1)</code> 与 <code>(4,)</code> 相加，得到 <code>(3, 4)</code>；规则从最右一维开始逐维比较。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>NumPy 广播机制形状对齐与结果展开示意图</title>
+        <desc>三行一列的数组与长度为四的一维数组按广播规则对齐，各自沿缺失的一维展开，结果是一个三行四列的数组。</desc>
+        <text x="20" y="16" font-size="12.5" fill="#5b6472">比较顺序：从最右一维往左；相等、或其中一个是 1，即兼容</text>
+        <rect x="452" y="30" width="228" height="52" rx="6" fill="#f7f5ff" stroke="#7c5cff"/>
+        <text x="464" y="46" font-size="12" fill="#5b47c4" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">A (3, 1)   +   B (4,)</text>
+        <text x="464" y="66" font-size="12" fill="#5b47c4" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">→ 结果  (3, 4)</text>
+        <rect x="90" y="80" width="56" height="36" fill="#eaf1ff" stroke="#2f6fed"/>
+        <rect x="90" y="116" width="56" height="36" fill="#eaf1ff" stroke="#2f6fed"/>
+        <rect x="90" y="152" width="56" height="36" fill="#eaf1ff" stroke="#2f6fed"/>
+        <text x="118" y="98" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">1</text>
+        <text x="118" y="134" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">2</text>
+        <text x="118" y="170" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">3</text>
+        <text x="118" y="206" font-size="11.5" fill="#2f6fed" text-anchor="middle">A  (3, 1)</text>
+        <text x="162" y="134" font-size="16" fill="#5b6472" text-anchor="middle" dominant-baseline="central">+</text>
+        <rect x="186" y="116" width="224" height="36" fill="#eefaf3" stroke="#1a9e5a"/>
+        <path d="M242 116V152 M298 116V152 M354 116V152" stroke="#1a9e5a" stroke-width="0.9"/>
+        <text x="214 270 326 382" y="134" font-size="12.5" fill="#127a44" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">10 20 30 40</text>
+        <text x="298" y="170" font-size="11.5" fill="#127a44" text-anchor="middle">B  (4,)</text>
+        <text x="426" y="134" font-size="16" fill="#5b6472" text-anchor="middle" dominant-baseline="central">=</text>
+        <rect x="446" y="98" width="220" height="90" fill="#ffffff" stroke="#94a3b8"/>
+        <path d="M501 98V188 M556 98V188 M611 98V188 M446 128H666 M446 158H666" stroke="#cbd5e1" stroke-width="0.9"/>
+        <path d="M446 113H666 M446 143H666 M446 173H666" stroke="#2f6fed" stroke-width="0.9" stroke-dasharray="3 4" opacity="0.5"/>
+        <path d="M473 98V188 M528 98V188 M583 98V188 M638 98V188" stroke="#1a9e5a" stroke-width="0.9" stroke-dasharray="3 4" opacity="0.5"/>
+        <text x="473 528 583 638" y="113" font-size="11.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">11 21 31 41</text>
+        <text x="473 528 583 638" y="143" font-size="11.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">12 22 32 42</text>
+        <text x="473 528 583 638" y="173" font-size="11.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">13 23 33 43</text>
+        <text x="446" y="206" font-size="11.5" fill="#5b6472">结果 (3, 4)：A 的每个值沿横向重复，B 的每个值沿纵向重复</text>
+        <text x="20" y="236" font-size="12" fill="#127a44">✅　(3, 1) 与 (4,) → (3, 4)　最右维 1 与 4，把 1 拉伸</text>
+        <text x="20" y="258" font-size="12" fill="#127a44">✅　(2, 1) 与 (3,) → (2, 3)　最右维 1 与 3，把 1 拉伸</text>
+        <text x="20" y="280" font-size="12" fill="#b45309">❌　(4,) 与 (3,) → ValueError　最右维 4 与 3，不相等且都不为 1</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：判断能否广播，只需把两个形状<strong>右对齐</strong>后逐列看——相等或含 1 就通过，少的一维当作 1；横向的「重复」只是概念上的拉伸，NumPy 不会真的复制数据。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 向量化为什么快：循环下沉到 C 层</div>
+      <div class="vsub">同一件「两个数组逐元素相乘」，for 循环让每个元素都往返一次 Python 解释器；向量化把整块循环交给预编译的 C 代码。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>Python 逐元素循环与 NumPy 向量化执行的对比示意图</title>
+        <desc>上图表示 for 循环中每个元素都要经过解释器取数、装箱、计算、写回；下图表示向量化只调用一次，由预编译的 C 循环处理整块连续内存。</desc>
+        <defs><marker id="npb" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#94a3b8"/></marker></defs>
+        <text x="20" y="16" font-size="12.5" fill="#b45309">① Python 层 for 循环：每个元素都要走一遍这四步</text>
+        <rect x="24" y="30" width="132" height="34" rx="7" fill="#fff7ed" stroke="#d97706"/>
+        <text x="90" y="47" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">解释器取 a[i]</text>
+        <rect x="176" y="30" width="132" height="34" rx="7" fill="#fff7ed" stroke="#d97706"/>
+        <text x="242" y="47" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">拆成 Python 对象</text>
+        <rect x="328" y="30" width="132" height="34" rx="7" fill="#fff7ed" stroke="#d97706"/>
+        <text x="394" y="47" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">做一次乘法</text>
+        <rect x="480" y="30" width="140" height="34" rx="7" fill="#fff7ed" stroke="#d97706"/>
+        <text x="550" y="47" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">装箱写回 c[i]</text>
+        <path d="M156 47H172 M308 47H324 M460 47H476" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#npb)"/>
+        <text x="24" y="82" font-size="12" fill="#b45309">循环重复 N 次 → N 次解释器往返、N 次临时对象创建</text>
+        <text x="20" y="118" font-size="12.5" fill="#127a44">② 向量化：循环下沉到预编译的 C 层，只调用一次</text>
+        <rect x="24" y="132" width="140" height="34" rx="7" fill="#eefaf3" stroke="#1a9e5a"/>
+        <text x="94" y="149" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">ndarray a、b</text>
+        <rect x="190" y="132" width="140" height="34" rx="7" fill="#eaf1ff" stroke="#2f6fed"/>
+        <text x="260" y="149" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">一行 a * b</text>
+        <rect x="356" y="132" width="140" height="34" rx="7" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.5"/>
+        <text x="426" y="149" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">C 层紧凑循环</text>
+        <rect x="522" y="132" width="140" height="34" rx="7" fill="#eaf1ff" stroke="#2f6fed"/>
+        <text x="592" y="149" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">结果 ndarray</text>
+        <path d="M164 149H186 M330 149H352 M496 149H518" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#npb)"/>
+        <text x="24" y="184" font-size="12" fill="#127a44">整块连续内存交给 C 处理，中间不再逐元素回到 Python 层</text>
+        <text x="20" y="216" font-size="12.5" fill="#1f2430">快在哪里（依据官方文档 What is NumPy?「Why is NumPy fast?」与术语表 vectorization 条目）：</text>
+        <text x="20" y="242" font-size="12" fill="#2f6fed">●　逐元素运算在预编译的 C 代码中执行，循环不再由 Python 解释器驱动</text>
+        <text x="20" y="264" font-size="12" fill="#2f6fed">●　元素同类型、内存连续，省去逐个类型判断与对象拆箱、装箱的开销</text>
+        <text x="20" y="286" font-size="12" fill="#2f6fed">●　运算在数组层面表达，避免为每个中间结果创建临时 Python 对象</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：向量化快，不是因为「算法更聪明」，而是因为<strong>把逐元素循环下沉到编译好的 C 层执行</strong>，从而省掉解释器开销与临时对象创建；代价是需要同类型、连续存放的整块内存。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 NumPy 官方原文插图。图中的形状规则、内存布局与执行路径，均依据官方文档《What is NumPy?》《Broadcasting》《Indexing on ndarrays》与官方术语表整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p><code>ndarray</code> 可以看作用来「描述同一段内存」的一组元信息加上数据本身：<code>shape</code> 说明怎么切分、<code>dtype</code> 说明每个元素多宽、<code>strides</code> 说明每一维往前一步要跨多少字节。绝大多数操作（切片、转置、广播）都只是换一组元信息，而不搬动数据。</p>
+
+    <h3>创建数组的常用函数</h3>
+    <table>
+      <tr><th>写法</th><th>作用</th><th>说明</th></tr>
+      <tr><td><code>np.array([1, 2, 3])</code></td><td>从列表或嵌套列表创建数组</td><td><code>np.array([[1,2],[3,4]])</code> 得到二维数组，形状由嵌套层数决定</td></tr>
+      <tr><td><code>np.zeros(5)</code>、<code>np.zeros((2, 3))</code></td><td>创建全 0 数组</td><td>默认 <code>dtype</code> 为 <code>float64</code>，可用 <code>dtype=</code> 指定</td></tr>
+      <tr><td><code>np.ones(5)</code>、<code>np.ones((2, 3), dtype=np.int64)</code></td><td>创建全 1 数组</td><td>与 <code>zeros</code> 同形，常用于占位与初始化</td></tr>
+      <tr><td><code>np.empty(5)</code></td><td>创建但不初始化内容</td><td>内容取决于内存原有状态，因此比 <code>zeros</code> 快</td></tr>
+      <tr><td><code>np.arange(0, 10, 2)</code></td><td>按起止与步长生成</td><td>得到 <code>[0, 2, 4, 6, 8]</code>，用法类似 <code>range</code> 但返回数组</td></tr>
+      <tr><td><code>np.linspace(0, 10, num=5)</code></td><td>在区间内等距取 num 个点</td><td>得到 <code>[0., 2.5, 5., 7.5, 10.]</code>，包含两端</td></tr>
+      <tr><td><code>np.vstack([a, b])</code></td><td>按行堆叠两个数组</td><td>把两类不同含义的数据放进同一个二维数组，便于按轴统计</td></tr>
+    </table>
+
+    <h3>四个核心属性与四种取值方式</h3>
+    <table>
+      <tr><th>写法</th><th>含义 / 返回</th></tr>
+      <tr><td><code>a.shape</code></td><td>各维长度组成的元组；<code>len(a.shape) == a.ndim</code>，各元素相乘等于 <code>a.size</code></td></tr>
+      <tr><td><code>a.ndim</code> / <code>a.dtype</code></td><td>维数（轴的个数）/ 元素的数据类型；数组是同质的，<code>dtype</code> 只有一个</td></tr>
+      <tr><td><code>a.size</code></td><td>元素总数</td></tr>
+      <tr><td><code>a[1, 2]</code>、<code>a[:3]</code></td><td>基本索引与切片：<strong>始终返回视图</strong>，与原数组共用同一段内存</td></tr>
+      <tr><td><code>a[a &gt; 5]</code></td><td>布尔索引：用同形状的真假值筛出满足条件的元素，返回<strong>副本</strong></td></tr>
+      <tr><td><code>a[[0, 2, 3]]</code></td><td>花式索引（整数数组索引）：按给定下标取元素，返回<strong>副本</strong></td></tr>
+    </table>
+
+    <h3>常用统计函数与 <code>axis</code> 参数</h3>
+    <table>
+      <tr><th>函数</th><th>作用</th></tr>
+      <tr><td><code>a.mean()</code> / <code>np.mean(a)</code></td><td>算术平均</td></tr>
+      <tr><td><code>np.median(a)</code></td><td>中位数</td></tr>
+      <tr><td><code>a.std()</code> / <code>np.std(a)</code></td><td>标准差</td></tr>
+      <tr><td><code>a.min()</code> / <code>a.max()</code> / <code>a.sum()</code></td><td>最小 / 最大 / 求和</td></tr>
+      <tr><td><code>np.percentile(a, q)</code></td><td>第 q 百分位数；<code>q</code> 可为序列，默认 <code>method='linear'</code> 插值</td></tr>
+      <tr><td><code>axis=None</code>（默认）</td><td>先把数组压平再统计，得到<strong>一个标量</strong></td></tr>
+      <tr><td><code>axis=0</code> / <code>axis=1</code></td><td><code>axis</code> 指的是<strong>被压掉的那一维</strong>：压掉轴 0（行方向）后每列一个结果；压掉轴 1（列方向）后每行一个结果</td></tr>
+    </table>
+
+    <h3>列表与 <code>ndarray</code> 的四处差别</h3>
+    <table>
+      <tr><th>对比项</th><th>Python 列表</th><th>NumPy ndarray</th></tr>
+      <tr><td>元素类型</td><td>可以混合</td><td>必须同类型（同一 <code>dtype</code>）</td></tr>
+      <tr><td>长度</td><td>可动态增删</td><td>创建时固定，改大小会新建数组并删除原数组</td></tr>
+      <tr><td>逐元素运算</td><td>需要 for 循环或推导式</td><td>直接写 <code>a * b</code>，无需显式循环</td></tr>
+      <tr><td>切片</td><td>返回副本</td><td>基本切片返回视图，改视图会影响到原数组</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上创建函数、属性含义、索引返回规则与统计函数说明，均引自 NumPy 官方文档《NumPy: the absolute basics for beginners》《Indexing on ndarrays》《Broadcasting》与官方术语表，可经第九节链接逐条核查。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      做完一次选题统计后，编辑部手里有若干篇稿件的标题字数与正文字数。想知道「标题一般多长」「正文的中位数是多少」「九成长度在什么水平」——用 <code>ndarray</code> 把两串数字装起来，几行代码就能同时拿到均值、中位数与分位数。
+    </p>
+    <pre>import numpy as np
+
+<span class="c"># 一次选题统计：6 篇稿件的标题字数与正文字数</span>
+title_len = np.array([18, 25, 12, 31, 22, 16])
+body_len  = np.array([820, 1450, 560, 2100, 980, 640])
+
+print(title_len.shape, title_len.dtype)      <span class="c"># (6,) 元素类型由数据推断</span>
+print(round(title_len.mean(), 2))            <span class="c"># 20.67</span>
+print(np.median(body_len))                   <span class="c"># 900.0</span>
+print(np.percentile(body_len, [50, 90]))     <span class="c"># [ 900. 1775.]  中位数与九十分位</span>
+
+<span class="c"># 堆成二维数组：2 行（标题 / 正文）× 6 列（6 篇稿件）</span>
+stats = np.vstack([title_len, body_len])     <span class="c"># shape (2, 6)</span>
+
+print(np.mean(stats, axis=1).round(2))       <span class="c"># [  20.67 1091.67]  压掉「稿件」维，两类各一个均值</span>
+print(np.mean(stats, axis=0).round(1))       <span class="c"># [419.  737.5 286. 1065.5 501.  328. ]  压掉「种类」维，每篇一个均值</span>
+
+<span class="c"># 布尔索引：只看标题超过 20 字的稿件，再取均值</span>
+long_titles = title_len[title_len &gt; 20]      <span class="c"># [25 31 22]</span>
+print(long_titles.mean())                    <span class="c"># 26.0</span>
+
+<span class="c"># 广播：把每篇正文字数换算成「千字」，标量被拉伸到与数组同形状</span>
+print((body_len / 1000).round(2))            <span class="c"># [0.82 1.45 0.56 2.1  0.98 0.64]</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明数组、轴与广播如何组合起来完成一次真实统计，属辅助理解示例，非某个来源的原文代码。示例中的输出值由本页按 NumPy 文档给出的计算规则换算得出（<code>percentile</code> 采用默认的 <code>'linear'</code> 方法），实际运行以本地环境为准。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      <code>axis</code> 表示「被压掉的那一维」这一说法，与官方 <code>numpy.mean</code> 文档中「沿指定轴计算均值、默认对压平后的数组计算」的描述一致；<code>np.percentile</code> 的默认方法为 <code>'linear'</code>，见官方 <code>numpy.percentile</code> 条目；二维数组的 <code>axis=0</code> 是行方向、<code>axis=1</code> 是列方向，见官方术语表 <code>axis</code> 条目。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>数组切片是视图，不是副本。</strong>这与 Python 列表相反。执行 <code>b = a[:3]</code> 后再写 <code>b[0] = 99</code>，<code>a</code> 的第 0 个元素也会变成 99。要拿到互不影响的独立数据，需要显式 <code>.copy()</code>；反过来，布尔索引与花式索引返回的是副本，改它不会影响原数组。另外，从大数组切出很小的一片时，原数组内存不会释放，直到所有派生数组被回收。</li>
+      <li><strong><code>*</code> 是逐元素相乘，不是矩阵乘法。</strong>官方文档说明 NumPy 的运算通常成对地按元素进行（element-by-element），<code>a * b</code> 要求形状可广播或相同；矩阵乘法由单独的 <code>np.matmul</code> 提供，其 <code>@</code> 运算符是其简写。常见误解是把二维数组上的 <code>*</code> 当成数学里的矩阵乘积。</li>
+      <li><strong><code>axis</code> 指的不是「沿着哪个方向算」，而是「哪一维被压掉」。</strong>对形状 <code>(2, 3)</code> 的数组，<code>axis=0</code> 压掉行这一维，得到 3 个数（每列一个），<code>axis=1</code> 压掉列这一维，得到 2 个数（每行一个）；两者结果长度正好对调。默认 <code>axis=None</code> 则是先把数组压平，因此得到一个标量。</li>
+      <li><strong>广播有明确的失败边界。</strong>规则是「从最右一维开始逐维比较，相等或其中一个为 1 则兼容，缺的维视为 1」。<code>(3, 1)</code> 与 <code>(4,)</code> 得到 <code>(3, 4)</code>，而 <code>(4,)</code> 与 <code>(3,)</code> 会因为最右维 4 与 3 既不相等也不为 1 而抛 <code>ValueError: operands could not be broadcast together</code>。</li>
+      <li><strong>数组不是「更快的列表」。</strong>官方文档列出几处本质差别：数组创建后大小固定，改大小会新建数组并删除原数组；元素必须同类型、因而内存中占同样字节数。因此「频繁追加元素」这类需求仍应交给列表，数组适合「一次装好、整体运算」。</li>
+      <li><strong>广播并不总是更省。</strong>官方《Broadcasting》一节同时指出：广播在 C 层高效，但某些算法会因为广播产生远大于输入规模的中间数组，反而浪费内存、拖慢计算；这类情况下，把外层循环写回 Python 反而更合适，代码也可能更好读。官方术语表也强调，广播的「复制」在概念上发生，实际上不占内存与时间——真正占内存的是广播后产生的中间结果。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条均以 NumPy 官方文档为依据。切片的视图／副本之别与高级索引返回副本，见《Indexing on ndarrays》；逐元素运算是默认行为、广播规则与「广播可能低效」的提醒，见《Broadcasting》；数组定长、同质这两条约束见《What is NumPy?》与《NumPy: the absolute beginners》；<code>axis</code> 的定义见官方术语表。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>1. 要创建一个含 5 个 0 的一维数组，写法是？</div>
+      <button class="opt" data-v="A">A. <code>np.zeros(5)</code></button>
+      <button class="opt" data-v="B">B. <code>np.ones(5)</code></button>
+      <button class="opt" data-v="C">C. <code>np.arange(5)</code></button>
+      <button class="opt" data-v="D">D. <code>np.linspace(0, 5, num=5)</code></button>
+      <div class="fb" data-ok="✅ 正确。np.zeros(n) 创建全 0 数组，np.ones(n) 创建全 1 数组，np.arange(5) 得到 0 到 4，np.linspace(0, 5, num=5) 得到 [0. 1.25 2.5 3.75 5.]。"></div>
+      <div class="src">📎 来源：NumPy 官方文档《NumPy: the absolute basics for beginners》「How to create a basic array」— numpy.org/doc/stable/user/absolute_beginners.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. 设 <code>a = np.array([[1, 2, 3], [4, 5, 6]])</code>，则 <code>a.shape</code> 与 <code>a.ndim</code> 分别是？</div>
+      <button class="opt" data-v="A">A. <code>(3, 2)</code> 与 <code>2</code></button>
+      <button class="opt" data-v="B">B. <code>(2, 3)</code> 与 <code>3</code></button>
+      <button class="opt" data-v="C">C. <code>(2, 3)</code> 与 <code>2</code></button>
+      <button class="opt" data-v="D">D. <code>(6,)</code> 与 <code>1</code></button>
+      <div class="fb" data-ok="✅ 正确。shape 是各维长度组成的元组，外层有 2 个列表、每个列表 3 个元素，所以是 (2, 3)；ndim 是维数，也就是 shape 的长度，所以是 2。size 才是元素总数 6。"></div>
+      <div class="src">📎 来源：NumPy 官方文档《NumPy: the absolute basics for beginners》「Array attributes」与官方术语表 shape / axis 条目 — numpy.org/doc/stable/user/absolute_beginners.html、numpy.org/doc/stable/glossary.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 对同一个 <code>(2, 3)</code> 的数组，<code>np.mean(a, axis=0)</code> 返回什么？</div>
+      <button class="opt" data-v="A">A. 一个标量 <code>3.5</code></button>
+      <button class="opt" data-v="B">B. 形状为 <code>(3,)</code> 的数组，三个值是各列的均值</button>
+      <button class="opt" data-v="C">C. 形状为 <code>(2,)</code> 的数组，两个值是各行的均值</button>
+      <button class="opt" data-v="D">D. 形状仍为 <code>(2, 3)</code> 的数组</button>
+      <div class="fb" data-ok="✅ 正确。axis 指的是被压掉的那一维：axis=0 压掉行方向，剩下 3 列，每列得到一个均值，因此形状是 (3,)，本例为 [2., 3., 4.]。选项 C 是 axis=1 的结果，选项 A 是默认 axis=None（先压平再求均值）的结果。"></div>
+      <div class="src">📎 来源：NumPy 官方文档 numpy.mean（axis 参数说明与示例）— numpy.org/doc/stable/reference/generated/numpy.mean.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 执行 <code>np.array([[1], [2], [3]]) + np.array([10, 20, 30, 40])</code>，结果是？</div>
+      <button class="opt" data-v="A">A. 形状 <code>(3, 1)</code> 的数组</button>
+      <button class="opt" data-v="B">B. 形状 <code>(4,)</code> 的一维数组</button>
+      <button class="opt" data-v="C">C. 抛出 <code>ValueError</code>，因为两个数组形状不同</button>
+      <button class="opt" data-v="D">D. 形状 <code>(3, 4)</code> 的数组，第一行是 <code>[11, 21, 31, 41]</code></button>
+      <div class="fb" data-ok="✅ 正确。两个形状右对齐后为 (3, 1) 与 (1, 4)：最右维 1 与 4 兼容，接着 3 与 1 兼容，因此广播成 (3, 4)。结果是 3 行 4 列，第一行 [11, 21, 31, 41]。形状不同不等于不能运算，只有不满足「相等或其中一个为 1」时才会抛 ValueError。"></div>
+      <div class="src">📎 来源：NumPy 官方文档《Broadcasting》（一般广播规则与示例）— numpy.org/doc/stable/user/basics.broadcasting.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 向量化（如 <code>a * b</code>）比等价的 Python for 循环快的根本原因是？</div>
+      <button class="opt" data-v="A">A. NumPy 默认启用多线程并行计算</button>
+      <button class="opt" data-v="B">B. 逐元素循环下沉到预编译的 C 代码中执行，减少了 Python 解释器开销与临时对象创建</button>
+      <button class="opt" data-v="C">C. NumPy 会自动缓存重复出现的中间结果</button>
+      <button class="opt" data-v="D">D. NumPy 会跳过不参与结果的元素</button>
+      <div class="fb" data-ok="✅ 正确。官方文档的表述是：向量化意味着代码里没有显式循环与索引，这些动作「在幕后」由优化过的预编译 C 代码完成；术语表进一步说明，NumPy 把数组处理交给 C，循环与计算在那里比在 Python 中快得多。快的原因是把循环下沉到 C 层、省去解释器往返与对象拆装箱，而不是并行或缓存。"></div>
+      <div class="src">📎 来源：NumPy 官方文档《What is NumPy?》「Why is NumPy fast?」与官方术语表 vectorization 条目 — numpy.org/doc/stable/user/whatisnumpy.html、numpy.org/doc/stable/glossary.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为已核查、可访问的官方出处（NumPy 官方文档目前以英文版为权威版本）：</p>
+    <ul class="source-list">
+      <li>NumPy 官方文档《What is NumPy?》（ndarray 定位、数组与列表的差别、定长与同质两条约束、「Why is NumPy fast?」向量化说明） — <a href="https://numpy.org/doc/stable/user/whatisnumpy.html" target="_blank" rel="noopener">numpy.org/doc/stable/user/whatisnumpy.html</a></li>
+      <li>NumPy 官方文档《NumPy: the absolute basics for beginners》（<code>array</code> / <code>zeros</code> / <code>ones</code> / <code>empty</code> / <code>arange</code> / <code>linspace</code>、<code>shape</code> / <code>ndim</code> / <code>size</code> / <code>dtype</code>、索引切片、布尔索引、广播与视图） — <a href="https://numpy.org/doc/stable/user/absolute_beginners.html" target="_blank" rel="noopener">numpy.org/doc/stable/user/absolute_beginners.html</a></li>
+      <li>NumPy 官方文档《Broadcasting》（一般广播规则、兼容与不兼容示例、广播可能浪费内存的提醒） — <a href="https://numpy.org/doc/stable/user/basics.broadcasting.html" target="_blank" rel="noopener">numpy.org/doc/stable/user/basics.broadcasting.html</a></li>
+      <li>NumPy 官方文档《Indexing on ndarrays》（基本索引与切片返回视图、整数数组索引与布尔索引返回副本、组合索引规则） — <a href="https://numpy.org/doc/stable/user/basics.indexing.html" target="_blank" rel="noopener">numpy.org/doc/stable/user/basics.indexing.html</a></li>
+      <li>NumPy 官方术语表 Glossary（<code>axis</code> / <code>shape</code> / <code>ndarray</code> / <code>broadcast</code> / <code>view</code> / <code>homogeneous</code> / <code>vectorization</code> 的定义） — <a href="https://numpy.org/doc/stable/glossary.html" target="_blank" rel="noopener">numpy.org/doc/stable/glossary.html</a></li>
+      <li>NumPy 官方文档 <code>numpy.percentile</code>（<code>q</code> 与 <code>axis</code> 参数、默认 <code>method='linear'</code>、示例） — <a href="https://numpy.org/doc/stable/reference/generated/numpy.percentile.html" target="_blank" rel="noopener">numpy.org/doc/stable/reference/generated/numpy.percentile.html</a></li>
+      <li>NumPy 官方文档 <code>numpy.mean</code>（<code>axis</code> 参数含义与示例）与《Statistics》统计函数总览（<code>mean</code> / <code>median</code> / <code>std</code> / <code>var</code> / <code>percentile</code> / <code>quantile</code>） — <a href="https://numpy.org/doc/stable/reference/generated/numpy.mean.html" target="_blank" rel="noopener">numpy.org/doc/stable/reference/generated/numpy.mean.html</a>、<a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noopener">numpy.org/doc/stable/reference/routines.statistics.html</a></li>
+      <li>NumPy 官方文档 <code>numpy.matmul</code>（矩阵乘积的定义、与逐元素运算的区别、<code>@</code> 运算符的语义） — <a href="https://numpy.org/doc/stable/reference/generated/numpy.matmul.html" target="_blank" rel="noopener">numpy.org/doc/stable/reference/generated/numpy.matmul.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节四张表格中的函数行为、属性含义、返回视图或副本的规则，以及第七节六条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文；示例输出的数值由本页按官方文档给出的计算规则换算得出，未在本地 NumPy 环境运行验证。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

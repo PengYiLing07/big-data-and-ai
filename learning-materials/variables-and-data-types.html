@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 变量与数据类型</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块一 · Python 起步 ｜ 第 1 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>变量与数据类型</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>赋值语句 <code>=</code> 在 Python 里究竟做了什么？它与数学里的「等于」有何不同？</li>
+      <li><code>str</code>、<code>int</code>、<code>float</code>、<code>bool</code> 四种基础类型各用来装什么数据？</li>
+      <li>为什么 <code>"1975"</code> 和 <code>1975</code> 在程序里不是一回事？什么时候必须转换类型、怎么转？</li>
+      <li>哪些值在条件判断中会被当成「假」？这类隐式判断在什么情况下会成为陷阱？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——程序如何给数据起名字，并在后续反复引用同一份数据？</li>
+      <li><strong>它由什么组成</strong>——一个变量包含哪几个部分？谁决定这个值能做什么操作？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——变量与字面值、类型与值、<code>int</code> 与 <code>float</code>、<code>bool</code> 与 <code>0/1</code> 的边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——为什么字符串不能直接做算术？浮点数为什么会出现 <code>0.1 + 0.2</code> 这类意外结果？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      Python 的变量不是「装东西的盒子」，而是<strong>贴在数据上的名字标签</strong>。写 <code>lead = "地铁票价调整"</code> 时，Python 先在内存里创建字符串对象 <code>"地铁票价调整"</code>，然后让 <code>lead</code> 这个名字指向它。之后再写 <code>lead = "小区加装电梯"</code>，并不是把盒子里的旧东西倒掉换成新的，而是让 <code>lead</code> 这个标签<strong>改贴到另一个新对象上</strong>——原来的字符串对象如果没人引用，会被自动回收。
+    </p>
+    <p>
+      每个值都自带一个<strong>类型</strong>，类型决定了这个值能做什么。<code>"1975"</code> 是字符串，它可以拼接、可以取长度，但不能做减法；<code>1975</code> 是整数，它能参与算术运算。<strong>类型跟着值走，不跟着变量走</strong>——同一个变量名先后指向字符串和整数，是完全合法的。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      变量可类比为贴在物品上的便利贴：便利贴上写的是一个名字，物品本身才是数据。同一样物品可以贴多个便利贴（多个变量指向同一个对象），同一张便利贴也可以被撕下来贴到另一样物品上（重新赋值）。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      类型可类比为容器的规格说明：字符串是「文字罐」，整数和浮点数是「数字罐」，布尔是「开关」。规格不同，能做的动作就不同——把文字罐直接倒进算术运算里，Python 会明确报错而不是猜用户想干什么。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：变量到底是什么、四种类型各长什么样、类型之间怎么转换。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 变量是「名字标签」，不是「盒子」</div>
+      <div class="vsub">赋值语句建立的是「名字 → 值对象」的指向关系；重新赋值等于把标签改贴到新对象上。</div>
+      <svg viewBox="0 0 700 290" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>变量名与值对象的指向关系示意图</title>
+        <desc>四个变量名分别指向四个不同类型的值对象：字符串标题、整数阅读量、浮点比率、布尔草稿标记。</desc>
+        <defs>
+          <marker id="va" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+        </defs>
+        <text x="30" y="24" font-size="12.5" fill="#5b6472">变量名（贴在值上的标签）</text>
+        <text x="272" y="24" font-size="12.5" fill="#5b6472">值（对象，自带类型）</text>
+        <text x="535" y="24" font-size="12.5" fill="#5b6472" text-anchor="middle">类型</text>
+
+        <rect x="30" y="44" width="140" height="46" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="100" y="67" font-size="13.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">title</text>
+        <line x1="176" y1="67" x2="264" y2="67" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#va)"/>
+        <rect x="272" y="44" width="200" height="46" rx="9" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="372" y="67" font-size="13" fill="#1f2430" text-anchor="middle" dominant-baseline="central">"地铁票价调整方案"</text>
+        <rect x="490" y="54" width="90" height="26" rx="13" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.8"/>
+        <text x="535" y="67" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">str 文字</text>
+
+        <rect x="30" y="104" width="140" height="46" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="100" y="127" font-size="13.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">reads</text>
+        <line x1="176" y1="127" x2="264" y2="127" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#va)"/>
+        <rect x="272" y="104" width="200" height="46" rx="9" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="372" y="127" font-size="13" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">12500</text>
+        <rect x="490" y="114" width="90" height="26" rx="13" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.8"/>
+        <text x="535" y="127" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">int 整数</text>
+
+        <rect x="30" y="164" width="140" height="46" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="100" y="187" font-size="13.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">ratio</text>
+        <line x1="176" y1="187" x2="264" y2="187" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#va)"/>
+        <rect x="272" y="164" width="200" height="46" rx="9" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="372" y="187" font-size="13" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">0.68</text>
+        <rect x="490" y="174" width="90" height="26" rx="13" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.8"/>
+        <text x="535" y="187" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">float 小数</text>
+
+        <rect x="30" y="224" width="140" height="46" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="100" y="247" font-size="13.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">is_draft</text>
+        <line x1="176" y1="247" x2="264" y2="247" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#va)"/>
+        <rect x="272" y="224" width="200" height="46" rx="9" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="372" y="247" font-size="13" fill="#1f2430" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">False</text>
+        <rect x="490" y="234" width="90" height="26" rx="13" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.8"/>
+        <text x="535" y="247" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">bool 真假</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：变量名本身不存数据，它只是一个「指向」；真正决定能做什么操作的是右边那个值对象的类型。示意图，用于帮助理解，非 Python 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 四种基础类型速查卡与「假值」清单</div>
+      <div class="vsub">左半部分是四种最常用的基础类型，下方橙色区是条件判断中会被当成「假」的全部常见值。</div>
+      <svg viewBox="0 0 700 330" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>Python 四种基础类型与假值清单示意图</title>
+        <desc>str、int、float、bool 四种基础类型的示例与用途；下方列出 None、False、各类零值与各类空容器，它们在条件判断中均为假。</desc>
+
+        <rect x="8" y="12" width="160" height="140" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="88" y="38" font-size="15" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">str 字符串</text>
+        <line x1="20" y1="54" x2="156" y2="54" stroke="#2f6fed" stroke-width="0.6"/>
+        <text x="20" y="76" font-size="11.5" fill="#1f2430">示例："地铁调价"</text>
+        <text x="20" y="98" font-size="11.5" fill="#1f2430">用途：文字、标题、评论</text>
+        <text x="20" y="120" font-size="11.5" fill="#1f2430">引号内即字符串</text>
+        <text x="20" y="140" font-size="11.5" fill="#d97706">不可改（immutable）</text>
+
+        <rect x="182" y="12" width="160" height="140" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="262" y="38" font-size="15" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">int 整数</text>
+        <line x1="194" y1="54" x2="330" y2="54" stroke="#2f6fed" stroke-width="0.6"/>
+        <text x="194" y="76" font-size="11.5" fill="#1f2430">示例：1975、12500</text>
+        <text x="194" y="98" font-size="11.5" fill="#1f2430">用途：计数、字数、年份</text>
+        <text x="194" y="120" font-size="11.5" fill="#1f2430">无大小上限</text>
+        <text x="194" y="140" font-size="11.5" fill="#5b6472">7 // 2 得 3</text>
+
+        <rect x="356" y="12" width="160" height="140" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="436" y="38" font-size="15" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">float 浮点数</text>
+        <line x1="368" y1="54" x2="504" y2="54" stroke="#2f6fed" stroke-width="0.6"/>
+        <text x="368" y="76" font-size="11.5" fill="#1f2430">示例：0.68、3.14</text>
+        <text x="368" y="98" font-size="11.5" fill="#1f2430">用途：比例、均值</text>
+        <text x="368" y="120" font-size="11.5" fill="#1f2430">7 / 2 得 3.5</text>
+        <text x="368" y="140" font-size="11.5" fill="#d97706">有精度误差</text>
+
+        <rect x="530" y="12" width="160" height="140" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="610" y="38" font-size="15" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">bool 布尔</text>
+        <line x1="542" y1="54" x2="678" y2="54" stroke="#2f6fed" stroke-width="0.6"/>
+        <text x="542" y="76" font-size="11.5" fill="#1f2430">示例：True、False</text>
+        <text x="542" y="98" font-size="11.5" fill="#1f2430">用途：条件、开关标记</text>
+        <text x="542" y="120" font-size="11.5" fill="#1f2430">是 int 的子类型</text>
+        <text x="542" y="140" font-size="11.5" fill="#5b6472">True 相当于 1</text>
+
+        <rect x="8" y="172" width="682" height="142" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="28" y="198" font-size="13.5" font-weight="700" fill="#b45309" dominant-baseline="central">⚠ 在条件判断中会被当成「假」的值——除此之外几乎都算「真」</text>
+        <line x1="24" y1="216" x2="674" y2="216" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="28" y="240" font-size="12" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">None　｜　False　｜　0　｜　0.0　｜　（任何数值类型的零）</text>
+        <text x="28" y="266" font-size="12" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">''　空字符串　｜　[]　空列表　｜　{}　空字典　｜　set()　空集合</text>
+        <text x="28" y="294" font-size="12" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">'0'　'False'　[0]　→　这些都算「真」（非空字符串、非空列表）</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：判「假」的依据是「空」或「零」，不是字面看起来像不像否定——<code>'False'</code> 是非空字符串，在判断中反而是「真」。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 类型转换的常见路径</div>
+      <div class="vsub">四种基础类型之间用同名的内置函数互相转换，箭头标注的是转换写法。</div>
+      <div class="viz-flow">
+        <span class="fnode">"42"（str）</span><span class="farrow">→ int("42") →</span>
+        <span class="fnode">42（int）</span><span class="farrow">→ float(42) →</span>
+        <span class="fnode">42.0（float）</span>
+      </div>
+      <div class="viz-flow">
+        <span class="fnode">42（int）</span><span class="farrow">→ str(42) →</span>
+        <span class="fnode">"42"（str）</span><span class="farrow">→ bool("42") →</span>
+        <span class="fnode hot">True（bool）</span>
+      </div>
+      <div class="viz-note">🎯 读图要点：转换用的是与类型同名的函数 <code>int()</code> / <code>float()</code> / <code>str()</code> / <code>bool()</code>；<code>"42"</code> 能转成数字，<code>"四十二"</code> 不能——<code>int()</code> 遇到无法解析的内容会直接抛出 <code>ValueError</code>。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中类型行为、假值清单与转换函数均依据 Python 官方文档《内置类型》与《数据模型》整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一条赋值语句 <code>name = value</code> 实际包含「求解右侧」「创建/引用对象」「建立名字指向」三步。理解这三部分的职责划分，是理解一切后续语法（循环、函数、模块）的前提。</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>变量名</strong></td><td>程序员起的标识符，用于在代码中引用数据。Python 3 允许标识符使用中文字符，但通用实践是使用英文小写加下划线，遵循 PEP 8 命名规范。</td></tr>
+      <tr><td><strong>指向（引用）</strong></td><td>名字与对象之间的关联关系。<code>=</code> 建立或改变这条指向；重新赋值只是换指向，不改动原对象。</td></tr>
+      <tr><td><strong>值对象</strong></td><td>真正占用内存的数据。整数、浮点数、字符串、布尔值都是对象，各自带有类型信息。</td></tr>
+      <tr><td><strong>类型</strong></td><td>决定该值支持哪些操作、能被哪些函数接受、如何与其他类型运算。类型属于值，不属于变量名。</td></tr>
+    </table>
+
+    <h3>四种基础类型对照</h3>
+    <table>
+      <tr><th>类型</th><th>典型写法</th><th>主要用途</th><th>需要注意</th></tr>
+      <tr><td><code>str</code> 字符串</td><td><code>"地铁调价"</code>、<code>'1975'</code></td><td>文字、标题、评论、任何文本</td><td>不可修改；引号内即便全是数字，也是字符串</td></tr>
+      <tr><td><code>int</code> 整数</td><td><code>1975</code>、<code>-3</code></td><td>计数、字数、年份、序号</td><td>精度不限；<code>//</code> 向下取整，<code>%</code> 取余</td></tr>
+      <tr><td><code>float</code> 浮点数</td><td><code>0.68</code>、<code>1.6e3</code></td><td>比例、均值、带小数的量</td><td>存在表示误差，不宜用 <code>==</code> 直接比较</td></tr>
+      <tr><td><code>bool</code> 布尔</td><td><code>True</code>、<code>False</code></td><td>条件判断、状态标记</td><td>是 <code>int</code> 的子类型，参与运算时相当于 1 / 0</td></tr>
+    </table>
+
+    <h3>运算与类型的关系</h3>
+    <table>
+      <tr><th>写法</th><th>结果</th><th>说明</th></tr>
+      <tr><td><code>7 / 2</code></td><td><code>3.5</code></td><td>除法运算总是返回浮点数</td></tr>
+      <tr><td><code>7 // 2</code></td><td><code>3</code></td><td>向下取整除法，丢弃小数部分</td></tr>
+      <tr><td><code>7 % 2</code></td><td><code>1</code></td><td>取余数</td></tr>
+      <tr><td><code>2 ** 7</code></td><td><code>128</code></td><td>乘方，<code>**</code> 优先级高于负号</td></tr>
+      <tr><td><code>4 * 3.75</code></td><td><code>15.0</code></td><td>混合类型运算会把整数自动提升为浮点数</td></tr>
+      <tr><td><code>"100" + 1</code></td><td>报 <code>TypeError</code></td><td>字符串与整数不能直接相加，必须先转换</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上运算规则引自 Python 官方教程《Python 速览》3.1 节与《内置类型》文档。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      一篇稿件从采写系统导出后，标题、字数、阅读量、是否为草稿往往混在一个文本文件里。要让程序能自动排序、统计和判断，第一步就是把每个字段装进合适类型的变量——这正是第 1 课「稿件字数统计器」要做的事。
+    </p>
+    <pre><span class="c"># 从一行文本里取出字段，装进不同类型变量</span>
+title    = <span class="s">"地铁票价调整方案公布"</span>   <span class="c"># str：文字</span>
+chars    = 16                        <span class="c"># int：字数</span>
+ratio    = 0.68                      <span class="c"># float：通读完成比例</span>
+is_draft = False                     <span class="c"># bool：是否草稿</span>
+
+<span class="c"># 类型正确时，运算才成立</span>
+print(title, <span class="s">"字数："</span>, chars)
+print(<span class="s">"进度："</span> + str(round(ratio * 100)) + <span class="s">"%"</span>)   <span class="c"># 必须先转成字符串才能拼接</span>
+
+<span class="c"># 假设字数是从文件里读来的，它会默认是字符串</span>
+chars_from_file = <span class="s">"16"</span>
+chars = int(chars_from_file)         <span class="c"># 显式转换后才能参与计算</span>
+print(chars + 4)                     <span class="c"># 20</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明类型正确性与后续所有数据处理的关系，属于辅助理解示例，非某个来源的原文代码。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>=</code> 不是数学里的「等于」。</strong>它表示「让左边的名字指向右边算出来的值」，因此 <code>x = x + 1</code> 在 Python 里完全合法（先算右边的旧值加一，再把名字指向新结果）。要判断相等，用的是 <code>==</code>。</li>
+      <li><strong><code>"1975"</code> 与 <code>1975</code> 是两种不同的东西。</strong>前者是长度为 4 的字符串，<code>len()</code> 得 4；后者是整数，能参与算术。混用的典型后果是 <code>"100" + 1</code> 直接抛 <code>TypeError</code>，而不是得到 101。从文件读进来的内容默认都是字符串，这一步转换最容易被漏掉。</li>
+      <li><strong><code>bool</code> 是 <code>int</code> 的子类型。</strong><code>True</code> 和 <code>False</code> 在几乎所有上下文中的表现等同于 1 和 0，参与运算时也按 1 / 0 处理；唯一的例外是被转换成字符串时，得到的是 <code>"True"</code> / <code>"False"</code>。因此 <code>True + True</code> 的结果是 2。</li>
+      <li><strong>浮点数不适合用 <code>==</code> 直接比较。</strong>受二进制表示限制，<code>0.1 + 0.2 == 0.3</code> 的结果是 <code>False</code>。需要比较时常见做法是判断差值是否足够小，或改用 <code>decimal</code> 模块。该限制源自官方文档《浮点算术：争议和限制》。</li>
+      <li><strong>变量在赋值之前不能使用。</strong>访问一个未定义的变量会直接报 <code>NameError: name 'n' is not defined</code>，这是初学者最常见的报错之一。使用前必须让它先指向某个值。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节五条均以 Python 官方文档为依据。<code>=</code> 与 <code>==</code> 的区别、<code>NameError</code> 的触发条件见官方教程《Python 速览》3.1 节；<code>bool</code> 是 <code>int</code> 子类型这一表述见官方文档《数据模型》3.2.4.1；浮点精度限制见官方教程《浮点算术：争议和限制》。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 在 Python 中，下列哪个变量名是合法的？</div>
+      <button class="opt" data-v="A">A. <code>2nd_lead</code></button>
+      <button class="opt" data-v="B">B. <code>lead-count</code></button>
+      <button class="opt" data-v="C">C. <code>lead_count</code></button>
+      <button class="opt" data-v="D">D. <code>class</code></button>
+      <div class="fb" data-ok="✅ 正确。标识符不能以数字开头（排除 A），不能包含连字符（排除 B），不能是 Python 关键字（class 是关键字，排除 D）。英文小写加下划线的写法符合 PEP 8 命名规范。"></div>
+      <div class="src">📎 来源：PEP 8 命名规范（peps.python.org/pep-0008）；Python 官方教程《更多控制流工具》5.3 节 if 语句前的规定</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. 执行 <code>x = "100"</code> 之后再执行 <code>x + 1</code>，会出现什么结果？</div>
+      <button class="opt" data-v="A">A. 得到 <code>101</code></button>
+      <button class="opt" data-v="B">B. 得到 <code>"1001"</code></button>
+      <button class="opt" data-v="C">C. 抛出 <code>TypeError</code>，字符串不能与整数直接相加</button>
+      <button class="opt" data-v="D">D. 得到 <code>"101"</code></button>
+      <div class="fb" data-ok="✅ 正确。Python 不会把字符串自动转成数字去猜意图；<code>"100"</code> 是字符串，与整数相加会直接抛 TypeError。要得到 101，必须先写 <code>int(x) + 1</code>。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型》——数值类型与混合运算规则</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. <code>7 / 2</code> 与 <code>7 // 2</code> 的结果分别是？</div>
+      <button class="opt" data-v="A">A. <code>3.5</code> 与 <code>3</code></button>
+      <button class="opt" data-v="B">B. <code>3</code> 与 <code>3.5</code></button>
+      <button class="opt" data-v="C">C. <code>3.5</code> 与 <code>3.5</code></button>
+      <button class="opt" data-v="D">D. <code>3</code> 与 <code>3</code></button>
+      <div class="fb" data-ok="✅ 正确。官方教程明确写道：除法运算（/）总是返回浮点数；要做向下取整除法得到整数结果，用 // 运算符。"></div>
+      <div class="src">📎 来源：Python 官方教程《Python 速览》3.1.1 数字 —— docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 在 <code>if</code> 判断中，下列哪个值会被当成「假」？</div>
+      <button class="opt" data-v="A">A. <code>"0"</code></button>
+      <button class="opt" data-v="B">B. <code>[0]</code></button>
+      <button class="opt" data-v="C">C. <code>0.0</code></button>
+      <button class="opt" data-v="D">D. <code>"False"</code></button>
+      <div class="fb" data-ok="✅ 正确。判「假」的依据是「数值为零」或「容器为空」。<code>0.0</code> 是数值零，为假；<code>"0"</code> 和 <code>"False"</code> 都是非空字符串，为真；<code>[0]</code> 是含一个元素的非空列表，也为真。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型》—— 真值检测（Truth Value Testing）章节</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 执行 <code>0.1 + 0.2 == 0.3</code> 的结果及其原因是？</div>
+      <button class="opt" data-v="A">A. <code>True</code>，因为数学上它们相等</button>
+      <button class="opt" data-v="B">B. <code>False</code>，因为 0.1 与 0.2 无法用二进制浮点数精确表示</button>
+      <button class="opt" data-v="C">C. <code>False</code>，因为两边类型不同，无法比较</button>
+      <button class="opt" data-v="D">D. <code>True</code>，因为 Python 会自动做四舍五入</button>
+      <div class="fb" data-ok="✅ 正确。浮点数采用二进制表示，0.1 和 0.2 都是无限循环小数，只能近似存储，相加后与 0.3 的近似值并不相等。这是官方文档专门用一节说明的限制。实际比较时应改用差值判断或 decimal 模块。"></div>
+      <div class="src">📎 来源：Python 官方教程《浮点算术：争议和限制》—— docs.python.org/zh-cn/3/tutorial/floatingpoint.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《3. Python 速览》（变量赋值、数字类型、除法与取整、字符串） — <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/introduction.html</a></li>
+      <li>Python 官方文档《内置类型》（真值检测、布尔运算、数值类型、混合运算与类型提升） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html</a></li>
+      <li>Python 官方文档《3. 数据模型 · 标准类型层级》（bool 是 int 的子类型、整数无上限、浮点精度说明） — <a href="https://docs.python.org/zh-cn/3/reference/datamodel.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/datamodel.html</a></li>
+      <li>Python 官方教程《15. 浮点算术：争议和限制》（0.1 + 0.2 类问题的原理） — <a href="https://docs.python.org/zh-cn/3/tutorial/floatingpoint.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/floatingpoint.html</a></li>
+      <li>Python 官方教程《4. 更多控制流工具》（if 语句、函数定义等后续概念入口） — <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/controlflow.html</a></li>
+      <li>PEP 8 —— Style Guide for Python Code（命名规范：变量名使用小写字母与下划线） — <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">peps.python.org/pep-0008/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节两张表格与第七节五条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

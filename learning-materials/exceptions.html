@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 异常处理</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块三 · 函数与工程化 ｜ 第 8 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>异常处理</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：Python 基础（13 次课 · 新闻学专业定制）</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>异常与语法错误的区别是什么？为什么语法错误根本没法用 <code>try</code> 捕获？</li>
+      <li>面对一段长长的报错信息，从哪里开始读、每一步看到的是什么？</li>
+      <li><code>try</code> / <code>except</code> / <code>else</code> / <code>finally</code> 四个子句分别在什么条件下执行？</li>
+      <li>为什么通常要捕获具体异常类型，而不是随手写一个裸 <code>except:</code>？</li>
+      <li>EAFP 与 LBYL 是两种什么风格的写法，各自适合什么场合？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——一批稿件数据里混进了几行坏数据时，如何让程序跳过坏行继续跑完，而不是整体崩掉、前面的处理成果一并作废？</li>
+      <li><strong>它由什么组成</strong>——一次异常处理由 <code>try</code>、<code>except</code>、<code>else</code>、<code>finally</code> 四个子句构成，它们的分工边界在哪里？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——异常与语法错误、<code>except</code> 与 <code>finally</code>、「处理了异常」与「把异常吞掉」之间的差别是什么？</li>
+      <li><strong>它的边界在哪</strong>——哪些异常不该被捕获？捕获范围写得太宽会掩盖什么问题？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      Python 的错误至少可以分为两类：<strong>语法错误</strong>与<strong>异常</strong>。语法错误又称解析错误，代码连解析都过不去，程序根本不会开始执行，因此它无法被 <code>try</code> 捕获。异常则是「语句或表达式语法正确，但执行时仍可能触发」的错误，例如把不能转成整数的内容交给 <code>int()</code>、用不存在的键去取字典的值。<strong>能被处理的只有异常</strong>。
+    </p>
+    <p>
+      异常发生时，程序不会立刻无声退出，而是沿着调用关系一层层向上报，打印出一段<strong>堆栈回溯</strong>（traceback）。这段信息的信息量很大，但阅读顺序只有一个方向：<strong>从最后一行往上读</strong>。错误信息的最后一行说明遇到了什么类型的错误，并给出出错细节；紧挨着的 <code>File</code> 行指出出错的那一行代码在哪个文件的哪一行；再往上则是「谁调用了谁」的链条。第一行 <code>Traceback (most recent call last):</code> 本身就在提示这个顺序——最后一次调用显示在最下面。
+    </p>
+    <p>
+      异常处理则是给程序准备一套<strong>备用预案</strong>：把可能出错的代码放进 <code>try</code>，把「出了某种错该怎么办」写进 <code>except</code>，把「一切正常时接着做什么」写进 <code>else</code>，把「无论成败都必须完成的事」写进 <code>finally</code>。于是，一行坏数据不再等于整个流程报废——它只是让这一次循环走进 <code>except</code> 分支，剩下的行照旧处理。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      异常处理可类比为编辑流程里的退稿预案：正常流程照旧推进（<code>try</code>）；遇到某类具体问题就走对应的处理通道（<code>except</code>）；一切顺利时才会执行后续的正式发布动作（<code>else</code>）；而不论这次是否出问题，都要做的那件事——比如把这一期的处理记录记入台账（<code>finally</code>）——都会照做。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      报错栈可类比为一份从一线到总部的转呈记录：最下面那一行是最终被认定的事实（是什么类型的错误、具体原因是什么），越往上越接近最初提出请求的那一方。想知道「到底哪里坏了」，最先看的永远是最后一行。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：四个子句的执行路径怎么走；报错栈该怎么读；EAFP 与 LBYL 两种写法差在哪里。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 异常处理流程控制图：try 成功走 else、失败走 except、finally 必走</div>
+      <div class="vsub">三条分支从同一个判断点出发，最终都汇入 <code>finally</code>；未匹配的异常会在 <code>finally</code> 执行完之后被重新触发。</div>
+      <svg viewBox="0 0 700 436" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>try except else finally 四子句的执行路径示意图</title>
+        <desc>流程图从 try 子句体开始，判断是否触发异常；无异常走 else 子句，有异常且匹配则走 except 子句，有异常但无匹配则异常暂存；三条路径都汇入 finally 子句，最后正常结束或把未处理的异常重新触发。</desc>
+        <defs>
+          <marker id="ea1" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+          <marker id="ea2" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#d97706"/>
+          </marker>
+        </defs>
+
+        <rect x="200" y="34" width="300" height="34" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="350" y="51" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① try 子句体：可能出错的代码</text>
+        <line x1="350" y1="68" x2="350" y2="94" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ea1)"/>
+
+        <rect x="180" y="96" width="340" height="38" rx="8" fill="#f3efff" stroke="#7c5cff" stroke-width="1.2"/>
+        <text x="350" y="115" font-size="12" fill="#5b3fd6" text-anchor="middle" dominant-baseline="central">② try 子句体里是否触发了异常？</text>
+
+        <path d="M 300 134 V 150 H 126 V 164" fill="none" stroke="#1a9e5a" stroke-width="1.5" marker-end="url(#ea1)"/>
+        <path d="M 350 134 V 164" fill="none" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ea1)"/>
+        <path d="M 400 134 V 150 H 574 V 164" fill="none" stroke="#d97706" stroke-width="1.5" marker-end="url(#ea2)"/>
+
+        <rect x="24" y="168" width="204" height="52" rx="8" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="126" y="186" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">无异常 → ③ 执行 else 子句</text>
+        <text x="126" y="204" font-size="11" fill="#127a44" text-anchor="middle" dominant-baseline="central">else 体不在 try 的保护范围内</text>
+
+        <rect x="248" y="168" width="204" height="52" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="350" y="186" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">有异常且类型匹配 → ③ 执行 except</text>
+        <text x="350" y="204" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">异常被处理，程序继续往下</text>
+
+        <rect x="472" y="168" width="204" height="52" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1.2"/>
+        <text x="574" y="186" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">有异常但无 except 匹配</text>
+        <text x="574" y="204" font-size="11" fill="#78350f" text-anchor="middle" dominant-baseline="central">异常先暂存，继续去 finally</text>
+
+        <line x1="126" y1="220" x2="126" y2="246" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ea1)"/>
+        <line x1="350" y1="220" x2="350" y2="246" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ea1)"/>
+        <line x1="574" y1="220" x2="574" y2="246" stroke="#d97706" stroke-width="1.5" marker-end="url(#ea2)"/>
+
+        <rect x="24" y="248" width="652" height="42" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="38" y="269" font-size="12.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">④ finally 子句体：不论是否触发异常，都会执行</text>
+
+        <line x1="350" y1="290" x2="350" y2="310" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ea1)"/>
+
+        <rect x="24" y="312" width="652" height="58" rx="8" fill="#f7faff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="38" y="332" font-size="11.5" fill="#1f2430" dominant-baseline="central">⑤ 结束 —— 异常已被 except 处理：程序正常往下执行后面的代码。</text>
+        <text x="38" y="354" font-size="11.5" fill="#b03a36" dominant-baseline="central">⑤ 结束 —— 异常始终未被处理：finally 执行完之后，该异常会被重新触发，程序终止并打印报错栈。</text>
+
+        <rect x="24" y="378" width="652" height="50" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="38" y="396" font-size="11.5" fill="#78350f" dominant-baseline="central">官方示例 divide(x, y) 的三种走向：</text>
+        <text x="38" y="416" font-size="11.5" fill="#78350f" dominant-baseline="central">divide(2, 1) → 走 else 输出 result is 2.0；divide(2, 0) → 走 except 输出 division by zero!；两者都随后输出 executing finally clause。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>else</code> 只在 <code>try</code> 没有引发异常时执行，把代码放在 <code>else</code> 里比塞进 <code>try</code> 更好，可以避免意外捕获本不该被保护的异常；而 <code>finally</code> 在任何情况下都会执行，是 <code>try</code> 语句结束前执行的最后一项任务。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 报错栈的阅读顺序：从最后一行往上读</div>
+      <div class="vsub">第一行已经提示了顺序（most recent call last），因此最有信息量的是最下面那一行。</div>
+      <svg viewBox="0 0 700 336" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>Python 报错栈的阅读顺序示意图</title>
+        <desc>左侧是一段报错信息原文，从下往上的阅读顺序依次为异常类型与原因、出错的那一行代码、调用链、以及说明顺序的第一行；右侧用四个编号说明每一步看到的内容。</desc>
+        <defs>
+          <marker id="eb1" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#7c5cff"/>
+          </marker>
+        </defs>
+
+        <line x1="40" y1="200" x2="40" y2="62" stroke="#7c5cff" stroke-width="1.5" marker-end="url(#eb1)"/>
+        <text x="40" y="222" font-size="11" fill="#5b6472" text-anchor="middle" dominant-baseline="central">从下往上读</text>
+
+        <rect x="76" y="40" width="372" height="172" rx="8" fill="#0f172a" stroke="#0f172a"/>
+        <text x="90" y="62" font-size="11.5" fill="#94a3b8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">Traceback (most recent call last):</text>
+        <text x="90" y="84" font-size="11.5" fill="#cbd5e1" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">  File "report.py", line 12, in &lt;module&gt;</text>
+        <text x="90" y="106" font-size="11.5" fill="#cbd5e1" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    summarize(rows)</text>
+        <text x="90" y="128" font-size="11.5" fill="#cbd5e1" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">  File "report.py", line 7, in summarize</text>
+        <text x="90" y="150" font-size="11.5" fill="#cbd5e1" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    total = total + int(row["字数"])</text>
+        <text x="90" y="176" font-size="11.5" fill="#fca5a5" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">ValueError: invalid literal for int()</text>
+        <text x="90" y="194" font-size="11.5" fill="#fca5a5" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">with base 10: ''</text>
+
+        <rect x="464" y="36" width="220" height="42" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="476" y="52" font-size="11.5" font-weight="700" fill="#b45309" dominant-baseline="central">① 最后一行：什么错、为什么</text>
+        <text x="476" y="68" font-size="11" fill="#78350f" dominant-baseline="central">异常类型 + 出错细节</text>
+
+        <rect x="464" y="86" width="220" height="42" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="476" y="102" font-size="11.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">② 紧邻的 File 行：哪一行代码</text>
+        <text x="476" y="118" font-size="11" fill="#1c4fb8" dominant-baseline="central">文件名 + 行号 + 所在函数</text>
+
+        <rect x="464" y="136" width="220" height="42" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="476" y="152" font-size="11.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">③ 再往上：谁调用了谁</text>
+        <text x="476" y="168" font-size="11" fill="#1c4fb8" dominant-baseline="central">一层层的堆栈回溯链条</text>
+
+        <rect x="464" y="186" width="220" height="42" rx="8" fill="#f1f4f9" stroke="#8b93a1" stroke-width="1.1"/>
+        <text x="476" y="202" font-size="11.5" font-weight="700" fill="#40485a" dominant-baseline="central">④ 第一行：说明排列顺序</text>
+        <text x="476" y="218" font-size="11" fill="#40485a" dominant-baseline="central">最后发生的调用在最下面</text>
+
+        <rect x="16" y="252" width="668" height="74" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="30" y="272" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">官方文档中的两句关键表述</text>
+        <text x="30" y="294" font-size="11.5" fill="#1f2430" dominant-baseline="central">① 「错误信息的最后一行说明程序遇到了什么类型的错误」——异常类型会作为错误信息的一部分打印出来。</text>
+        <text x="30" y="314" font-size="11.5" fill="#1f2430" dominant-baseline="central">② 「错误信息开头用堆栈回溯形式展示发生异常的语境」——列出源代码行的堆栈回溯，据此可回到出错的那一行。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：先读最后一行拿到异常类型与原因，再读紧挨着的 <code>File</code> 行定位到具体代码行，最后顺着往上看调用链；这样读比从上往下读更快找到真正的出错点。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 两种风格对照：LBYL 先检查，EAFP 先尝试</div>
+      <div class="vsub">同一件事的两种写法：左边先判断键是否存在，右边直接取值、出错再处理。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>EAFP 与 LBYL 两种代码风格对照示意图</title>
+        <desc>左侧是 LBYL 风格，先用 if 检查键是否存在再取值，特点是大量使用 if 语句；右侧是 EAFP 风格，假定键存在并直接取值，用 try 与 except 捕获异常。</desc>
+
+        <rect x="12" y="10" width="330" height="182" rx="10" fill="#f3efff" stroke="#7c5cff" stroke-width="1.2"/>
+        <text x="28" y="32" font-size="13" font-weight="700" fill="#5b3fd6" dominant-baseline="central">LBYL · 先看后跳</text>
+        <text x="28" y="56" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">if key in mapping:</text>
+        <text x="28" y="76" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    return mapping[key]</text>
+        <text x="28" y="96" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">else:</text>
+        <text x="28" y="116" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    return None</text>
+        <line x1="24" y1="132" x2="330" y2="132" stroke="#c9b8ff" stroke-width="0.8"/>
+        <text x="28" y="152" font-size="11.5" fill="#5b3fd6" dominant-baseline="central">在调用或查找之前显式地检查前提条件，</text>
+        <text x="28" y="172" font-size="11.5" fill="#5b3fd6" dominant-baseline="central">特点是大量使用 if 语句。</text>
+
+        <rect x="358" y="10" width="330" height="182" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="374" y="32" font-size="13" font-weight="700" fill="#1c4fb8" dominant-baseline="central">EAFP · 求原谅比求许可更容易</text>
+        <text x="374" y="56" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">try:</text>
+        <text x="374" y="76" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    return mapping[key]</text>
+        <text x="374" y="96" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">except KeyError:</text>
+        <text x="374" y="116" font-size="11.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">    return None</text>
+        <line x1="370" y1="132" x2="676" y2="132" stroke="#b9c9ee" stroke-width="0.8"/>
+        <text x="374" y="152" font-size="11.5" fill="#1c4fb8" dominant-baseline="central">假定所需的键或属性存在，假定错误时捕获异常，</text>
+        <text x="374" y="172" font-size="11.5" fill="#1c4fb8" dominant-baseline="central">特点是大量运用 try 与 except 语句。</text>
+
+        <rect x="12" y="204" width="676" height="84" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="26" y="224" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">取舍时值得知道的一点</text>
+        <text x="26" y="246" font-size="11.5" fill="#78350f" dominant-baseline="central">Python 术语对照表指出：EAFP 是 Python 常用代码编写风格，与它相对的 LBYL 风格常见于 C 等许多其他语言。</text>
+        <text x="26" y="268" font-size="11.5" fill="#78350f" dominant-baseline="central">术语表同时提示：在多线程环境中，LBYL 方式会有在「查看」和「跳跃」之间引入竞争条件的风险，这类问题可通过锁或 EAFP 方式解决。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：两种风格不是对错之分，而是「把检查写在前面」与「先做、出错再处理」的取舍；在 Python 中 EAFP 更常见，但要捕获的是具体异常类型，而不是把所有异常一网打尽。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中四个子句的执行条件、<code>finally</code> 必被执行、<code>divide(x, y)</code> 示例的三种走向与报错栈的阅读提示，依据官方教程第 8 章整理；EAFP 与 LBYL 的定位来自官方术语对照表。可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>异常处理由「识别错误—定位错误—决定怎么处理」三步构成：先分清自己面对的是语法错误还是异常，再通过报错栈定位到具体代码行，最后用四个子句把处理策略写下来。</p>
+
+    <h3>try 语句的四个子句</h3>
+    <table>
+      <tr><th>子句</th><th>何时执行</th><th>作用 / 说明</th></tr>
+      <tr><td><code>try</code></td><td>总是最先执行</td><td>放入可能引发异常的代码。异常处理程序不仅会处理 try 子句中立刻发生的异常，还会处理在 try 子句中调用（包括间接调用）的函数所引发的异常。</td></tr>
+      <tr><td><code>except</code></td><td>try 子句引发了与某个 except 匹配的异常时</td><td>按类型是否匹配来决定走哪一个分支。常见模式是打印或记录异常，然后重新触发（用裸 <code>raise</code>），允许调用者也处理这个异常。</td></tr>
+      <tr><td><code>else</code></td><td>try 子句没有引发异常时</td><td>必须放在所有 except 子句之后。用它比把代码塞进 try 子句更好，可以避免意外捕获非 try…except 保护的代码所触发的异常。</td></tr>
+      <tr><td><code>finally</code></td><td>任何情况下都执行</td><td>try 语句结束前执行的最后一项任务；不论是否触发异常都会执行。适合释放外部资源（文件、网络连接等）。</td></tr>
+    </table>
+
+    <h3>常见内置异常</h3>
+    <table>
+      <tr><th>异常类型</th><th>含义</th><th>典型触发场景</th><th>层级归属</th></tr>
+      <tr><td><code>ValueError</code></td><td>参数的类型正确但取值不合适</td><td><code>int("约三千")</code> 这类无法解析的内容</td><td><code>Exception</code></td></tr>
+      <tr><td><code>TypeError</code></td><td>把一个操作或函数用在了类型不合适的对象上</td><td><code>"100" + 1</code>；对 <code>None</code> 做下标取值</td><td><code>Exception</code></td></tr>
+      <tr><td><code>KeyError</code></td><td>在字典的现有键集合里找不到该键</td><td>用不存在的字段名取 <code>row["字数"]</code></td><td><code>LookupError</code></td></tr>
+      <tr><td><code>IndexError</code></td><td>序列下标超出范围</td><td>取列表第 10 个元素而列表只有 3 个</td><td><code>LookupError</code></td></tr>
+      <tr><td><code>FileNotFoundError</code></td><td>请求的文件或目录不存在</td><td>打开一个路径写错的文件</td><td><code>OSError</code></td></tr>
+      <tr><td><code>ZeroDivisionError</code></td><td>除法或取模运算的第二个参数为零</td><td><code>10 * (1/0)</code></td><td><code>ArithmeticError</code></td></tr>
+      <tr><td><code>AttributeError</code></td><td>属性引用或赋值失败</td><td>对一个字符串调用不存在的属性</td><td><code>Exception</code></td></tr>
+      <tr><td><code>NameError</code></td><td>找不到局部或全局名称</td><td>使用一个没有赋过值的名字</td><td><code>Exception</code></td></tr>
+    </table>
+
+    <h3>语法错误与异常的对比</h3>
+    <table>
+      <tr><th>对比项</th><th>语法错误（解析错误）</th><th>异常</th></tr>
+      <tr><td>发生时机</td><td>代码解析阶段，程序尚未开始执行</td><td>语句或表达式语法正确，执行时被检测到</td></tr>
+      <tr><td>能否用 try 处理</td><td>不能；程序根本不会进入运行状态</td><td>能；这正是 try / except 存在的原因</td></tr>
+      <tr><td>典型信息</td><td><code>SyntaxError: invalid syntax</code>，并显示指向报错位置的小箭头</td><td>输出堆栈回溯，最后一行给出异常类型与原因</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上内容引自 Python 官方教程第 8 章 8.1、8.2、8.3、8.7 节与官方《内置异常》文档。补充两点：内置异常都可以被继承，官方建议把自定义异常派生自 <code>Exception</code> 或其子类，而不是 <code>BaseException</code>；<code>raise</code> 语句用于强制触发指定的异常，它唯一的参数必须是异常实例或派生自 <code>BaseException</code> 的异常类。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      一批稿件数据汇总到一起后，里面常常混着几种脏数据：某一行缺了「字数」字段；某一行的字数是「约三千」这样的文字；某一行的标题只剩空格；甚至整行都不是字典。若不做处理，第一个坏行就会让程序整体崩掉，前面已经处理好的行也一并作废。把每一行的处理放进 <code>try</code>，坏行记入跳过清单，好行照常收下，程序就能跑完全程并交出一份「可用数据 + 问题清单」。下面的代码可以直接运行。
+    </p>
+    <pre><span class="c"># skip_bad_rows.py —— 坏行跳过，好行继续跑完</span>
+rows = [
+    {<span class="s">"标题"</span>: <span class="s">"地铁票价调整方案公布"</span>, <span class="s">"字数"</span>: <span class="s">"18"</span>},
+    {<span class="s">"标题"</span>: <span class="s">"社区加装电梯推进难点"</span>, <span class="s">"字数"</span>: <span class="s">"15"</span>},
+    {<span class="s">"标题"</span>: <span class="s">"   "</span>, <span class="s">"字数"</span>: <span class="s">"9"</span>},        <span class="c"># 标题为空</span>
+    {<span class="s">"标题"</span>: <span class="s">"夜经济观察"</span>, <span class="s">"字数"</span>: <span class="s">"约三千"</span>},  <span class="c"># 字数不是数字</span>
+    {<span class="s">"标题"</span>: <span class="s">"老旧小区改造"</span>},                <span class="c"># 缺少「字数」字段</span>
+    None,                                      <span class="c"># 整行都不是字典</span>
+    {<span class="s">"标题"</span>: <span class="s">"城市绿道使用调查"</span>, <span class="s">"字数"</span>: <span class="s">"22"</span>},
+]
+
+ok, bad, processed = [], [], 0
+for i, row in enumerate(rows, start=1):        <span class="c"># i 是行号，便于写进问题清单</span>
+    try:
+        title = row[<span class="s">"标题"</span>].strip()
+        words = int(row[<span class="s">"字数"</span>])
+        if not title:
+            raise ValueError(<span class="s">"标题为空"</span>)      <span class="c"># 自己判断出的问题，主动触发</span>
+    except KeyError as err:                    <span class="c"># 字段缺失</span>
+        bad.append((i, f<span class="s">"缺少字段 {err}"</span>))
+    except TypeError as err:                   <span class="c"># 这一行不是字典</span>
+        bad.append((i, f<span class="s">"这一行不可用：{err}"</span>))
+    except ValueError as err:                  <span class="c"># 内容转不成整数、或标题为空</span>
+        bad.append((i, f<span class="s">"字段内容不可用：{err}"</span>))
+    else:                                      <span class="c"># 只有 try 里全程没出错才执行</span>
+        ok.append((title, words))
+    finally:                                   <span class="c"># 成败都记账</span>
+        processed += 1
+
+print(<span class="s">"总共处理"</span>, processed, <span class="s">"行"</span>)
+print(<span class="s">"可用"</span>, len(ok), <span class="s">"行："</span>, ok)
+print(<span class="s">"跳过"</span>, len(bad), <span class="s">"行："</span>)
+for i, why in bad:
+    print(<span class="s">"   第"</span>, i, <span class="s">"行："</span>, why)
+print(<span class="s">"可用稿件总字数"</span>, sum(w for _, w in ok))</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明「坏行不拖垮整体」的处理思路，属于辅助理解示例，非某个来源的原文代码。运行结果是：共处理 7 行，其中 3 行可用、4 行被跳过并记入清单，可用稿件总字数 55。这里的三个 <code>except</code> 子句分别对应官方《内置异常》文档中 <code>KeyError</code>、<code>TypeError</code>、<code>ValueError</code> 的定义场景，<code>else</code> 与 <code>finally</code> 的行为见第五节表格。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>语法错误与异常不是一回事。</strong>语法错误又称解析错误，出现在代码解析阶段，程序尚未开始执行，因此无法用 <code>try</code> 捕获；异常是语法正确但执行时被检测到的错误，可以被处理。把 <code>SyntaxError</code> 写进 <code>except</code> 并不能让一段语法错误的代码跑起来——它压根没进入运行阶段。</li>
+      <li><strong><code>except</code> 与 <code>finally</code> 的分工不同。</strong><code>except</code> 是条件执行的：只有异常类型匹配时才走；<code>finally</code> 是无条件执行的：不论是否触发异常都会执行，是 <code>try</code> 语句结束前执行的最后一项任务。释放文件、网络连接这类外部资源，官方建议的落点正是 <code>finally</code>。</li>
+      <li><strong>「处理了异常」不等于「把异常吞掉」。</strong>如果在 <code>except</code> 里既不记录、也不重新触发，异常就此消失，后续逻辑会在一个不正确的状态上继续跑，问题被推迟到更难定位的地方才暴露。官方给出的一种常见模式是：打印或记录异常，然后用裸 <code>raise</code> 重新提出，允许调用者也处理这个异常。</li>
+      <li><strong>捕获范围写得太宽，会连「不该被拦下」的异常一起拦下。</strong>按官方给出的内置异常层级，<code>KeyboardInterrupt</code> 与 <code>SystemExit</code> 直接派生自 <code>BaseException</code>，并不在 <code>Exception</code> 之下；因此裸 <code>except:</code> 会把它们一并捕获，而 <code>except Exception:</code> 不会。这也解释了为什么通常按具体类型分别写 <code>except</code> 分支，并且把最宽的那一类放在最后。</li>
+      <li><strong><code>except</code> 子句的先后顺序会影响匹配结果。</strong>多个 <code>except</code> 子句按书写顺序依次匹配，一旦命中就不再尝试后面的分支。把范围宽的写在前面，后面写得再具体也不会被用到。</li>
+      <li><strong><code>else</code> 不是「无论如何都执行」。</strong>它与 <code>finally</code> 的语义完全不同：<code>else</code> 只在 <code>try</code> 子句没有引发异常时执行；把本该保护范围之外的代码写进 <code>try</code>，反而会意外捕获不属于这里的异常。这正是官方建议用 <code>else</code> 而不是扩充 <code>try</code> 的原因。</li>
+      <li><strong>主动触发异常是一种正常的控制手段。</strong>当程序自己发现了业务层面的问题（例如标题清洗后变成空串），可以用 <code>raise</code> 主动触发一个异常，让它和「库函数报的错」走同一条处理通道。<code>raise</code> 唯一的参数必须是异常实例或异常类；传入异常类时会通过调用无参构造函数隐式实例化。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节七条均以官方文档为依据。语法错误与异常的区别、异常处理模式、<code>else</code> 的用处、<code>finally</code> 的行为与 <code>divide(x, y)</code> 示例，见官方教程第 8 章 8.1、8.2、8.3、8.7 节；<code>raise</code> 的用法见第 8 章 8.4「触发异常」；各异常类型的定义与 <code>KeyboardInterrupt</code>、<code>SystemExit</code> 归属 <code>BaseException</code> 的层级关系，见官方《内置异常》文档；「派生自定义异常应来自 <code>Exception</code> 而非 <code>BaseException</code>」亦出自该文档。EAFP 与 LBYL 的定义见官方术语对照表。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-e">入门</span>1. 关于语法错误与异常的区别，下列哪一项与官方文档一致？</div>
+      <button class="opt" data-v="A">A. 两者是同一件事的两种叫法，都能被 <code>try</code> 捕获</button>
+      <button class="opt" data-v="B">B. 语法错误在执行时被检测到，异常在解析时被检测到</button>
+      <button class="opt" data-v="C">C. 异常只可能由标准库引发，用户代码无法引发异常</button>
+      <button class="opt" data-v="D">D. 语法错误又称解析错误，在程序开始执行前就被检测到；异常是语句或表达式语法正确、但执行时仍可能触发的错误</button>
+      <div class="fb" data-ok="✅ 正确。官方教程开篇即把错误分为两类：语法错误（又称解析错误）与异常；并说明「即使语句或表达式使用了正确的语法，执行时仍可能触发错误，执行时检测到的错误称为异常」。语法错误出现在解析阶段，程序尚未运行，因此无法由 try 处理。"></div>
+      <div class="src">📎 来源：Python 官方教程《8. 错误和异常》8.1 语法错误、8.2 异常 —— docs.python.org/zh-cn/3/tutorial/errors.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>2. 在一个完整的 <code>try</code> 语句中，<code>finally</code> 子句在什么情况下执行？</div>
+      <button class="opt" data-v="A">A. 只有 try 子句没有引发异常时才执行</button>
+      <button class="opt" data-v="B">B. 只有当某个 except 子句被触发时才执行</button>
+      <button class="opt" data-v="C">C. 不论 try 语句是否触发异常都会执行，且是 try 语句结束前执行的最后一项任务</button>
+      <button class="opt" data-v="D">D. 只有程序正常结束时才执行，报错退出时不会执行</button>
+      <div class="fb" data-ok="✅ 正确。官方教程「定义清理操作」一节明确写道：如果存在 finally 子句，则 finally 子句是 try 语句结束前执行的最后一项任务；不论 try 语句是否触发异常，都会执行 finally 子句。官方还特别说明它对释放文件或网络连接等外部资源很有用。"></div>
+      <div class="src">📎 来源：Python 官方教程《8. 错误和异常》8.7 定义清理操作</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 面对一段报错信息，按官方文档给出的信息结构，最有效的阅读起点是哪里？</div>
+      <button class="opt" data-v="A">A. 从第一行开始顺着往下读，第一行就是出错原因</button>
+      <button class="opt" data-v="B">B. 先读最后一行——它说明遇到了什么类型的错误并给出细节，再回看紧邻的 File 行定位具体代码</button>
+      <button class="opt" data-v="C">C. 只读中间那些 File 行，最后一行可以忽略</button>
+      <button class="opt" data-v="D">D. 报错信息没有固定结构，只能靠逐字猜测</button>
+      <div class="fb" data-ok="✅ 正确。官方教程指出：错误信息的最后一行说明程序遇到了什么类型的错误，异常类型会作为错误信息的一部分打印出来，该行其余部分根据异常类型结合出错原因说明错误细节；而错误信息开头用堆栈回溯形式展示发生异常的语境，据此可以回到出错的那一行代码。"></div>
+      <div class="src">📎 来源：Python 官方教程《8. 错误和异常》8.2 异常（错误信息的结构说明）</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 使用官方教程中的示例函数 <code>divide(x, y)</code>（try 里做 <code>x / y</code>，except 捕获 <code>ZeroDivisionError</code>，else 打印结果，finally 打印提示），调用 <code>divide(2, 0)</code> 会输出什么？</div>
+      <button class="opt" data-v="A">A. 先输出 <code>division by zero!</code>，再输出 <code>executing finally clause</code></button>
+      <button class="opt" data-v="B">B. 只输出 <code>executing finally clause</code>，except 不执行</button>
+      <button class="opt" data-v="C">C. 先输出 <code>result is 0</code>，再输出 <code>executing finally clause</code></button>
+      <button class="opt" data-v="D">D. 什么都不输出，直接抛出 <code>ZeroDivisionError</code></button>
+      <div class="fb" data-ok="✅ 正确。除数为零时 except 分支命中，输出 division by zero!；随后 finally 子句照常执行，输出 executing finally clause。作为对照：divide(2, 1) 走 else 输出 result is 2.0；divide(&quot;2&quot;, &quot;1&quot;) 引发的 TypeError 不被该 except 处理，因此会先执行 finally，再把异常重新触发。"></div>
+      <div class="src">📎 来源：Python 官方教程《8. 错误和异常》8.7 定义清理操作（divide 示例的三种调用与输出）</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 依据官方《内置异常》文档给出的异常层级，下列哪一项表述成立？</div>
+      <button class="opt" data-v="A">A. <code>except Exception:</code> 与裸 <code>except:</code> 的捕获范围完全一样</button>
+      <button class="opt" data-v="B">B. <code>KeyboardInterrupt</code> 与 <code>SystemExit</code> 都是 <code>Exception</code> 的子类，因此两者都会被 <code>except Exception:</code> 捕获</button>
+      <button class="opt" data-v="C">C. <code>KeyError</code> 与 <code>IndexError</code> 直接派生自 <code>Exception</code>，与 <code>LookupError</code> 无关</button>
+      <button class="opt" data-v="D">D. <code>KeyboardInterrupt</code> 与 <code>SystemExit</code> 直接派生自 <code>BaseException</code>，不在 <code>Exception</code> 之下；因此裸 <code>except:</code> 会捕获它们，而 <code>except Exception:</code> 不会</button>
+      <div class="fb" data-ok="✅ 正确。官方层级表中，BaseException 的直接子类包括 SystemExit、KeyboardInterrupt、GeneratorExit 与 Exception；KeyboardInterrupt 与 SystemExit 并不在 Exception 之下。这也是通常建议按具体类型捕获、避免裸 except 的原因。另外 KeyError 与 IndexError 都属于 LookupError，官方文档也建议派生自定义异常时以 Exception 或其子类为基类，而不是 BaseException。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置异常》（异常层级结构图与各类定义）—— docs.python.org/zh-cn/3/library/exceptions.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《8. 错误和异常》—— 8.1 语法错误、8.2 异常（报错信息的结构）、8.3 异常的处理（<code>try</code> / <code>except</code> / <code>else</code> 与常见处理模式）、8.4 触发异常（<code>raise</code>）、8.6 用户自定义异常、8.7 定义清理操作（<code>finally</code> 与 <code>divide</code> 示例） — <a href="https://docs.python.org/zh-cn/3/tutorial/errors.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/errors.html</a></li>
+      <li>Python 官方文档《内置异常》—— 异常层级结构图、<code>ValueError</code> / <code>TypeError</code> / <code>KeyError</code> / <code>IndexError</code> / <code>FileNotFoundError</code> / <code>ZeroDivisionError</code> / <code>AttributeError</code> / <code>NameError</code> 的定义，以及「建议派生自 <code>Exception</code> 而非 <code>BaseException</code>」的说明 — <a href="https://docs.python.org/zh-cn/3/library/exceptions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/exceptions.html</a></li>
+      <li>Python 官方术语对照表《术语对照表》—— <code>EAFP</code> 与 <code>LBYL</code> 两个条目（全称、解释、以及 LBYL 在多线程环境下的竞争条件风险） — <a href="https://docs.python.org/zh-cn/3/glossary.html#term-EAFP" target="_blank" rel="noopener">docs.python.org/zh-cn/3/glossary.html#term-EAFP</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格、第七节七条辨析中的技术结论，均可在上述官方文档中逐条核查；其中捕获范围的判断以官方《内置异常》文档给出的层级结构为准。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

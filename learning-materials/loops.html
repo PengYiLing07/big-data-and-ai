@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 循环（for / while）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块二 · 循环与容器 ｜ 第 4、6 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>循环（for / while）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li><code>for</code> 与 <code>while</code> 分别在什么情况下更合用？两者的执行模型有什么不同？</li>
+      <li><code>range()</code> 的三种写法各产生哪些数？为什么它不算「生成一大堆数字占内存」？</li>
+      <li><code>enumerate()</code> 与 <code>zip()</code> 各解决什么麻烦？两个序列长度不同时会发生什么？</li>
+      <li><code>break</code> 与 <code>continue</code> 的区别是什么？<code>for...else</code> 的 <code>else</code> 什么时候才执行？</li>
+      <li>为什么缩进在 Python 里是语法的一部分？为什么一边遍历一边删元素会漏掉数据？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——处理一条数据和处理一万条数据，代码凭什么可以只写一遍？</li>
+      <li><strong>它由什么组成</strong>——一个循环语句里，哪些部件决定了「重复什么」和「重复几次」？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——<code>for</code> 与 <code>while</code>、<code>range()</code> 与「列表」、<code>break</code> 与 <code>continue</code>、循环的 <code>else</code> 与 <code>if</code> 的 <code>else</code>，边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——什么情况会变成死循环？为什么在循环里修改正在遍历的列表会出错？嵌套层数多了会带来什么问题？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      循环让同一段代码被重复执行多次。Python 提供两种循环语句。<code>for</code> 用于<strong>对一个可迭代对象中的元素进行迭代</strong>：把序列里的元素一个个取出来，每取一个就执行一遍循环体，取完就结束。官方语言参考给出的过程是：先对表达式求值一次，得到一个可迭代对象；为它创建一个迭代器；把迭代器给出的第一项按赋值规则赋给目标变量，然后执行子句体；对每一项重复这个过程；迭代器耗尽时，可选 <code>else</code> 子句（若存在）被执行，循环终止。
+    </p>
+    <p>
+      <code>while</code> 则是<strong>条件驱动</strong>的：重复地检验表达式，只要其值为真就执行循环体；一旦表达式的值变为假（这可能在第一次检验时就发生），若存在 <code>else</code> 子句它会被执行，然后循环终止。
+    </p>
+    <p>
+      Python 的循环还有一个容易被忽略的语法前提：<strong>缩进即语法块</strong>。官方教程说明，循环体是缩进的，缩进是 Python 组织语句的方式，同一块语句的每一行的缩进必须相同。PEP 8 给出的约定是每个缩进层级使用 4 个空格，并且不允许混用制表符与空格。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      <code>for</code> 可类比为按一份名单逐一点名：名单是固定的，点完就结束；<code>while</code> 可类比为「只要门外还有人排队就继续叫号」：重复次数事先不写死在代码里，由条件决定何时收工。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      <code>break</code> 可类比为中途直接合上名单不点了，<code>continue</code> 可类比为这一行先跳过、继续点下一行。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：两种循环的执行模型差在哪、一批常用工具各产出什么、控制语句怎样改变执行走向。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · <code>for</code> 与 <code>while</code> 的执行模型</div>
+      <div class="vsub">左栏的重复次数由序列长度决定，右栏的重复次数由条件何时变为假决定。</div>
+      <svg viewBox="0 0 700 264" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>for 循环与 while 循环的执行模型对比示意图</title>
+        <desc>左栏显示 for 循环从序列逐项取值并执行循环体、取完即结束；右栏显示 while 循环先判断条件真假，条件为真才执行循环体。</desc>
+        <defs>
+          <marker id="la" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="10" y="26" width="334" height="224" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="28" y="50" font-size="13" font-weight="700" fill="#1c4fb8">for　遍历一个已知序列</text>
+        <rect x="28" y="64" width="298" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="44" y="80" font-size="12" fill="#1c4fb8" dominant-baseline="central">① 从序列中按顺序取出下一项</text>
+        <line x1="177" y1="98" x2="177" y2="114" stroke="#5b6472" stroke-width="1.4" marker-end="url(#la)"/>
+        <rect x="28" y="116" width="298" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="44" y="132" font-size="12" fill="#1c4fb8" dominant-baseline="central">② 执行缩进的循环体</text>
+        <line x1="177" y1="150" x2="177" y2="166" stroke="#5b6472" stroke-width="1.4" marker-end="url(#la)"/>
+        <rect x="28" y="168" width="298" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="44" y="184" font-size="12" fill="#1c4fb8" dominant-baseline="central">③ 还有元素 → 回到 ①；取完则结束</text>
+        <text x="28" y="218" font-size="11.5" fill="#5b6472">适合：标题清单、评论列表、range 生成的数列</text>
+        <text x="28" y="238" font-size="11.5" fill="#d97706">⚠ 循环体内改动序列本身，会影响遍历进度</text>
+
+        <rect x="356" y="26" width="334" height="224" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="374" y="50" font-size="13" font-weight="700" fill="#5b46c0">while　条件为真就继续</text>
+        <rect x="374" y="64" width="298" height="32" rx="8" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="390" y="80" font-size="12" fill="#5b46c0" dominant-baseline="central">① 先检验条件表达式是真是假</text>
+        <line x1="523" y1="98" x2="523" y2="114" stroke="#5b6472" stroke-width="1.4" marker-end="url(#la)"/>
+        <rect x="374" y="116" width="298" height="32" rx="8" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="390" y="132" font-size="12" fill="#5b46c0" dominant-baseline="central">② 条件为真 → 执行循环体</text>
+        <line x1="523" y1="150" x2="523" y2="166" stroke="#5b6472" stroke-width="1.4" marker-end="url(#la)"/>
+        <rect x="374" y="168" width="298" height="32" rx="8" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="390" y="184" font-size="12" fill="#5b46c0" dominant-baseline="central">③ 回到 ①；条件为假则结束</text>
+        <text x="374" y="218" font-size="11.5" fill="#5b6472">适合：次数事先不确定、由状态决定何时停</text>
+        <text x="374" y="238" font-size="11.5" fill="#d97706">⚠ 忘记让条件趋向于假，就会变成死循环</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：判断用哪种循环，看的是「重复的次数由谁决定」——由序列决定就用 <code>for</code>，由条件决定就用 <code>while</code>。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · <code>range()</code> 三种写法与两个配对工具</div>
+      <div class="vsub">上半部分是 <code>range()</code> 的三种调用形式及各自产生的内容，下半部分是 <code>enumerate()</code> 与 <code>zip()</code> 的产出形状。</div>
+      <svg viewBox="0 0 700 312" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>range 三种写法与 enumerate、zip 产出示意图</title>
+        <desc>列出 range(5)、range(2, 8, 2)、range(5, 0, -1) 三种写法产生的数列，以及 enumerate 给出带序号的元组、zip 把两个序列逐项配对。</desc>
+        <defs>
+          <marker id="lb" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+        </defs>
+
+        <text x="26" y="26" font-size="12.5" font-weight="700" fill="#1c4fb8">range() 的三种写法</text>
+
+        <rect x="26" y="38" width="176" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="40" y="55" font-size="12.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">range(5)</text>
+        <line x1="210" y1="54" x2="246" y2="54" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#lb)"/>
+        <rect x="254" y="38" width="420" height="32" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="268" y="55" font-size="12.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">0　1　2　3　4</text>
+        <text x="560" y="55" font-size="11.5" fill="#5b6472" dominant-baseline="central">从 0 起，不含终点</text>
+
+        <rect x="26" y="80" width="176" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="40" y="97" font-size="12.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">range(2, 8, 2)</text>
+        <line x1="210" y1="96" x2="246" y2="96" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#lb)"/>
+        <rect x="254" y="80" width="420" height="32" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="268" y="97" font-size="12.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">2　4　6</text>
+        <text x="560" y="97" font-size="11.5" fill="#5b6472" dominant-baseline="central">起点、终点、步长</text>
+
+        <rect x="26" y="122" width="176" height="32" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="40" y="139" font-size="12.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">range(5, 0, -1)</text>
+        <line x1="210" y1="138" x2="246" y2="138" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#lb)"/>
+        <rect x="254" y="122" width="420" height="32" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="268" y="139" font-size="12.5" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">5　4　3　2　1</text>
+        <text x="560" y="139" font-size="11.5" fill="#5b6472" dominant-baseline="central">步长为负即倒数</text>
+
+        <line x1="20" y1="170" x2="680" y2="170" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="26" y="192" font-size="12.5" font-weight="700" fill="#5b46c0">两个常用的配对工具</text>
+
+        <rect x="26" y="204" width="310" height="88" rx="10" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="42" y="226" font-size="12.5" fill="#5b46c0" font-weight="700" font-family="ui-monospace,Consolas,monospace">enumerate(titles)</text>
+        <text x="42" y="248" font-size="11.5" fill="#1f2430" font-family="ui-monospace,Consolas,monospace">(0, '标题一')　(1, '标题二') …</text>
+        <text x="42" y="272" font-size="11.5" fill="#5b6472">同时拿到序号与内容；start=1 可从 1 开始编号</text>
+
+        <rect x="356" y="204" width="318" height="88" rx="10" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="372" y="226" font-size="12.5" fill="#5b46c0" font-weight="700" font-family="ui-monospace,Consolas,monospace">zip(titles, comments)</text>
+        <text x="372" y="248" font-size="11.5" fill="#1f2430" font-family="ui-monospace,Consolas,monospace">('标题一', '评论一') …</text>
+        <text x="372" y="272" font-size="11.5" fill="#d97706">按较短的那个截断，多出来的部分被丢弃</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：三种 <code>range()</code> 写法都遵循「含起点、不含终点」；<code>enumerate()</code> 解决「既要内容又要编号」，<code>zip()</code> 解决「两个序列一一配对」，而 <code>zip()</code> 的长度以短的一方为准。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 三种控制语句把执行引向哪里</div>
+      <div class="vsub">同一轮迭代中，不加控制语句、遇到 <code>continue</code>、遇到 <code>break</code> 会导致三种不同的后续走向。</div>
+      <svg viewBox="0 0 700 270" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>continue 与 break 对循环执行走向影响的示意图</title>
+        <desc>三栏对比：不写控制语句时执行完循环体进入下一轮；continue 跳过本轮剩余语句进入下一轮；break 直接结束整个循环，else 子句不会执行。</desc>
+
+        <rect x="10" y="30" width="212" height="226" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="28" y="54" font-size="12.5" font-weight="700" fill="#5b6472">不加控制语句</text>
+        <rect x="40" y="68" width="152" height="30" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="116" y="83" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① 进入本轮</text>
+        <rect x="40" y="112" width="152" height="30" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="116" y="127" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">② 执行循环体</text>
+        <rect x="40" y="156" width="152" height="30" rx="8" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="116" y="171" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">③ 进入下一轮</text>
+        <text x="28" y="212" font-size="11.5" fill="#5b6472">最常见：全流程走完</text>
+        <text x="28" y="234" font-size="11.5" fill="#5b6472">序列取完时循环自然结束</text>
+
+        <rect x="244" y="30" width="212" height="226" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="262" y="54" font-size="12.5" font-weight="700" fill="#2f6fed">continue</text>
+        <rect x="274" y="68" width="152" height="30" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="350" y="83" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① 进入本轮</text>
+        <rect x="274" y="112" width="152" height="30" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="350" y="127" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">② 剩余语句被跳过</text>
+        <rect x="274" y="156" width="152" height="30" rx="8" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1"/>
+        <text x="350" y="171" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">③ 直接进入下一轮</text>
+        <text x="262" y="212" font-size="11.5" fill="#5b6472">跳过本次，不结束循环</text>
+        <text x="262" y="234" font-size="11.5" fill="#5b6472">适合过滤掉不合格的那几条</text>
+
+        <rect x="478" y="30" width="212" height="226" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="496" y="54" font-size="12.5" font-weight="700" fill="#d97706">break</text>
+        <rect x="508" y="68" width="152" height="30" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="584" y="83" font-size="11.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">① 进入本轮</text>
+        <rect x="508" y="112" width="152" height="30" rx="8" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="584" y="127" font-size="11.5" fill="#b45309" text-anchor="middle" dominant-baseline="central">② 立即终止整个循环</text>
+        <rect x="508" y="156" width="152" height="30" rx="8" fill="#fdf0ef" stroke="#d9534f" stroke-width="1"/>
+        <text x="584" y="171" font-size="11.5" fill="#b03a36" text-anchor="middle" dominant-baseline="central">③ else 子句不执行</text>
+        <text x="496" y="212" font-size="11.5" fill="#5b6472">循环到此为止，不再取下一项</text>
+        <text x="496" y="234" font-size="11.5" fill="#5b6472">适合「找到就停」的查找</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>continue</code> 只影响<strong>本轮</strong>，<code>break</code> 影响<strong>整个循环</strong>；被 <code>break</code> 终结时，循环的 <code>else</code> 子句不会执行——这正是 <code>for...else</code> 能当「没找到」分支用的原因。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中 <code>for</code> / <code>while</code> 的执行顺序、<code>range()</code> 的含头不含尾规则、<code>break</code> 与 <code>continue</code> 的语义、循环 <code>else</code> 的触发条件，均可在第九节所列官方文档中逐条核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一条循环语句可以拆成「一个可迭代对象或条件 + 一个缩进块 + 若干可选的控制子句」三部分。下表先给出部件职责，再给出常用写法与边界。</p>
+
+    <h3>循环的组成部件</h3>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>可迭代对象 / 条件</strong></td><td><code>for</code> 的 <code>in</code> 右侧可以是列表、字符串、字典、<code>range()</code> 等任何可迭代对象；<code>while</code> 的判断依据是一个表达式，其值为真则继续。</td></tr>
+      <tr><td><strong>目标变量</strong></td><td><code>for</code> 中承接当前元素的名字，按赋值规则被逐项赋值。官方说明指出：循环对目标变量的赋值会覆盖此前对它的所有赋值，包括在循环体中做的赋值；循环结束后这个名称仍然存在。</td></tr>
+      <tr><td><strong>循环体（缩进块）</strong></td><td>被重复执行的语句组。缩进是 Python 组织语句的方式，同一块语句的每一行缩进必须相同。</td></tr>
+      <tr><td><strong>控制子句</strong></td><td><code>break</code>、<code>continue</code>、可选的 <code>else</code> 子句，用来改变默认的「从头走到尾」的执行路径。</td></tr>
+    </table>
+
+    <h3>常用写法与边界</h3>
+    <table>
+      <tr><th>写法</th><th>产出 / 行为</th><th>需要注意</th></tr>
+      <tr><td><code>for x in seq:</code></td><td>逐个取出 <code>seq</code> 的元素</td><td>序列在循环期间被改动会打乱遍历进度</td></tr>
+      <tr><td><code>for i in range(n):</code></td><td><code>0, 1, …, n-1</code></td><td>含起点不含终点；<code>range</code> 是惰性的不可变整数序列，不一次占用 n 个元素的内存</td></tr>
+      <tr><td><code>for i in range(a, b, s):</code></td><td>从 a 开始，步长 s，到 b 之前停止</td><td>步长为负时表示倒数；步长不能为 0</td></tr>
+      <tr><td><code>for i, x in enumerate(seq):</code></td><td>每轮得到 <code>(序号, 元素)</code></td><td>默认从 0 开始，可用 <code>start=1</code> 改为从 1 开始编号</td></tr>
+      <tr><td><code>for a, b in zip(s1, s2):</code></td><td>把两个序列逐项配成元组</td><td>长度不同时按较短的截断，多余部分被丢弃；<code>strict=True</code> 可改为长度不一致就报错</td></tr>
+      <tr><td><code>for x in sorted(seq):</code></td><td>按排序后的顺序遍历</td><td>不改动原序列，返回一个重新排序的序列</td></tr>
+      <tr><td><code>for x in set(seq):</code></td><td>去重后遍历</td><td>集合无序，遍历顺序通常与书写顺序不同</td></tr>
+      <tr><td><code>while cond:</code></td><td>条件为真就重复执行</td><td>循环体内必须存在让条件趋向于假的因素，否则会一直执行下去</td></tr>
+      <tr><td><code>break</code></td><td>终止最近一层的循环，且不执行该循环的 <code>else</code></td><td>在嵌套循环中只跳出最内层那一层</td></tr>
+      <tr><td><code>continue</code></td><td>跳过本轮剩余语句，转往下一项或下一轮</td><td>在 <code>while</code> 中会回到条件检验处，不会跳过条件判断</td></tr>
+      <tr><td><code>for/while ... else:</code></td><td>循环未被 <code>break</code> 终结时执行 <code>else</code></td><td>官方给出的类比是：它更像 <code>try</code> 的 <code>else</code>，而不是 <code>if</code> 的 <code>else</code></td></tr>
+      <tr><td><code>pass</code></td><td>什么也不做</td><td>用于占位，让尚未写完的循环体在语法上合法</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">上表主要依据 Python 官方教程《4. 更多控制流工具》、官方语言参考《8. 复合语句》与《5. 数据结构 · 循环的技巧》整理。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      一条稿件的处理流程通常是这样：拿到一批标题和它对应的评论，逐条编号打印，逐条配对检查，遇到明显不合格的就跳过，找到第一条需要重点关注的标题就停下来。——这正是第 4、6 课「批量稿件巡检」要做的事。下面的代码可以直接运行。
+    </p>
+    <pre>titles = [
+    <span class="s">"地铁票价调整方案公布"</span>,
+    <span class="s">"小区加装电梯补贴细则出台"</span>,
+    <span class="s">"市图书馆延长夜间开放时间"</span>,
+]
+comments = [
+    <span class="s">"支持，希望早点执行"</span>,
+    <span class="s">"电梯费用怎么分摊？"</span>,
+    <span class="s">"夜间开放太好了"</span>,
+]
+
+<span class="c"># enumerate：同时拿到序号和内容，start=1 让编号从 1 开始</span>
+for i, t in enumerate(titles, start=1):
+    print(f<span class="s">"第 {i} 条｜{t}"</span>)
+
+<span class="c"># zip：把标题与评论一一配对；两个列表等长时正好配完</span>
+for t, c in zip(titles, comments):
+    print(t, <span class="s">"→"</span>, c)
+
+<span class="c"># for...else：找第一条超过 10 个字的标题</span>
+<span class="c"># 命中就 break；全部走完仍未命中，才轮到 else 出场</span>
+for t in titles:
+    if len(t) &gt; 10:
+        print(<span class="s">"找到长标题："</span>, t)
+        break
+else:
+    print(<span class="s">"没有超过 10 个字的标题"</span>)
+
+<span class="c"># while：处理一个事先不知道有多少条的待审队列</span>
+queue = [<span class="s">"待审 1"</span>, <span class="s">"待审 2"</span>, <span class="s">"待审 3"</span>]
+while queue:                          <span class="c"># 空列表为假，队列清空即停下</span>
+    item = queue.pop(0)
+    if item == <span class="s">"待审 2"</span>:
+        continue                      <span class="c"># 跳过这一条，剩余语句不执行</span>
+    print(<span class="s">"已处理："</span>, item)
+
+<span class="c"># 排查长标题时不要一边遍历一边删原列表，改为写入新列表</span>
+long_titles = []
+for t in titles:
+    if len(t) &gt;= 10:
+        long_titles.append(t)
+print(long_titles)</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明循环在真实稿件流程中的组合方式，属于辅助理解示例，非某个来源的原文代码。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      示例中 <code>enumerate()</code> 的 <code>start</code> 参数、<code>zip()</code> 的配对与截断行为、<code>break</code> / <code>continue</code> 的语义、循环 <code>else</code> 在未执行 <code>break</code> 时才运行，均与第九节官方文档一致；「循环中修改列表应改为创建新列表」的建议直接来自官方教程《5. 数据结构 · 循环的技巧》。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>break</code> 与 <code>continue</code> 的差别是「结束整个循环」还是「只结束本轮」。</strong>官方语言参考的表述是：循环体中的 <code>break</code> 在执行时将终止循环且不执行 <code>else</code> 子句体；<code>continue</code> 在执行时将跳过子句体中的剩余部分并转往下一项继续执行（<code>while</code> 中则返回检验表达式）。</li>
+      <li><strong>循环的 <code>else</code> 与 <code>if</code> 的 <code>else</code> 不是一回事。</strong>官方文档特别指出：当配合循环使用时，<code>else</code> 子句更像是 <code>try</code> 语句的 <code>else</code>，而不像 <code>if</code> 的相应子句——<code>try</code> 的 <code>else</code> 在未发生异常时运行，循环的 <code>else</code> 在未发生 <code>break</code> 时运行。因此它常被用来表达「找遍了都没找到」。<code>return</code> 或抛出异常同样会跳过 <code>else</code>。</li>
+      <li><strong><code>for</code> 循环体里给目标变量重新赋值不会改变遍历进度。</strong>官方文档的例子是：在 <code>for i in range(10)</code> 的循环体里写 <code>i = 5</code>，这一赋值不会影响循环，因为它会被 <code>range</code> 对象中的下一个索引所覆盖。</li>
+      <li><strong>一边遍历一边删元素会漏掉若干项。</strong>官方教程给出的建议是：在循环中修改列表的内容时，创建新列表比较简单，且安全；其示例是把合格的数据 <code>append</code> 到一个新的 <code>filtered_data</code> 列表里，而不是就地删除。</li>
+      <li><strong><code>zip()</code> 的长度以短的一方为准。</strong>官方文档的示例显示，<code>list(zip(range(3), ['fee','fi','fo','fum']))</code> 只得到三个元组，第四个元素被丢弃；若希望长度不一致时报错，可使用 <code>strict=True</code>。</li>
+      <li><strong><code>while</code> 循环的边界是「条件必须有变假的机会」。</strong>官方教程用斐波那契数列演示 <code>while</code> 时说明，只要条件为真就执行。若循环体内没有任何让条件趋向于假的改动，循环不会自行结束。这是初学者最常遇到的一类问题。</li>
+      <li><strong>缩进不是排版偏好，而是语法。</strong>官方语言参考指出，子句体要么是与句头同行的一条或由分号分隔的多条简单语句，要么是缩进的一行或多行语句；只有后一种形式才能包含嵌套的复合语句。PEP 8 约定每个缩进层级用 4 个空格，并且 Python 不允许混用制表符和空格做缩进——混用会引发 <code>TabError</code> 一类的错误。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节七条均以 Python 官方文档为依据。<code>break</code> / <code>continue</code> / 循环 <code>else</code> 的语义见官方语言参考《8. 复合语句》8.2 与 8.3 节，以及官方教程《4. 更多控制流工具》4.4、4.5 节；循环中修改列表的建议与 <code>zip()</code>、<code>enumerate()</code> 的示例见《5. 数据结构 · 循环的技巧》；<code>while</code> 的说明见官方教程《3. Python 速览》3.2 节；缩进与命名规范见 PEP 8。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. <code>list(range(2, 8, 2))</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>[2, 4, 6, 8]</code></button>
+      <button class="opt" data-v="B">B. <code>[2, 3, 4, 5, 6, 7]</code></button>
+      <button class="opt" data-v="C">C. <code>[2, 4, 6]</code></button>
+      <button class="opt" data-v="D">D. <code>[4, 6, 8]</code></button>
+      <div class="fb" data-ok="✅ 正确。range(2, 8, 2) 表示从 2 开始、步长 2、到 8 之前停止，因此得到 2、4、6。三条规则要同时记住：含起点、不含终点、步长可正可负。"></div>
+      <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.3 range() 函数 —— docs.python.org/zh-cn/3/tutorial/controlflow.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 在循环体中，希望「跳过本轮剩余语句，直接进入下一轮」，应使用哪个语句？</div>
+      <button class="opt" data-v="A">A. <code>break</code></button>
+      <button class="opt" data-v="B">B. <code>continue</code></button>
+      <button class="opt" data-v="C">C. <code>pass</code></button>
+      <button class="opt" data-v="D">D. <code>return</code></button>
+      <div class="fb" data-ok="✅ 正确。continue 会跳过本轮剩余语句并转往下一项继续执行；break 是终止整个循环；pass 只是占位、什么也不做；return 是用在函数里的返回语句。"></div>
+      <div class="src">📎 来源：Python 官方语言参考《8. 复合语句》8.3 for 语句 —— docs.python.org/zh-cn/3/reference/compound_stmts.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 关于 <code>for...else</code> 中的 <code>else</code> 子句，下列说法正确的是？</div>
+      <button class="opt" data-v="A">A. 每次循环体执行完都会执行一次 <code>else</code></button>
+      <button class="opt" data-v="B">B. 只要循环体里出现过 <code>continue</code> 就不执行 <code>else</code></button>
+      <button class="opt" data-v="C">C. 循环在未执行 <code>break</code> 的情况下结束时，<code>else</code> 才会执行</button>
+      <button class="opt" data-v="D">D. <code>else</code> 只有在循环体一次都没执行时才运行</button>
+      <div class="fb" data-ok="✅ 正确。官方文档的表述是：在 for 或 while 循环中 break 语句可能对应一个 else 子句；如果循环在未执行 break 的情况下结束，else 子句将会执行。被 break 终结时不会执行，return 或抛出异常同样会跳过它。官方还提示：它更像 try 的 else，而不像 if 的 else。"></div>
+      <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.5 循环的 else 子句 —— docs.python.org/zh-cn/3/tutorial/controlflow.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 执行下面这段代码后，<code>nums</code> 的值是？<br><code>nums = [1, 2, 3, 4]</code><br><code>for n in nums:</code><br><code>　　nums.remove(n)</code></div>
+      <button class="opt" data-v="A">A. <code>[]</code>，因为每一项都被逐个删掉了</button>
+      <button class="opt" data-v="B">B. <code>[2, 4]</code>，因为在遍历过程中改动列表导致部分元素被跳过</button>
+      <button class="opt" data-v="C">C. <code>[1, 2, 3, 4]</code>，因为 for 循环期间不允许修改列表，改动会被忽略</button>
+      <button class="opt" data-v="D">D. 抛出 <code>RuntimeError</code></button>
+      <div class="fb" data-ok="✅ 正确。边遍历边删会打乱下标：删掉 1 之后列表前移，遍历指针走到下一位时跳过了 2，于是只剩 2 和 4 没被删到。官方教程对此的建议是：在循环中修改列表的内容时，创建新列表比较简单，且安全。"></div>
+      <div class="src">📎 来源：Python 官方教程《5. 数据结构 · 循环的技巧》（「一般来说，在循环中修改列表的内容时，创建新列表比较简单，且安全」）—— docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 执行 <code>list(zip(range(3), ['a', 'b', 'c', 'd']))</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>[(0, 'a'), (1, 'b'), (2, 'c'), (3, 'd')]</code></button>
+      <button class="opt" data-v="B">B. <code>[(0, 'a'), (1, 'b'), (2, 'c')]</code></button>
+      <button class="opt" data-v="C">C. <code>[(0, 'a'), (1, 'b'), (2, 'c'), (None, 'd')]</code></button>
+      <button class="opt" data-v="D">D. 抛出 <code>ValueError</code>，因为两个序列长度不同</button>
+      <div class="fb" data-ok="✅ 正确。zip() 在最短的输入被耗尽时停止，多出来的 'd' 不会出现在结果里。这个行为容易造成数据静默丢失，因此在需要长度一致时，可用 zip(..., strict=True)，长度不一致会抛 ValueError。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置函数》zip()（示例 list(zip(range(3), ['fee','fi','fo','fum'])) 与 strict 参数）—— docs.python.org/zh-cn/3/library/functions.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《4. 更多控制流工具》（<code>for</code> 语句、<code>range()</code> 三种写法、<code>break</code> 与 <code>continue</code>、循环的 <code>else</code> 子句及其与 <code>try</code> 的类比、<code>pass</code>） — <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/controlflow.html</a></li>
+      <li>Python 官方语言参考《8. 复合语句》（8.2 <code>while</code> 语句、8.3 <code>for</code> 语句的正式语义：迭代器创建、目标变量赋值、<code>break</code> 不执行 <code>else</code>、缩进块的形式要求） — <a href="https://docs.python.org/zh-cn/3/reference/compound_stmts.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/compound_stmts.html</a></li>
+      <li>Python 官方教程《5. 数据结构》（5.6 循环的技巧：<code>items()</code>、<code>enumerate()</code>、<code>zip()</code>、<code>reversed()</code>、<code>sorted()</code>、<code>set()</code>；以及「循环中修改列表应创建新列表」的建议） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+      <li>Python 官方文档《内置函数》（<code>range()</code>、<code>enumerate()</code>、<code>zip()</code> 的签名与示例，<code>zip()</code> 的 <code>strict</code> 参数） — <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/functions.html</a></li>
+      <li>Python 官方教程《3. Python 速览》3.2 走向编程的第一步（<code>while</code> 循环示例与「循环体是缩进的，缩进是 Python 组织语句的方式」） — <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/introduction.html</a></li>
+      <li>Python 官方文档《内置类型》（<code>range</code> 对象、通用序列操作、真值检测——空列表为假，因此 <code>while queue:</code> 可作队列判空） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html</a></li>
+      <li>Python 官方术语表（iterable、iterator、sequence、list comprehension 等词条） — <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/glossary.html</a></li>
+      <li>PEP 8 —— Style Guide for Python Code（每级缩进使用 4 个空格、不混用制表符与空格、命名规范） — <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">peps.python.org/pep-0008/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节两张表格、第七节七条辨析与第八节全部题解中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+/* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

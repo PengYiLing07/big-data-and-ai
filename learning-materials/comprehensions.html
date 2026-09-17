@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 推导式</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块二 · 循环与容器 ｜ 第 6 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>推导式（comprehension）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>列表推导式的一行代码由哪几个部分组成？各部分的顺序是怎样规定的？</li>
+      <li>多个 <code>for</code> 与 <code>if</code> 子句的求值顺序是什么？嵌套推导式为什么那样展开？</li>
+      <li>字典推导式与集合推导式怎么书写？它们的括号分别决定了什么？</li>
+      <li>生成器表达式与列表推导式的差别在哪里？什么时候更适用？</li>
+      <li>什么情况下推导式反而会降低可读性、应当退回普通 <code>for</code> 循环？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——「建一个空容器 + 循环 + 判断 + 往里放」这四件事反复出现，能不能压缩成一句？</li>
+      <li><strong>它由什么组成</strong>——推导式里有几个可替换的槽位？改动哪个槽位会改变结果？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——推导式与普通 <code>for</code> 循环、列表推导式与生成器表达式、<code>if</code> 放在 <code>for</code> 前与放在 <code>for</code> 后，边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——逻辑复杂到什么程度就不该再用推导式？变量作用域与求值时机有哪些容易误判的地方？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      推导式是 Python 提供的一种<strong>「显示」句法</strong>。官方语言参考说明，为了构建列表、集合或字典，Python 提供了名为「显示」的特殊句法，每个类型各有两种形式：第一种是显式地列出容器内容，第二种是通过一组循环和筛选指令计算出来，称为<em>推导式</em>。也就是说，
+      <code>[1, 4, 9]</code> 是显式列出的列表显示，而 <code>[x*x for x in range(1, 4)]</code> 是列表推导式。
+    </p>
+    <p>
+      官方给出的结构定义是：推导式的结构是一个单独表达式后面加至少一个 <code>for</code> 子句以及零个或更多个 <code>for</code> 或 <code>if</code> 子句；在这种情况下，新容器的元素产生方式是将每个 <code>for</code> 或 <code>if</code> 子句视为一个代码块，<strong>按从左至右的顺序嵌套</strong>，然后每次到达最内层代码块时就对表达式进行求值以产生一个元素。
+    </p>
+    <p>
+      括号决定了产出什么类型的容器：方括号产出列表，花括号加冒号产出字典，花括号不加冒号产出集合，圆括号产出的是<strong>生成器表达式</strong>——它不立刻建出整个列表，而是在被逐个取值时才计算。PEP 289 把生成器表达式描述为「列表推导式与生成器的高性能、内存高效的泛化形式」。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      推导式可类比为一张「加工单」：上面写着「从哪批料里取（<code>for</code>）」「只取哪些（<code>if</code>）」「每件怎么处理（表达式）」「成品装进哪种箱子（括号）」。把这张单子交给执行者，就得到一箱成品。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      生成器表达式可类比为流水线而不是仓库：货物不会先堆满一整间仓库再发货，而是被要一件、算一件。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：一行推导式的四个槽位各是什么、它与等价 <code>for</code> 循环怎么对应、四种括号形式各产出什么。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 一行推导式的四个槽位</div>
+      <div class="vsub">代码从左到右被切成四段，每段各承担一项职责；其中 <code>if</code> 段可以省略，<code>for</code> 段可以出现多次。</div>
+      <svg viewBox="0 0 700 250" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>列表推导式的语法槽位分解示意图</title>
+        <desc>把 [len(t) for t in titles if '地铁' in t] 分解为容器符号、表达式、取值来源与过滤条件四个槽位，并说明各自职责。</desc>
+
+        <rect x="20" y="26" width="660" height="46" rx="9" fill="#0f172a"/>
+        <text x="44" y="54" font-size="14" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">[len(t)  for t in titles  if '地铁' in t]</text>
+
+        <line x1="160" y1="76" x2="160" y2="98" stroke="#2f6fed" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <line x1="290" y1="76" x2="290" y2="98" stroke="#2f6fed" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <line x1="450" y1="76" x2="450" y2="98" stroke="#2f6fed" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <line x1="610" y1="76" x2="610" y2="98" stroke="#2f6fed" stroke-width="1.2" stroke-dasharray="4 3"/>
+
+        <rect x="20" y="100" width="140" height="96" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="90" y="122" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">容器符号</text>
+        <text x="90" y="148" font-size="13" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">[ ]</text>
+        <text x="90" y="170" font-size="11.5" fill="#5b6472" text-anchor="middle">决定产出什么类型</text>
+        <text x="90" y="188" font-size="11.5" fill="#5b6472" text-anchor="middle">方/花/圆括号各不同</text>
+
+        <rect x="172" y="100" width="140" height="96" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="242" y="122" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">表达式</text>
+        <text x="242" y="148" font-size="13" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">len(t)</text>
+        <text x="242" y="170" font-size="11.5" fill="#5b6472" text-anchor="middle">每个元素变成什么</text>
+        <text x="242" y="188" font-size="11.5" fill="#5b6472" text-anchor="middle">可以调用函数或方法</text>
+
+        <rect x="324" y="100" width="140" height="96" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="394" y="122" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">取值来源</text>
+        <text x="394" y="148" font-size="13" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">for t in titles</text>
+        <text x="394" y="170" font-size="11.5" fill="#5b6472" text-anchor="middle">从哪里逐项取数</text>
+        <text x="394" y="188" font-size="11.5" fill="#5b6472" text-anchor="middle">可写多个 for 做嵌套</text>
+
+        <rect x="476" y="100" width="204" height="96" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="578" y="122" font-size="12.5" font-weight="700" fill="#b45309" text-anchor="middle">过滤条件（可省）</text>
+        <text x="578" y="148" font-size="13" fill="#78350f" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">if '地铁' in t</text>
+        <text x="578" y="170" font-size="11.5" fill="#78350f" text-anchor="middle">条件为假就跳过该项</text>
+        <text x="578" y="188" font-size="11.5" fill="#78350f" text-anchor="middle">因此元素个数会变少</text>
+
+        <text x="20" y="228" font-size="11.5" fill="#5b6472">求值顺序：最左边 <tspan font-family="ui-monospace,Consolas,monospace">for</tspan> 中可迭代对象先在外层作用域求值，其余部分在隐式嵌套作用域里按从左到右嵌套执行</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：改「表达式」改的是每个元素的形态，改「<code>if</code>」改的是元素个数，改「括号」改的是产出类型。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 推导式与等价 <code>for</code> 循环对照</div>
+      <div class="vsub">左栏是逐行展开的普通写法，右栏是压缩后的推导式；两者产出相同结果。</div>
+      <svg viewBox="0 0 700 296" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>推导式与等价 for 循环写法对照示意图</title>
+        <desc>左侧用五行 for 循环写出先建空列表、遍历、判断、追加的过程；右侧用两行推导式完成同样的事。</desc>
+
+        <rect x="10" y="26" width="334" height="246" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="28" y="50" font-size="12.5" font-weight="700" fill="#2f6fed">for 循环写法　逐行展开</text>
+        <rect x="28" y="62" width="298" height="140" rx="8" fill="#0f172a"/>
+        <text x="42" y="86" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">picked = []</text>
+        <text x="42" y="110" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">for t in titles:</text>
+        <text x="42" y="134" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">    if len(t) &gt; 10:</text>
+        <text x="42" y="158" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">        picked.append(t)</text>
+        <text x="42" y="186" font-size="12" fill="#94a3b8" font-family="ui-monospace,Consolas,monospace"># 5 行</text>
+        <text x="28" y="226" font-size="11.5" fill="#1a9e5a">✔ 每一步都看得见，容易插入调试输出</text>
+        <text x="28" y="246" font-size="11.5" fill="#5b6472">✔ 逻辑再复杂也不会失控</text>
+        <text x="28" y="266" font-size="11.5" fill="#5b6472">✘ 行数多，样板代码（建列表 + append）占了大半</text>
+
+        <rect x="356" y="26" width="334" height="246" rx="10" fill="#f7faff" stroke="#e3e7ee" stroke-width="1"/>
+        <text x="374" y="50" font-size="12.5" font-weight="700" fill="#7c5cff">推导式写法　一行概括</text>
+        <rect x="374" y="62" width="298" height="140" rx="8" fill="#0f172a"/>
+        <text x="388" y="86" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">picked = [</text>
+        <text x="388" y="110" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">    t for t in titles</text>
+        <text x="388" y="134" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">    if len(t) &gt; 10</text>
+        <text x="388" y="158" font-size="12" fill="#e2e8f0" font-family="ui-monospace,Consolas,monospace">]</text>
+        <text x="388" y="186" font-size="12" fill="#94a3b8" font-family="ui-monospace,Consolas,monospace"># 1 条语句</text>
+        <text x="374" y="226" font-size="11.5" fill="#1a9e5a">✔ 意图集中，「筛选出什么」一眼可见</text>
+        <text x="374" y="246" font-size="11.5" fill="#d97706">✘ 条件一多、表达式一长就会挤成一行</text>
+        <text x="374" y="266" font-size="11.5" fill="#d97706">✘ 塞进多个 for 与 if 后，读起来要来回数</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：两种写法结果相同，选哪种应看<strong>逻辑复杂度</strong>而不是行数多少；一旦需要嵌套多层或带 <code>else</code>，普通 <code>for</code> 循环通常更好读。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 四种括号各产出什么</div>
+      <div class="vsub">同一个取值来源，只换外层括号，得到的容器类型与求值时机就完全不同。</div>
+      <svg viewBox="0 0 700 264" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>列表、集合、字典推导式与生成器表达式的括号对照示意图</title>
+        <desc>方括号产出 list，花括号加冒号产出 dict，花括号不加冒号产出 set，圆括号产出惰性求值的生成器迭代器。</desc>
+
+        <rect x="10" y="30" width="164" height="112" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="92" y="54" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">列表推导式</text>
+        <text x="92" y="80" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">[x for x in it]</text>
+        <text x="92" y="106" font-size="11.5" fill="#5b6472" text-anchor="middle">产出 list</text>
+        <text x="92" y="128" font-size="11.5" fill="#5b6472" text-anchor="middle">立即全部算完</text>
+
+        <rect x="182" y="30" width="164" height="112" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="264" y="54" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">集合推导式</text>
+        <text x="264" y="80" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">{x for x in it}</text>
+        <text x="264" y="106" font-size="11.5" fill="#5b6472" text-anchor="middle">产出 set</text>
+        <text x="264" y="128" font-size="11.5" fill="#5b6472" text-anchor="middle">自动去重、无序</text>
+
+        <rect x="354" y="30" width="164" height="112" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <text x="436" y="54" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">字典推导式</text>
+        <text x="436" y="80" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">{k: v for k, v in it}</text>
+        <text x="436" y="106" font-size="11.5" fill="#5b6472" text-anchor="middle">产出 dict</text>
+        <text x="436" y="128" font-size="11.5" fill="#5b6472" text-anchor="middle">需用冒号分开键与值</text>
+
+        <rect x="526" y="30" width="164" height="112" rx="10" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.2"/>
+        <text x="608" y="54" font-size="12.5" font-weight="700" fill="#5b46c0" text-anchor="middle">生成器表达式</text>
+        <text x="608" y="80" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">(x for x in it)</text>
+        <text x="608" y="106" font-size="11.5" fill="#5b46c0" text-anchor="middle">产出迭代器</text>
+        <text x="608" y="128" font-size="11.5" fill="#5b46c0" text-anchor="middle">用到才算，且只能走一遍</text>
+
+        <rect x="10" y="160" width="680" height="88" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="30" y="184" font-size="12.5" font-weight="700" fill="#b45309">⚠ 两种常见的混淆</text>
+        <line x1="26" y1="198" x2="674" y2="198" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="30" y="218" font-size="12" fill="#78350f">空集合不能用 <tspan font-family="ui-monospace,Consolas,monospace">{}</tspan> 表示：<tspan font-family="ui-monospace,Consolas,monospace">{}</tspan> 是空字典；集合推导式的花括号里不能带冒号</text>
+        <text x="30" y="238" font-size="12" fill="#78350f">生成器表达式只能遍历一次，需要反复使用或需要 <tspan font-family="ui-monospace,Consolas,monospace">len()</tspan> 时，应改用列表推导式</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：括号决定类型——<code>[ ]</code> 列表、<code>{k: v}</code> 字典、<code>{ }</code> 集合、<code>( )</code> 生成器；前三种立即产出容器，生成器表达式则是惰性求值。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中推导式的句法结构、从左至右嵌套的求值顺序、四种括号对应的容器类型、生成器表达式的语义，均可在第九节所列官方文档与 PEP 中逐条核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>推导式可以看成「把一段固定形状的循环打包成一个表达式」。下表先给出四个槽位的职责，再给出四种形式的对照。</p>
+
+    <h3>四个槽位</h3>
+    <table>
+      <tr><th>槽位</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>容器符号</strong></td><td>决定产出什么。<code>[ ]</code> 列表、<code>{k: v ...}</code> 字典、<code>{ ... }</code> 集合、<code>( ... )</code> 生成器表达式。官方语言参考指出，集合显示用花括号标明，与字典显示的区别在于没有冒号分隔的键和值；空集合不能用 <code>{}</code> 构建，该字面值构建的是一个空字典。</td></tr>
+      <tr><td><strong>表达式</strong></td><td>每轮迭代产出的元素是什么。可以是函数调用、方法调用，甚至可以写成条件表达式（<code>a if 条件 else b</code>）。官方教程指出，列表推导式可以使用复杂的表达式和嵌套函数。</td></tr>
+      <tr><td><strong><code>for</code> 子句</strong></td><td>取值来源。可以出现多个。PEP 202 说明，<code>[... for x... for y...]</code> 会嵌套，最后一个索引变化最快，与嵌套的 <code>for</code> 循环一致。</td></tr>
+      <tr><td><strong><code>if</code> 子句</strong></td><td>过滤条件，可以有零个或多个。为假时该项不产生输出，因此元素个数会减少。</td></tr>
+    </table>
+
+    <h3>四种形式对照</h3>
+    <table>
+      <tr><th>形式</th><th>写法示例</th><th>产出</th><th>求值时机</th></tr>
+      <tr><td>列表推导式</td><td><code>[len(t) for t in titles]</code></td><td><code>list</code></td><td>立即完成，结果全部在内存中</td></tr>
+      <tr><td>集合推导式</td><td><code>{t[0] for t in titles}</code></td><td><code>set</code>（自动去重、无序）</td><td>立即完成</td></tr>
+      <tr><td>字典推导式</td><td><code>{t: len(t) for t in titles}</code></td><td><code>dict</code>（保持插入顺序）</td><td>立即完成；官方说明键与值的求值顺序自 3.8 起为键先于值</td></tr>
+      <tr><td>生成器表达式</td><td><code>(len(t) for t in titles)</code></td><td>生成器迭代器</td><td>惰性：取值时才逐个计算</td></tr>
+    </table>
+
+    <h3>求值顺序与作用域</h3>
+    <table>
+      <tr><th>规则</th><th>官方表述要点</th></tr>
+      <tr><td>子句的嵌套顺序</td><td>将每个 <code>for</code> 或 <code>if</code> 子句视为一个代码块，按从左至右的顺序嵌套，每次到达最内层代码块时就对表达式求值以产生一个元素。</td></tr>
+      <tr><td>最左侧可迭代对象的求值时机</td><td>最左边的 <code>for</code> 子句中的可迭代对象表达式会直接在外层作用域中被求值，然后作为一个参数传给隐式嵌套的作用域。因此在生成器表达式中，该表达式引发的错误会在定义处就抛出，而不是在第一次取值时。</td></tr>
+      <tr><td>作用域隔离</td><td>除最左边 <code>for</code> 子句中的可迭代表达式之外，推导式在另一个隐式嵌套的作用域内执行，这能确保赋给目标列表的名称不会「泄露」到外层作用域。这也是 Python 3 与 Python 2 的一个区别（PEP 289 提到 Python 3.0 起列表推导式不再把循环变量泄漏到外层）。</td></tr>
+      <tr><td>字典推导式的键值顺序</td><td>官方语言参考注明：在 Python 3.8 之前的字典推导式中，并没有定义好键和值的求值顺序；从 3.8 开始，键会先于值被求值。</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">上表主要依据 Python 官方语言参考《6. 表达式》6.2.5 至 6.2.9 节，以及 PEP 202、PEP 274、PEP 289 整理。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      编辑挑稿时经常要做的事是：从一堆标题里筛出符合条件的那些，同时顺手算出每条的字符数；如果还要给出每条标题的字数对照表，用字典推导式一步就能建好。——这正是第 6 课「一行筛稿」要做的事。下面的代码可以直接运行。
+    </p>
+    <pre>titles = [
+    <span class="s">"地铁票价调整方案公布"</span>,
+    <span class="s">"小区加装电梯补贴细则出台"</span>,
+    <span class="s">"市图书馆延长夜间开放时间"</span>,
+    <span class="s">"今起气温回升"</span>,
+]
+
+<span class="c"># 推导式：筛出含「地铁」或长度超过 10 的标题</span>
+picked = [t for t in titles if <span class="s">"地铁"</span> in t or len(t) &gt; 10]
+print(len(picked))          <span class="c"># 3</span>
+
+<span class="c"># 等价的 for 循环写法：结果完全相同，只是多几行</span>
+picked_loop = []
+for t in titles:
+    if <span class="s">"地铁"</span> in t or len(t) &gt; 10:
+        picked_loop.append(t)
+print(picked == picked_loop)   <span class="c"># True</span>
+
+<span class="c"># 字典推导式：标题 → 字数</span>
+lengths = {t: len(t) for t in titles}
+print(lengths[<span class="s">"地铁票价调整方案公布"</span>])   <span class="c"># 10</span>
+
+<span class="c"># 集合推导式：把所有标题里出现过的字收集起来（自动去重）</span>
+chars = {ch for t in titles for ch in t}
+print(<span class="s">"地"</span> in chars)         <span class="c"># True</span>
+
+<span class="c"># 生成器表达式：不先建列表，直接交给 sum() 累加</span>
+total = sum(len(t) for t in titles)
+print(total)
+
+<span class="c"># 条件放在 for 前 vs 放在 for 后，结果个数不同</span>
+clipped  = [t if len(t) &gt; 10 else <span class="s">"短标题"</span> for t in titles]   <span class="c"># 4 条，短标题被替换</span>
+only_long = [t for t in titles if len(t) &gt; 10]                    <span class="c"># 3 条，短标题被剔除</span>
+print(len(clipped), len(only_long))   <span class="c"># 4 3</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明推导式在真实筛稿流程中的用法与它和 <code>for</code> 循环的对应关系，属于辅助理解示例，非某个来源的原文代码。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      示例中列表推导式、字典推导式、集合推导式、生成器表达式的写法与产出类型，与官方语言参考《6. 表达式》6.2.5 至 6.2.9 节的定义一致；<code>sum(x for x in ...)</code> 这种「生成器表达式作为唯一位置参数时省略一层括号」的用法与该节示例一致；嵌套 <code>for</code> 的展开顺序与 PEP 202 的说明一致。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>if</code> 放在 <code>for</code> 前与放在 <code>for</code> 后不是一回事。</strong>放在 <code>for</code> 之后（<code>[x for x in it if 条件]</code>）是<em>过滤</em>：条件为假的项不产生输出，元素个数会减少。放在 <code>for</code> 之前的那个位置属于「表达式」的一部分，写的是条件表达式（<code>[a if 条件 else b for x in it]</code>），每一项都仍然产生一个输出，元素个数不变。</li>
+      <li><strong>推导式里不能写多条语句，也不能放 <code>print</code> 做调试。</strong>推导式的「表达式」位置只接受表达式，不接受语句。官方语言参考还明确规定：为了确保推导式得出的结果总是一个类型正确的容器，在隐式嵌套作用域内禁止使用 <code>yield</code> 和 <code>yield from</code> 表达式。需要插入中间步骤或调试输出时，普通 <code>for</code> 循环更合适。</li>
+      <li><strong>嵌套推导式看起来像「从左到右」，实际是「从左到右层层嵌套」。</strong>官方教程的转置矩阵例子说明：<code>[[row[i] for row in matrix] for i in range(4)]</code> 中，内部的列表推导式是在它之后的 <code>for</code> 的上下文中被求值的。PEP 202 也指出，最后一个索引变化最快，与嵌套 <code>for</code> 循环一致。层数一多，这种「反直觉的阅读顺序」会显著影响可读性。</li>
+      <li><strong>生成器表达式与列表推导式的差别在于「立刻算」还是「用到再算」。</strong>PEP 289 的说明是：列表推导式会在内存中建出完整的列表，而生成器表达式省下这份内存；两者在小到中等规模数据上的性能大致相当，数据量变大时生成器往往更有优势。代价是生成器只能遍历一次，且不支持 <code>len()</code> 与下标访问。</li>
+      <li><strong>推导式里的循环变量不会泄漏到外层作用域。</strong>官方语言参考说明，推导式在另一个隐式嵌套的作用域内执行，这能确保赋给目标列表的名称不会「泄露」到外层的作用域。因此在推导式内外使用同名变量不会互相覆盖——这与普通 <code>for</code> 循环的行为不同。</li>
+      <li><strong>字典推导式的键同样必须可哈希。</strong>官方语言参考指出，对键的取值类型的限制已列在标准类型层级结构一节中，总的说来键的类型应为 hashable，这就排除了所有可变对象。若把列表写成键，会抛 <code>TypeError</code>。</li>
+      <li><strong>逻辑一复杂，推导式就该退场。</strong>这是本页最需要记住的边界。当表达式里出现多层嵌套 <code>for</code>、多个 <code>if</code>、条件表达式，或者需要在循环中做多步操作时，推导式会从「一眼看清意图」变成「需要逐字拆解」。PEP 8 的原则可以借用：代码的可读性优先，一致性优先于严格遵循风格指南。此处的判断属于实践建议，非官方强制规定。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节前六条均以 Python 官方文档或 PEP 为依据。<code>if</code> 两种位置的区别与条件表达式属于句法层面的事实，见官方语言参考《6. 表达式》6.2.5 与官方教程《5. 数据结构》5.1.3 节；禁止 <code>yield</code> 见 6.2.5 节；嵌套推导式的求值顺序见 6.2.5 与 6.2.6 节及 PEP 202；生成器表达式与列表推导式的取舍见 PEP 289；作用域隔离见 6.2.5 节；字典键的可哈希要求见 6.2.8 节。最后一条属实践判断，已注明非官方强制规定。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. <code>[x * 2 for x in range(3)]</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>[2, 4, 6]</code></button>
+      <button class="opt" data-v="B">B. <code>[1, 2, 3]</code></button>
+      <button class="opt" data-v="C">C. <code>[0, 2, 4]</code></button>
+      <button class="opt" data-v="D">D. <code>[0, 1, 2]</code></button>
+      <div class="fb" data-ok="✅ 正确。range(3) 依次产生 0、1、2，表达式 x * 2 把它们分别变成 0、2、4。注意「含起点不含终点」这条规则同样适用于推导式里的 range。"></div>
+      <div class="src">📎 来源：Python 官方教程《5. 数据结构》5.1.3 列表推导式 —— docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 把列表推导式的方括号换成圆括号，例如 <code>(len(t) for t in titles)</code>，得到的是什么？</div>
+      <button class="opt" data-v="A">A. 一个元组，内容与列表推导式相同</button>
+      <button class="opt" data-v="B">B. 一个生成器表达式、求值结果是生成器迭代器，取值时才逐个计算</button>
+      <button class="opt" data-v="C">C. 与列表推导式完全相同的结果，只是写法更短</button>
+      <button class="opt" data-v="D">D. 语法错误，圆括号必须配合方括号使用</button>
+      <div class="fb" data-ok="✅ 正确。官方语言参考说明：生成器表达式的句法与列表推导式相同，只是用圆括号而不是方括号括起来；它在运行时会求值得到一个生成器迭代器。它不是元组，也不能像列表那样反复遍历。"></div>
+      <div class="src">📎 来源：Python 官方语言参考《6. 表达式》6.2.9 生成器表达式 —— docs.python.org/zh-cn/3/reference/expressions.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. <code>[num for elem in vec for num in elem]</code> 等价于下面哪一段嵌套循环？</div>
+      <button class="opt" data-v="A">A. 外层 <code>for num in elem</code>，内层 <code>for elem in vec</code></button>
+      <button class="opt" data-v="B">B. 外层 <code>for elem in vec</code>，内层 <code>for num in elem</code></button>
+      <button class="opt" data-v="C">C. 两个 <code>for</code> 是并列关系，可以任意交换顺序而不影响结果</button>
+      <button class="opt" data-v="D">D. 这行代码会把 <code>vec</code> 的每一层再包一个列表，不做展平</button>
+      <div class="fb" data-ok="✅ 正确。官方文档说明，推导式中每个 for 或 if 子句被当作一个代码块，按从左至右的顺序嵌套；因此写在前的 for 是外层、写在后的 for 是内层。这个例子（[num for elem in vec for num in elem] 把 [[1,2,3],[4,5,6],[7,8,9]] 展平为 1 到 9）就是官方教程中的原例。"></div>
+      <div class="src">📎 来源：Python 官方教程《5. 数据结构》5.1.3 列表推导式（「使用两个 'for' 来展平嵌套的列表」）；求值顺序见官方语言参考《6. 表达式》6.2.5</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 已知 <code>lengths = {"地铁票价调整方案公布": 10, "今起气温回升": 6}</code>，想得到「只保留字数大于 8 的条目」的新字典，正确写法是？</div>
+      <button class="opt" data-v="A">A. <code>[k: v for k, v in lengths.items() if v &gt; 8]</code></button>
+      <button class="opt" data-v="B">B. <code>(k: v for k, v in lengths.items() if v &gt; 8)</code></button>
+      <button class="opt" data-v="C">C. <code>{k, v for k, v in lengths.items() if v &gt; 8}</code></button>
+      <button class="opt" data-v="D">D. <code>{k: v for k, v in lengths.items() if v &gt; 8}</code></button>
+      <div class="fb" data-ok="✅ 正确。字典推导式需要以冒号分隔的两个表达式（键与值），后面带上标准的 for 和 if 子句，并整体用花括号括起。方括号得到的是列表，圆括号得到的是生成器，花括号里不带冒号得到的是集合——集合的元素是单个值，写成 k, v 会得到元组集合而不是字典。"></div>
+      <div class="src">📎 来源：Python 官方语言参考《6. 表达式》6.2.8 字典显示（「字典推导式与列表和集合推导式有所不同，它需要以冒号分隔的两个表达式」）—— docs.python.org/zh-cn/3/reference/expressions.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 已知 <code>vec = [-4, 2, 0]</code>，则 <code>[x if x &gt; 0 else 0 for x in vec]</code> 与 <code>[x for x in vec if x &gt; 0]</code> 的结果分别是？</div>
+      <button class="opt" data-v="A">A. 两者都是 <code>[2]</code></button>
+      <button class="opt" data-v="B">B. 两者都是 <code>[0, 2, 0]</code></button>
+      <button class="opt" data-v="C">C. <code>[0, 2, 0]</code> 与 <code>[2]</code></button>
+      <button class="opt" data-v="D">D. <code>[2, 0]</code> 与 <code>[2]</code></button>
+      <div class="fb" data-ok="✅ 正确。写在 for 之前的条件表达式属于「表达式」的一部分，每一项都必须产出一个值，因此负数被替换成 0，元素个数不变（3 个）；写在 for 之后的 if 属于过滤条件，条件为假的项直接不产生输出，元素个数减少（只剩 2 一个）。前者是「换值」，后者是「删项」。"></div>
+      <div class="src">📎 来源：推导式的句法元素定义（comp_iter 中的 comp_if 与表达式部分）见官方语言参考《6. 表达式》6.2.5；过滤示例 <code>[x for x in vec if x &gt;= 0]</code> 见官方教程《5. 数据结构》5.1.3</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方语言参考《6. 表达式》6.2.5 列表、集合与字典的显示（推导式的结构定义、从左至右嵌套的求值顺序、隐式嵌套作用域与变量不泄漏、禁止 <code>yield</code>） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html</a></li>
+      <li>Python 官方语言参考《6. 表达式》6.2.8 字典显示与 6.2.9 生成器表达式（字典推导式需冒号分隔的键与值、键必须可哈希、3.8 起键先于值求值；生成器表达式的句法与惰性求值） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html</a></li>
+      <li>Python 官方教程《5. 数据结构》5.1.3 列表推导式与 5.1.4 嵌套的列表推导式（过滤示例、两个 <code>for</code> 展平嵌套列表、转置矩阵与求值顺序说明） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+      <li>Python 官方术语表（<code>list comprehension</code>、<code>set comprehension</code>、<code>dictionary comprehension</code>、<code>generator expression</code>、<code>hashable</code> 等词条） — <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/glossary.html</a></li>
+      <li>PEP 202 —— List Comprehensions（「<code>[... for x... for y...]</code> 会嵌套，最后一个索引变化最快，与嵌套 <code>for</code> 循环一致」；列表推导式的动机是替代 <code>map()</code> / <code>filter()</code> 与嵌套循环） — <a href="https://peps.python.org/pep-0202/" target="_blank" rel="noopener">peps.python.org/pep-0202/</a></li>
+      <li>PEP 274 —— Dict Comprehensions（字典推导式的语义与示例；花括号与冒号的写法来源） — <a href="https://peps.python.org/pep-0274/" target="_blank" rel="noopener">peps.python.org/pep-0274/</a></li>
+      <li>PEP 289 —— Generator Expressions（生成器表达式是列表推导式的一种高性能、内存高效的泛化形式；列表推导式会建出完整列表，生成器表达式省下这份内存；只有最外层 <code>for</code> 的表达式立即求值） — <a href="https://peps.python.org/pep-0289/" target="_blank" rel="noopener">peps.python.org/pep-0289/</a></li>
+      <li>Python 官方文档《内置函数》（<code>sum()</code>、<code>sorted()</code>、<code>len()</code> 等常与推导式配合使用的函数） — <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/functions.html</a></li>
+      <li>PEP 8 —— Style Guide for Python Code（代码可读性优先、一致性优先于严格遵循风格指南的表述，为「何时不该用推导式」的判断提供依据） — <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">peps.python.org/pep-0008/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格、第七节前六条辨析与第八节全部题解中的技术结论，均可在上述官方文档与 PEP 中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文；第七节最后一条关于可读性的建议属实践判断，已在正文中注明。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+/* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

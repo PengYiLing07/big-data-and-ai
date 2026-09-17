@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 文件读写与编码</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块三 · 函数与工程化 ｜ 第 8 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>文件读写与编码</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：Python 基础（13 次课 · 新闻学专业定制）</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li><code>open()</code> 的三个关键参数（文件名、<code>mode</code>、<code>encoding</code>）各决定什么？为什么官方建议用 <code>with</code> 打开文件？</li>
+      <li><code>read()</code>、<code>readline()</code>、<code>readlines()</code> 与 <code>for line in f</code> 分别适合什么场合？读大文件时该选哪一种？</li>
+      <li><code>csv</code> 模块的 <code>DictReader</code> / <code>DictWriter</code> 怎么用？为什么打开 CSV 文件时要写 <code>newline=""</code>？</li>
+      <li><strong>中文乱码为什么会发生</strong>？为什么同一个文件在一台机器上正常、换一台就变成乱码？</li>
+      <li>为什么 Windows 上旧版 Excel 导出的 CSV 常常是 GBK 而不是 UTF-8？遇到这种文件该怎么读？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——程序关掉之后数据就没了，如何让一批稿件、一批采访记录在程序结束之后仍然留在硬盘上、下次继续用？</li>
+      <li><strong>它由什么组成</strong>——一次文件操作包含打开文件、选择模式、指定编码、读写内容、关闭文件这五件事，各由谁负责？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——文本模式与二进制模式、<code>read()</code> 与逐行迭代、<code>encoding</code> 与 <code>newline</code> 的边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——编码写错时数据会不会真的损坏？相对路径到底相对于谁？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      硬盘上的文件本质上<strong>只是一串字节</strong>，它自己不带「我是用什么编码写的」这张标签。<code>open()</code> 做的是在程序与这个字节序列之间架一条通道，并返回一个<strong>文件对象</strong>（一种流）；随后所有的读写都发生在这条通道上，而不是直接操作硬盘。文本模式下，读文件是把字节<strong>解码</strong>成字符串（<code>str</code>），写文件是把字符串<strong>编码</strong>成字节写出去；二进制模式下不做这两步转换，读写的是 <code>bytes</code> 对象。
+    </p>
+    <p>
+      因为编码与解码必须是同一张对照表，所以「编码」这件事本质上是一次<strong>双向映射</strong>：同一个汉字，在 UTF-8 表里对应三个字节，在 GBK 表里对应两个字节。写的时候用了哪张表，读的时候就必须用哪张表。用 A 表写、用 B 表读，得到的就是<strong>乱码</strong>——这不是文件坏了，而是翻译用错了词典。
+    </p>
+    <p>
+      <strong>中文乱码的根因，就是编码与解码用了两张不同的字节映射表。</strong>UTF-8 与 GBK 是两套独立设计的映射规则，字节的切分方式都不同：UTF-8 的中文字符一般占 3 个字节，GBK 的中文字符固定占 2 个字节。把 GBK 的字节按 UTF-8 的规则去切，往往在第一刀就切不下去——Python 会直接抛出 <code>UnicodeDecodeError</code>，提示某个字节不是合法的起始字节。
+    </p>
+    <p>
+      <strong>为什么 Windows 上旧版 Excel 导出的 CSV 常常是 GBK？</strong>一是 CSV 格式本身「没有唯一标准」，不同应用程序读写的数据会存在细微差别，编码信息也不写在文件里；二是打开 CSV 的程序会按本机地区设置去猜编码，中国内地简体中文环境下的默认代码页是 GBK（代码页 936），所以旧版 Excel 用「CSV（逗号分隔）」另存出来的文件通常是 GBK 字节。Python 若不显式指定 <code>encoding</code>，用的是与平台相关的默认编码，Windows 上通常也不是 UTF-8，两边一错位就会出现乱码或报错。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      文件可类比为一只贴着封条的快递箱：箱子里装的是字节，封条上没有写明「本箱按哪套编码打包」。读取文件相当于按某本词典逐字翻译箱内内容——拿对词典就还原出原文，拿错词典就得到一串看似汉字、实际毫无意义的字符。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      编码与解码可类比为寄件与收件使用同一套物品编号：寄出时按 A 编号表把「一叠稿纸」编号投箱，收件时若按 B 编号表去查，就会把这叠稿纸读成完全不同的东西。要避免出错，最稳妥的做法是在每次寄件与收件时都<strong>明写用哪套编号表</strong>——这正是 <code>encoding="utf-8"</code> 的作用。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：编码与解码到底发生在哪一步；为什么用错编码会失败；读大文件时该怎么读。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 读文件是解码、写文件是编码：两张表决定两种结果</div>
+      <div class="vsub">同一串字节，用不同的表解释会得到不同结果；文件本身不携带「我是哪种编码」的声明。</div>
+      <svg viewBox="0 0 700 322" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>文件字节序列经不同编码表解码得到不同结果的示意图</title>
+        <desc>左侧是文件中的十六进制字节序列，中间是 GBK 表与 UTF-8 表两张不同的字节到字符映射表，右侧显示用 GBK 表解码得到正确中文，用 UTF-8 表解码则抛出 UnicodeDecodeError。</desc>
+        <defs>
+          <marker id="ia1" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+          <marker id="ia2" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#d97706"/>
+          </marker>
+        </defs>
+
+        <rect x="12" y="10" width="196" height="112" rx="9" fill="#f1f4f9" stroke="#8b93a1" stroke-width="1.1"/>
+        <text x="26" y="32" font-size="12.5" font-weight="700" fill="#40485a" dominant-baseline="central">文件里的字节序列</text>
+        <text x="26" y="56" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">B5 D8 CC FA</text>
+        <text x="26" y="76" font-size="12" fill="#1f2430" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">B5 F7 BC DB</text>
+        <text x="26" y="102" font-size="11" fill="#5b6472" dominant-baseline="central">字节本身不带编码声明</text>
+
+        <line x1="212" y1="52" x2="240" y2="52" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ia1)"/>
+        <line x1="212" y1="96" x2="240" y2="96" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ia1)"/>
+
+        <rect x="246" y="10" width="196" height="52" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="258" y="28" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">GBK 表</text>
+        <text x="258" y="48" font-size="11" fill="#1c4fb8" dominant-baseline="central">双字节为主；别名 936 / cp936</text>
+
+        <rect x="246" y="72" width="196" height="50" rx="9" fill="#f3efff" stroke="#7c5cff" stroke-width="1.1"/>
+        <text x="258" y="90" font-size="12" font-weight="700" fill="#5b3fd6" dominant-baseline="central">UTF-8 表</text>
+        <text x="258" y="110" font-size="11" fill="#5b3fd6" dominant-baseline="central">变长：1~4 字节，中文多为 3 字节</text>
+
+        <line x1="446" y1="36" x2="474" y2="36" stroke="#1a9e5a" stroke-width="1.5" marker-end="url(#ia1)"/>
+        <line x1="446" y1="97" x2="474" y2="97" stroke="#d97706" stroke-width="1.5" marker-end="url(#ia2)"/>
+
+        <rect x="480" y="10" width="208" height="52" rx="9" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="492" y="28" font-size="12" font-weight="700" fill="#127a44" dominant-baseline="central">按 GBK 解码 → 正确</text>
+        <text x="492" y="48" font-size="12" fill="#127a44" dominant-baseline="central">共 4 个汉字，可正常使用</text>
+
+        <rect x="480" y="72" width="208" height="50" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="492" y="90" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">按 UTF-8 解码 → 报错</text>
+        <text x="492" y="110" font-size="11" fill="#78350f" dominant-baseline="central">UnicodeDecodeError</text>
+
+        <rect x="12" y="138" width="676" height="76" rx="9" fill="#f7faff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="26" y="158" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">读文件（解码）：字节 → 按某张表 → 字符串（str）　｜　写文件（编码）：字符串 → 按某张表 → 字节</text>
+        <text x="26" y="180" font-size="11.5" fill="#1f2430" dominant-baseline="central">用 A 表写、用 B 表读，就会出现两种现象之一：</text>
+        <text x="26" y="200" font-size="11.5" fill="#78350f" dominant-baseline="central">① 直接抛 UnicodeDecodeError；② 不报错，但解出一串毫无意义的字符（如把 UTF-8 字节按 GBK 读成「鍦伴搧璋冧环」这类形态）。</text>
+
+        <rect x="12" y="228" width="676" height="80" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="26" y="248" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">两条操作要点</text>
+        <text x="26" y="270" font-size="11.5" fill="#1f2430" dominant-baseline="central">① 打开文本文件时显式写 encoding：不指定时用的是与平台相关的默认编码，多数 Windows 环境不是 UTF-8。</text>
+        <text x="26" y="292" font-size="11.5" fill="#1f2430" dominant-baseline="central">② encoding 要按文件的「实际编码」来填，而不是一律填 utf-8：旧文件可能是 GBK，填错仍然读不出来。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：乱码的根因是编码与解码用了两张不同的映射表；解决方向不是「改成 UTF-8」，而是「让读写两端用同一张表」。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 同一串字节，两种切分方式：为什么 UTF-8 读 GBK 会当场失败</div>
+      <div class="vsub">上图按 GBK 规则两字节一组，切分成立；下图按 UTF-8 规则检查起始字节，第一刀就失败。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>GBK 与 UTF-8 对同一字节序列切分方式对比示意图</title>
+        <desc>同一串八个字节，按 GBK 双字节规则切分为四组并对应四个汉字；按 UTF-8 规则检查时首字节 0xB5 以 10 开头属于续接字节，不能作为起始字节，立即抛出解码错误。</desc>
+
+        <text x="16" y="18" font-size="12" font-weight="700" fill="#1c4fb8" dominant-baseline="central">按 GBK 规则：两字节一组，切分成立</text>
+        <rect x="46" y="34" width="112" height="40" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="102" y="54" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">B5 D8</text>
+        <rect x="162" y="34" width="112" height="40" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="218" y="54" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">CC FA</text>
+        <rect x="278" y="34" width="112" height="40" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="334" y="54" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">B5 F7</text>
+        <rect x="394" y="34" width="112" height="40" rx="7" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+        <text x="450" y="54" font-size="12" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">BC DB</text>
+        <text x="530" y="54" font-size="13" fill="#127a44" dominant-baseline="central" font-weight="700">→ 地铁调价</text>
+
+        <text x="16" y="112" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">按 UTF-8 规则：先看起始字节的位模式，第一个字节就不合法</text>
+        <rect x="46" y="128" width="52" height="40" rx="7" fill="#fdf0ef" stroke="#d9534f" stroke-width="1.2"/>
+        <text x="72" y="148" font-size="12" fill="#b03a36" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">B5</text>
+        <rect x="102" y="128" width="36" height="40" rx="7" fill="#f1f4f9" stroke="#c9cfdb" stroke-width="0.9"/>
+        <text x="120" y="148" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">D8</text>
+        <rect x="142" y="128" width="36" height="40" rx="7" fill="#f1f4f9" stroke="#c9cfdb" stroke-width="0.9"/>
+        <text x="160" y="148" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">CC</text>
+        <rect x="182" y="128" width="36" height="40" rx="7" fill="#f1f4f9" stroke="#c9cfdb" stroke-width="0.9"/>
+        <text x="200" y="148" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">FA</text>
+        <text x="232" y="148" font-size="12" fill="#5b6472" dominant-baseline="central">……</text>
+        <text x="300" y="140" font-size="11.5" fill="#b03a36" dominant-baseline="central">B5 = 1011 0101，以 10 开头 →</text>
+        <text x="300" y="160" font-size="11.5" fill="#b03a36" dominant-baseline="central">属于续接字节，不能作起始字节</text>
+
+        <rect x="12" y="184" width="676" height="102" rx="9" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="26" y="204" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">UTF-8 的规则（官方《Unicode 指南》）</text>
+        <text x="26" y="226" font-size="11.5" fill="#78350f" dominant-baseline="central">码位小于 128 时，直接用对应的字节值表示；码位大于等于 128 时，转换为 2、3、4 个字节的序列，每个字节值都位于 128 与 255 之间。</text>
+        <text x="26" y="248" font-size="11.5" fill="#78350f" dominant-baseline="central">正因为起始字节有固定的位模式，一个「不该出现在起始位置」的字节会被立刻识别出来，从而报错而不是静默出错。</text>
+        <text x="26" y="270" font-size="11.5" fill="#78350f" dominant-baseline="central">反方向（UTF-8 字节按 GBK 读）常常不报错，只解出一串无意义字符——这类问题更隐蔽。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：UTF-8 与 GBK 不只是「表不同」，连字节的切分方式都不同；这也是为什么用错编码时有时当场报错、有时只是默默读出乱码。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 三种读法占用的内存：一次性读入与逐行迭代</div>
+      <div class="vsub">处理大文件时，读法的选择直接决定程序能不能跑完。</div>
+      <svg viewBox="0 0 700 250" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>一次性读取与逐行迭代的内存占用对比示意图</title>
+        <desc>read 与 readlines 会把整个文件同时放进内存，文件越大占用越高；for line in f 逐行迭代时内存中只有当前一行，占用保持恒定。</desc>
+
+        <text x="16" y="20" font-size="12.5" font-weight="700" fill="#b45309" dominant-baseline="central">read() / readlines()：整个文件同时在内存里</text>
+        <rect x="16" y="34" width="300" height="26" rx="6" fill="#fdf0ef" stroke="#d9534f" stroke-width="1"/>
+        <text x="166" y="47" font-size="11.5" fill="#b03a36" text-anchor="middle" dominant-baseline="central">文件第 1 行</text>
+        <rect x="16" y="64" width="300" height="26" rx="6" fill="#fdf0ef" stroke="#d9534f" stroke-width="1"/>
+        <text x="166" y="77" font-size="11.5" fill="#b03a36" text-anchor="middle" dominant-baseline="central">文件第 2 行</text>
+        <rect x="16" y="94" width="300" height="26" rx="6" fill="#fdf0ef" stroke="#d9534f" stroke-width="1"/>
+        <text x="166" y="107" font-size="11.5" fill="#b03a36" text-anchor="middle" dominant-baseline="central">…… 直到最后一行</text>
+        <text x="16" y="142" font-size="11.5" fill="#78350f" dominant-baseline="central">内存占用随文件增大而增大；</text>
+        <text x="16" y="162" font-size="11.5" fill="#78350f" dominant-baseline="central">官方提示：省略 size 的 read() 会读取并返回整个文件的内容，</text>
+        <text x="16" y="182" font-size="11.5" fill="#78350f" dominant-baseline="central">文件大小是内存的两倍时会出现问题。</text>
+
+        <line x1="340" y1="30" x2="340" y2="196" stroke="#e3e7ee" stroke-width="1.2"/>
+
+        <text x="364" y="20" font-size="12.5" font-weight="700" fill="#127a44" dominant-baseline="central">for line in f：内存里只有当前一行</text>
+        <rect x="364" y="34" width="300" height="26" rx="6" fill="#f1f4f9" stroke="#c9cfdb" stroke-width="0.9"/>
+        <text x="514" y="47" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central">已处理完，可被回收</text>
+        <rect x="364" y="64" width="300" height="26" rx="6" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="514" y="77" font-size="11.5" fill="#127a44" text-anchor="middle" dominant-baseline="central">当前这一行</text>
+        <rect x="364" y="94" width="300" height="26" rx="6" fill="#f1f4f9" stroke="#c9cfdb" stroke-width="0.9"/>
+        <text x="514" y="107" font-size="11.5" fill="#5b6472" text-anchor="middle" dominant-baseline="central">尚未读到</text>
+        <text x="364" y="142" font-size="11.5" fill="#127a44" dominant-baseline="central">内存占用基本恒定，与文件大小无关；</text>
+        <text x="364" y="162" font-size="11.5" fill="#127a44" dominant-baseline="central">官方描述：循环遍历整个文件对象能高效利用内存，</text>
+        <text x="364" y="182" font-size="11.5" fill="#127a44" dominant-baseline="central">快速，且代码简单。</text>
+
+        <rect x="16" y="202" width="668" height="36" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="0.9"/>
+        <text x="30" y="220" font-size="11.5" fill="#1c4fb8" dominant-baseline="central">选择依据：文件不大、需要整体处理时可用 read()；文件可能很大或只需逐行筛选时，用 for line in f 逐行迭代。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>read()</code> 与 <code>readlines()</code> 都把整个文件同时放进内存，而 <code>for line in f</code> 只保留当前一行——读采访记录、评论导出这类可能很大的文件时，逐行迭代是更稳的默认选择。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中 UTF-8 的编码规则、<code>read()</code> 与逐行迭代的内存差异、<code>encoding</code> 默认值取自平台语言区域等内容，均依据 Python 官方《Unicode 指南》、官方教程第 7 章与《io》模块文档整理；图中使用的字节值与解码现象可用 Python 复现，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一次完整的文件操作由「打开 → 选择模式 → 指定编码 → 读写 → 关闭」五步构成。前两步决定通道能不能建立，第三步决定字节与字符之间的翻译方式，第四步决定数据怎么流动，第五步决定数据是否真的落到磁盘上。</p>
+
+    <h3>open() 的关键参数</h3>
+    <table>
+      <tr><th>参数</th><th>作用 / 说明</th></tr>
+      <tr><td><code>file</code></td><td>文件名的字符串。可以是相对路径（相对于程序运行时的当前工作目录），也可以是绝对路径。</td></tr>
+      <tr><td><code>mode</code></td><td>描述文件使用方式的字符串，可选，省略时的默认值为 <code>'r'</code>。</td></tr>
+      <tr><td><code>encoding</code></td><td>文本模式下使用的编码名。省略时用的是与平台相关的默认编码；因为 UTF-8 是现代事实上的标准，官方建议除非确知需要使用别的编码，否则显式写出 <code>encoding="utf-8"</code>。</td></tr>
+      <tr><td><code>newline</code></td><td>控制换行符的处理方式。用 <code>csv</code> 模块读写文件时，打开文件应设置 <code>newline=''</code>，否则可能出现多余空行。</td></tr>
+      <tr><td><code>with</code> 语句</td><td>处理文件对象时的推荐写法：子句体结束后文件会正确关闭，即便触发异常也可以，且比等效的 <code>try</code>-<code>finally</code> 简短得多。不用 <code>with</code> 就应调用 <code>f.close()</code>。</td></tr>
+    </table>
+
+    <h3>mode 取值对照</h3>
+    <table>
+      <tr><th>写法</th><th>含义</th><th>需要注意</th></tr>
+      <tr><td><code>'r'</code></td><td>只读，默认值</td><td>文件不存在时报错</td></tr>
+      <tr><td><code>'w'</code></td><td>只写；现有同名文件会被覆盖</td><td>覆盖是不可逆的，写之前要确认目标文件名</td></tr>
+      <tr><td><code>'a'</code></td><td>追加；写入的数据自动添加到文件末尾</td><td>适合逐条累积日志、台账</td></tr>
+      <tr><td><code>'r+'</code></td><td>打开文件进行读写</td><td>较少使用</td></tr>
+      <tr><td>加 <code>'b'</code>，如 <code>'rb'</code></td><td>二进制模式，读写 <code>bytes</code> 对象</td><td>二进制模式下不能指定 <code>encoding</code>；处理 JPEG、EXE 等文件时必须用二进制模式，否则换行符转换会破坏数据</td></tr>
+    </table>
+
+    <h3>四种读法与适用场合</h3>
+    <table>
+      <tr><th>读法</th><th>行为</th><th>适用场合</th></tr>
+      <tr><td><code>f.read()</code></td><td>省略 size 时读取并返回整个文件内容；到达末尾后返回空字符串</td><td>文件不大、需要整体当一段文本处理</td></tr>
+      <tr><td><code>f.readline()</code></td><td>读取单行，字符串末尾保留换行符；返回空字符串即表示已到文件末尾</td><td>按需读取少量行</td></tr>
+      <tr><td><code>f.readlines()</code> / <code>list(f)</code></td><td>把所有行读成一个列表</td><td>行数可控，且需要对行做多次遍历</td></tr>
+      <tr><td><code>for line in f:</code></td><td>循环遍历文件对象，逐行取出</td><td>大文件的首选；高效利用内存，快速，代码简单</td></tr>
+    </table>
+
+    <h3>csv 模块的两类对象</h3>
+    <table>
+      <tr><th>对象</th><th>读写的内容</th><th>关键用法</th></tr>
+      <tr><td><code>csv.reader</code> / <code>csv.writer</code></td><td>序列（列表）</td><td>每一行返回一个字符串列表；<code>writerow()</code> 写一行，<code>writerows()</code> 写多行</td></tr>
+      <tr><td><code>csv.DictReader</code></td><td>字典</td><td>第一行默认用作字段名并从结果中去除；可显式传入 <code>fieldnames</code></td></tr>
+      <tr><td><code>csv.DictWriter</code></td><td>字典</td><td><code>fieldnames</code> 是必填参数，决定写入顺序；<code>writeheader()</code> 写出表头行</td></tr>
+      <tr><td>常用格式参数</td><td>—</td><td><code>delimiter</code>（分隔符，默认逗号）、<code>quotechar</code>（引号字符，默认双引号）、<code>dialect</code>（如 <code>'excel'</code>、<code>'unix'</code>）</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上内容引自 Python 官方教程第 7 章 7.2 节、《io》模块文档与《csv》模块文档。补充一点：《csv》文档说明 CSV 格式在 RFC 4180 推出很多年前就已被使用，当时并没有合理的标准，不同应用程序读写的数据会存在细微差别，因此处理多个来源的 CSV 文件会比较困难。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      一批采访记录从旧版 Excel 导出成 CSV，文件里带着多余空格、空行和空记录。目标是读进程序、清洗并统计，最后把干净的结果写成一份新的 CSV——新文件统一用 UTF-8，方便交给后续的 pandas 环节继续处理。这段代码可以直接运行，用到的全部是标准库。
+    </p>
+    <pre><span class="c"># csv_pipeline.py —— 读采访记录 CSV → 清洗统计 → 写回新文件</span>
+import csv
+
+SRC = <span class="s">"interview_notes.csv"</span>   <span class="c"># 来自旧版 Excel，实际编码是 GBK</span>
+DST = <span class="s">"cleaned_summary.csv"</span>   <span class="c"># 输出统一用 UTF-8</span>
+
+<span class="c"># ① 先造一份 GBK 编码的样例数据（真实流程里这一步由 Excel 完成）</span>
+rows = [
+    [<span class="s">"编号"</span>, <span class="s">"受访者"</span>, <span class="s">"记录"</span>, <span class="s">"字数"</span>],
+    [<span class="s">"001"</span>, <span class="s">"张记者"</span>, <span class="s">"  地铁票价调整 后，首周客流下降 3%。  "</span>, <span class="s">"18"</span>],
+    [<span class="s">"002"</span>, <span class="s">"李编辑"</span>, <span class="s">"社区加装电梯 的推进难点在哪？"</span>, <span class="s">"15"</span>],
+    [<span class="s">"003"</span>, <span class="s">"王摄影"</span>, <span class="s">"   "</span>, <span class="s">"0"</span>],
+]
+with open(SRC, <span class="s">"w"</span>, newline=<span class="s">""</span>, encoding=<span class="s">"gbk"</span>) as f:
+    csv.writer(f).writerows(rows)
+
+<span class="c"># ② 读入：encoding 必须与文件实际编码一致；newline="" 交给 csv 模块处理换行</span>
+good, skipped = [], []
+with open(SRC, newline=<span class="s">""</span>, encoding=<span class="s">"gbk"</span>) as f:
+    for row in csv.DictReader(f):           <span class="c"># 第一行被用作字段名</span>
+        text = <span class="s">" "</span>.join(row[<span class="s">"记录"</span>].split())   <span class="c"># 清洗：压缩连续空白</span>
+        if not text:                        <span class="c"># 空记录：跳过并记账</span>
+            skipped.append(row[<span class="s">"编号"</span>])
+            continue
+        good.append({<span class="s">"编号"</span>: row[<span class="s">"编号"</span>],
+                     <span class="s">"受访者"</span>: row[<span class="s">"受访者"</span>],
+                     <span class="s">"记录"</span>: text,
+                     <span class="s">"字数"</span>: len(text)})
+
+<span class="c"># ③ 写回新文件：显式声明 UTF-8，并用 DictWriter 写出表头</span>
+with open(DST, <span class="s">"w"</span>, newline=<span class="s">""</span>, encoding=<span class="s">"utf-8"</span>) as f:
+    writer = csv.DictWriter(f, fieldnames=[<span class="s">"编号"</span>, <span class="s">"受访者"</span>, <span class="s">"记录"</span>, <span class="s">"字数"</span>])
+    writer.writeheader()
+    writer.writerows(good)
+
+print(<span class="s">"写入"</span>, len(good), <span class="s">"行；跳过空记录"</span>, skipped)
+print(<span class="s">"总字数"</span>, sum(r[<span class="s">"字数"</span>] for r in good))</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明「读入—清洗—写回」的完整流转，属于辅助理解示例，非某个来源的原文代码。有一点值得留意：第 ② 步如果把 <code>encoding</code> 写成 <code>"utf-8"</code>，读 GBK 文件会直接抛 <code>UnicodeDecodeError</code>；反过来写文件的编码若与后续工具期望的不一致，下一环就会读到乱码——所以编码要在读写两端都写明。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>encoding</code> 不是可有可无的装饰，而是必须写明的约定。</strong>不指定时用的是与平台相关的默认编码（取决于语言区域设置），很多 Windows 用户的区域编码并不是 UTF-8。官方文档明确说明：这正是「在 Unix 上正常、在 Windows 上报错」这类问题的来源，因此强烈建议打开文本文件时显式指定编码。</li>
+      <li><strong>「写 utf-8」不等于「一定不出乱码」。</strong>编码要按文件的<strong>实际编码</strong>来填。读一个 GBK 生成的 CSV 时，正确做法是写 <code>encoding="gbk"</code>；写 <code>utf-8</code> 可能当场抛出 <code>UnicodeDecodeError</code>，也可能恰好不报错但读出一串无意义字符。常见误解是把乱码一律当成「文件坏了」，实际上文件通常完好，只是翻译用错了表。</li>
+      <li><strong>文本模式与二进制模式不能混用。</strong>文本模式读写的是字符串，并按指定编码完成编解码；二进制模式读写的是 <code>bytes</code>，不做编解码、也不做换行转换，因此在二进制模式下不能指定 <code>encoding</code>。文本模式下默认会把平台特定的行结束符转成 <code>\n</code>，写回时再转回去——这对方便处理文本文件，但会破坏 JPEG、EXE 等二进制文件的数据。</li>
+      <li><strong>用 <code>csv</code> 模块时必须写 <code>newline=''</code>。</strong>官方文档对 <code>csv.reader</code> 与 <code>csv.writer</code> 都说明：如果传入的是文件对象，打开它时应设置 <code>newline=''</code>。原因是 csv 模块自己负责生成行结束符，若再让文本模式做一次换行转换，Windows 上就容易多出空行。</li>
+      <li><strong>大文件不要用 <code>read()</code> 一把读进来。</strong><code>read()</code> 省略 size 时会读取并返回整个文件的内容，官方提示「文件大小是内存的两倍时会出现问题」；<code>readlines()</code> 同样会把所有行装进列表。逐行迭代整个文件对象则能高效利用内存、快速且代码简单。</li>
+      <li><strong>相对路径相对于「当前工作目录」，不是脚本所在目录。</strong>同一段带上相对路径的代码，从不同目录启动时读到的可能是完全不同的文件。要避免这一不确定性，可以用绝对路径，或先确认当前工作目录。</li>
+      <li><strong>用 <code>'w'</code> 打开会覆盖同名文件。</strong>这不是编码问题而是模式问题：<code>'w'</code> 表示只写，现有同名文件会被覆盖；需要保留原有内容、只在末尾补充时应用 <code>'a'</code>。写文件时若没有用 <code>with</code>、也没有调用 <code>f.close()</code>，即使程序正常退出，写入的参数也可能没有完全落到磁盘上。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节七条均以官方文档为依据。<code>open()</code> 的参数、三种模式、二进制模式与换行符转换、<code>with</code> 的优点、四种读法的行为，见官方教程第 7 章 7.2 与 7.2.1 节；默认编码取决于语言区域、显式指定编码的建议，见《io》模块文档「文本编码格式」一节；<code>newline=''</code> 的要求与 CSV 缺少统一标准的说明，见《csv》模块文档；UTF-8 的编码规则见官方《Unicode 指南》；GBK 的代码页别名见《codecs》模块文档「标准编码」表。关于「旧版 Excel 的『CSV（逗号分隔）』按本机 ANSI 代码页写出」这一细节，Microsoft 官方支持页只列出了各 CSV 格式的名称、未写明编码，故本页将其标为<strong>（待核）</strong>，并在第九节给出辅助性说明来源。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 用 <code>open()</code> 打开文本文件时，官方为什么建议显式写出 <code>encoding="utf-8"</code>？</div>
+      <button class="opt" data-v="A">A. 因为不写 encoding 就无法打开文件，程序会直接报错</button>
+      <button class="opt" data-v="B">B. 因为写了 encoding 之后读取速度会明显变快</button>
+      <button class="opt" data-v="C">C. 因为默认编码与平台语言区域有关，很多 Windows 环境的默认编码并不是 UTF-8，不显式指定容易跨机器出错</button>
+      <button class="opt" data-v="D">D. 因为只有写了 encoding，文件才会被自动关闭</button>
+      <div class="fb" data-ok="✅ 正确。官方《io》文档指出：open() 与 TextIOWrapper 的默认编码取决于语言区域设置，很多开发者在打开 UTF-8 文件时忘记指定编码，而大多数 Windows 用户的区域编码并不是 UTF-8，这会导致各种错误，因此强烈建议显式指定编码。"></div>
+      <div class="src">📎 来源：Python 官方文档《io — 处理流的核心工具》「文本编码格式」一节 —— docs.python.org/zh-cn/3/library/io.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 用 <code>csv</code> 模块读写文件时，打开文件的 <code>open()</code> 应当传入哪个 <code>newline</code> 取值？</div>
+      <button class="opt" data-v="A">A. <code>newline="\n"</code></button>
+      <button class="opt" data-v="B">B. <code>newline=""</code></button>
+      <button class="opt" data-v="C">C. <code>newline="\r\n"</code></button>
+      <button class="opt" data-v="D">D. 不需要传，用默认值即可</button>
+      <div class="fb" data-ok="✅ 正确。官方《csv》模块文档对 csv.reader 与 csv.writer 都说明：如果 csvfile 是一个文件对象，则打开它时应设置 newline=''。这样行结束符交给 csv 模块自己处理，避免文本模式再做一次转换而产生多余空行。"></div>
+      <div class="src">📎 来源：Python 官方文档《csv — CSV 文件读写》csv.reader / csv.writer 条目 —— docs.python.org/zh-cn/3/library/csv.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 一份由旧版 Excel 在简体中文 Windows 上导出的 CSV，若用 <code>open(path, encoding="utf-8")</code> 去读，最可能发生什么？</div>
+      <button class="opt" data-v="A">A. 可能直接抛出 <code>UnicodeDecodeError</code>（提示某个字节不是合法的起始字节），也可能读出一串无意义的字符</button>
+      <button class="opt" data-v="B">B. 一定不会出错，Python 会自动识别文件编码</button>
+      <button class="opt" data-v="C">C. 一定只报 <code>FileNotFoundError</code>，与编码无关</button>
+      <button class="opt" data-v="D">D. 一定把内容读成空字符串</button>
+      <div class="fb" data-ok="✅ 正确。Python 不会替用户猜编码，它会按指定编码去解码；编码不一致时有两种结果：字节恰好不是合法的 UTF-8 起始字节就抛 UnicodeDecodeError，字节序列恰好合法则解出一串无意义字符。正确做法是按文件实际编码指定 encoding=&quot;gbk&quot;。"></div>
+      <div class="src">📎 来源：Python 官方文档《Unicode 指南》「字符串类型」中的解码错误示例；《csv》模块文档说明默认按系统默认编码解码、可用 encoding 参数指定其他编码</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 关于 <code>open()</code> 的 <code>mode</code>，下列哪一项与官方文档一致？</div>
+      <button class="opt" data-v="A">A. <code>'r'</code> 表示可读可写，省略 mode 时的默认值</button>
+      <button class="opt" data-v="B">B. <code>'a'</code> 表示只写，写入前会先清空原文件内容</button>
+      <button class="opt" data-v="C">C. <code>'rb'</code> 是二进制模式，此时可以再指定 <code>encoding</code> 来控制解码</button>
+      <button class="opt" data-v="D">D. <code>'w'</code> 表示只写，现有同名文件会被覆盖；<code>'a'</code> 表示追加，写入的数据自动添加到文件末尾</button>
+      <div class="fb" data-ok="✅ 正确。官方教程对模式的定义是：'r' 表示文件只能读取，也是省略 mode 时的默认值；'w' 表示只能写入且现有同名文件会被覆盖；'a' 表示打开文件并追加内容，写入的数据自动添加到文件末尾；在模式后加上 'b' 可打开二进制模式，而在二进制模式下打开文件时不能指定 encoding。"></div>
+      <div class="src">📎 来源：Python 官方教程《7. 输入与输出》7.2 读写文件 —— docs.python.org/zh-cn/3/tutorial/inputoutput.html</div>
+    </div>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 需要处理一个可能有数百万行的采访记录文本文件，下列哪种读法最合适，理由是什么？</div>
+      <button class="opt" data-v="A">A. 用 <code>f.read()</code> 一次读入整个文件，因为这样代码最短</button>
+      <button class="opt" data-v="B">B. 用 <code>f.readlines()</code> 读成列表，因为列表可以反复遍历</button>
+      <button class="opt" data-v="C">C. 用 <code>for line in f:</code> 逐行迭代，因为这样能高效利用内存，且代码简单</button>
+      <button class="opt" data-v="D">D. 用 <code>f.readline()</code> 在循环里反复调用，因为其他方式都无法处理换行符</button>
+      <div class="fb" data-ok="✅ 正确。官方教程说明：从文件中读取多行时，可以用循环遍历整个文件对象，这种操作能高效利用内存、快速且代码简单；并提示省略 size 的 f.read() 会读取并返回整个文件的内容，「文件大小是内存的两倍时，会出现问题」。readlines() 同样会把所有行装进一个列表。"></div>
+      <div class="src">📎 来源：Python 官方教程《7. 输入与输出》7.2.1 文件对象的方法（read / readline / 循环遍历文件对象）</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《7. 输入与输出》—— 7.2 读写文件（<code>open()</code> 参数、三种模式、<code>with</code> 的优点、文本模式与二进制模式）与 7.2.1 文件对象的方法（<code>read</code> / <code>readline</code> / <code>readlines</code> / 循环遍历） — <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/inputoutput.html</a></li>
+      <li>Python 官方文档《io —— 处理流的核心工具》—— 「文本编码格式」一节（默认编码取决于语言区域、多数 Windows 用户的区域编码不是 UTF-8、强烈建议显式指定编码）与 <code>TextIOWrapper</code> 的 <code>newline</code> 参数说明 — <a href="https://docs.python.org/zh-cn/3/library/io.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/io.html</a></li>
+      <li>Python 官方文档《csv —— CSV 文件读写》—— CSV 缺少统一标准的历史说明、<code>newline=''</code> 的要求、<code>DictReader</code> / <code>DictWriter</code> 用法、默认按系统默认编码解码 — <a href="https://docs.python.org/zh-cn/3/library/csv.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/csv.html</a></li>
+      <li>Python 官方文档《codecs —— 编解码器注册和相关基类》—— 「标准编码」表（<code>gbk</code>，别名 <code>936</code> / <code>cp936</code> / <code>ms936</code>，语言列为「统一汉语」；<code>gb2312</code>，简体中文）与「编码格式与 Unicode」一节 — <a href="https://docs.python.org/zh-cn/3/library/codecs.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/codecs.html</a></li>
+      <li>Python 官方文档《Unicode 指南》—— 码位与编码的定义、UTF-8 的编码规则、「程序应尽快解码输入、只在最后编码输出」的建议 — <a href="https://docs.python.org/zh-cn/3/howto/unicode.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/howto/unicode.html</a></li>
+      <li>Microsoft 支持《将工作簿保存为文本格式（.txt 或 .csv）》—— 列出 Excel 可另存的各种文本与 CSV 格式名称（含「CSV（以逗号分隔）」等）。<strong>该页面未写明各格式所使用的字符编码</strong>，因此本页未把它当作「旧版 Excel 用 GBK 写出」的直接依据 — <a href="https://support.microsoft.com/zh-cn/excel/save-a-workbook-to-text-format-txt-or-csv" target="_blank" rel="noopener">support.microsoft.com/zh-cn/excel/save-a-workbook-to-text-format-txt-or-csv</a></li>
+      <li>Microsoft 社区问答《我需要修改我的 office 产品打开文件的默认编码格式》—— 微软社区支持专员答复中提到：CSV 文件通常默认不包含编码信息，依赖打开它的程序（例如 Excel）来正确解释编码，不同地区与操作系统上这个默认编码可能不同，中国内地常用 GBK。<em>属于社区答复，作为辅助说明来源</em> — <a href="https://learn.microsoft.com/zh-cn/answers/questions/5294714/office" target="_blank" rel="noopener">learn.microsoft.com/zh-cn/answers/questions/5294714/office</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节四张表格、第七节七条辨析中涉及 Python 行为的部分，均可在上述 Python 官方文档中逐条核查。关于「为什么 Windows 上旧版 Excel 导出的 CSV 常常是 GBK」，本页给出的机制解释是：CSV 不记录编码信息 + Excel 与 Python 各自按本机地区默认代码页解释字节，这一机制有官方文档支撑；但「旧版 Excel 的『CSV（逗号分隔）』具体按哪一个代码页写出」这一步骤，在 Microsoft 官方支持文档中<strong>未作说明（待核）</strong>，本页只以微软社区答复作为辅助参考。第三节的两个类比、第四节三张示意图、第六节示例代码，均为辅助理解的通俗化产物，非官方原文。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

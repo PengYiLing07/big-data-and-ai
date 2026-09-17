@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料库 · 目录 | Python 基础（13 次课）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --purple:#7c5cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px;margin-bottom:24px}
+  header.hero .kicker{font-size:13px;opacity:.88;letter-spacing:1px}
+  header.hero h1{margin:8px 0 6px;font-size:28px}
+  header.hero .meta{font-size:13.5px;opacity:.92;margin-top:10px;line-height:1.9}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.42);border-radius:20px;padding:2px 12px;font-size:12px;margin:4px 6px 0 0}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+  section h2{margin-top:0;font-size:20px}
+  section h3{font-size:15px;color:var(--brand);margin:18px 0 8px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+  a{color:var(--brand)}
+  .board{margin:22px 0 6px;padding:10px 14px;border-radius:10px;font-size:15px;font-weight:700}
+  .bg1{background:#eff6ff;color:#1c4fb8;border-left:5px solid #2f6fed}
+  .bg2{background:#eff6ff;color:#1c4fb8;border-left:5px solid #2f6fed}
+  .bg3{background:#eff6ff;color:#1c4fb8;border-left:5px solid #2f6fed}
+  .bg4{background:#f5f3ff;color:#5b21b6;border-left:5px solid var(--purple)}
+  .bg5{background:#f0fdf6;color:#127a44;border-left:5px solid var(--ok)}
+  .board .goal{font-weight:400;font-size:12.5px;color:var(--muted);margin-left:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:12px 0}
+  .ccard{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fcfdff;transition:.18s}
+  .ccard:hover{border-color:#b9c9ee;background:#f7faff;transform:translateY(-1px)}
+  .ccard .cn{font-weight:700;font-size:15px;color:var(--brand)}
+  .ccard .cm{font-size:11.5px;color:var(--muted);margin:2px 0 6px}
+  .ccard .cs{font-size:13px;color:#374151}
+  .st{display:inline-block;border-radius:20px;padding:0 9px;font-size:11px;font-weight:600;vertical-align:1px}
+  .st-done{background:#e8f5ee;color:#1a9e5a}
+  .st-wait{background:#fff1e6;color:#d2691e}
+  .idea{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .idea .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  .chain{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#1c4fb8;background:#f7faff;border:1px solid #dbe7ff;border-radius:6px;padding:2px 8px;display:inline-block;margin:2px 0}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料库</div>
+    <h1>Python 基础 · 概念目录</h1>
+    <div class="meta">
+      配套《Python 基础学习地图（13 次课版）》｜ 新闻学专业定制<br>
+      共 17 个概念，按四大板块 + 选修综合组织。每个概念一页资料，含可视化图解与 5 道可交互自测题。
+    </div>
+    <div>
+      <span class="badge">由 concept-learner 生成</span>
+      <span class="badge">v1.0 · 2026-09-17</span>
+      <span class="badge">离线可看 · 双击即开</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>🧭 怎么用这套资料</h2>
+    <ol>
+      <li><strong>跟着课次走</strong>——每上完一次课，打开本页对应的概念页读一遍。概念页的板块顺序与课堂节奏一致：先看通俗解释，再看图解，最后做自测。</li>
+      <li><strong>自测 5 题全对再往下走</strong>——概念页第八板块的题目分入门 / 进阶 / 挑战三档，做错的题下方标注了对应来源，可回溯。</li>
+      <li><strong>用「前置依赖」查漏</strong>——某个概念看不懂，多半是它的前置概念没掌握。第四节的前置依赖表可用于倒查。</li>
+      <li><strong>用「跨课复用」看联系</strong>——同一个概念会在多节课反复出现（例如字典在第 5 课学、第 8 课和第 12 课反复用）。第五节列出了这些复用点，有助于理解「为什么现在要学它」。</li>
+    </ol>
+    <div class="idea"><span class="lbl">💡 一句话</span>
+      这套资料不是教材的替代品，而是每节课的「概念地图」：把散落在语法细节背后的核心概念单独抽出来讲透，并标清楚它与其他概念的连接点。
+    </div>
+  </section>
+
+  <section>
+    <h2>🗺 概念分布与递进关系</h2>
+    <p>四个板块横向递进，板块内的概念大致按学习顺序自上而下排列；底部一行是不占正课的选修与结课综合实践。</p>
+    <div style="overflow-x:auto">
+    <svg viewBox="0 0 800 344" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif;min-width:640px">
+      <title>17 个概念在四大板块中的分布与递进关系</title>
+      <desc>板块一至板块四依次为 Python 起步、循环与容器、函数与工程化、AI 前置数据能力；底部为选修与综合实践概念。</desc>
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <polygon points="0 0,9 4.5,0 9" fill="#2f6fed"/>
+        </marker>
+      </defs>
+
+      <rect x="16" y="40" width="180" height="34" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+      <text x="106" y="57" font-size="13" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">板块一 · Python 起步</text>
+      <rect x="16" y="82" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="106" y="96" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">变量与数据类型</text>
+      <rect x="16" y="116" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="106" y="130" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">字符串与文本处理</text>
+      <rect x="16" y="150" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="106" y="164" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">布尔逻辑与条件判断</text>
+
+      <line x1="198" y1="57" x2="208" y2="57" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <rect x="212" y="40" width="180" height="34" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+      <text x="302" y="57" font-size="13" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">板块二 · 循环与容器</text>
+      <rect x="212" y="82" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="302" y="96" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">列表</text>
+      <rect x="212" y="116" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="302" y="130" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">循环（for / while）</text>
+      <rect x="212" y="150" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="302" y="164" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">字典与集合</text>
+      <rect x="212" y="184" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="302" y="198" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">推导式</text>
+
+      <line x1="394" y1="57" x2="404" y2="57" stroke="#2f6fed" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <rect x="408" y="40" width="180" height="34" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1"/>
+      <text x="498" y="57" font-size="13" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">板块三 · 函数与工程化</text>
+      <rect x="408" y="82" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="498" y="96" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">函数</text>
+      <rect x="408" y="116" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="498" y="130" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">文件读写与编码</text>
+      <rect x="408" y="150" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="498" y="164" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">异常处理</text>
+      <rect x="408" y="184" width="180" height="28" rx="7" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.8"/>
+      <text x="498" y="198" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">模块与包</text>
+
+      <line x1="590" y1="57" x2="600" y2="57" stroke="#7c5cff" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <rect x="604" y="40" width="180" height="34" rx="8" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1"/>
+      <text x="694" y="57" font-size="13" font-weight="700" fill="#5b21b6" text-anchor="middle" dominant-baseline="central">板块四 · AI 前置数据能力</text>
+      <rect x="604" y="82" width="180" height="28" rx="7" fill="#ffffff" stroke="#c9c2f7" stroke-width="0.8"/>
+      <text x="694" y="96" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">正则表达式</text>
+      <rect x="604" y="116" width="180" height="28" rx="7" fill="#ffffff" stroke="#c9c2f7" stroke-width="0.8"/>
+      <text x="694" y="130" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">NumPy 与向量化</text>
+      <rect x="604" y="150" width="180" height="28" rx="7" fill="#ffffff" stroke="#c9c2f7" stroke-width="0.8"/>
+      <text x="694" y="164" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">pandas 与 DataFrame</text>
+      <rect x="604" y="184" width="180" height="28" rx="7" fill="#ffffff" stroke="#c9c2f7" stroke-width="0.8"/>
+      <text x="694" y="198" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">matplotlib 可视化</text>
+
+      <rect x="16" y="236" width="768" height="34" rx="8" fill="#f0fdf6" stroke="#1a9e5a" stroke-width="1"/>
+      <text x="32" y="253" font-size="13" font-weight="700" fill="#127a44" dominant-baseline="central">选修与综合（不占正课）</text>
+      <rect x="16" y="282" width="248" height="28" rx="7" fill="#ffffff" stroke="#b7e4cb" stroke-width="0.8"/>
+      <text x="140" y="296" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">类与对象（选修补强）</text>
+      <rect x="278" y="282" width="248" height="28" rx="7" fill="#ffffff" stroke="#b7e4cb" stroke-width="0.8"/>
+      <text x="402" y="296" font-size="12" fill="#1f2430" text-anchor="middle" dominant-baseline="central">新闻评论文本分析（综合）</text>
+      <rect x="540" y="282" width="248" height="28" rx="7" fill="#ffffff" stroke="#b7e4cb" stroke-width="0.8"/>
+      <text x="664" y="296" font-size="12" fill="#5b6472" text-anchor="middle" dominant-baseline="central">↓ 通往人工智能理论与应用阶段</text>
+
+      <text x="16" y="24" font-size="12.5" fill="#5b6472">左侧概念是右侧概念的基础，箭头方向即学习推进方向（示意图，非精确依赖图，精确前置关系见第四节）</text>
+    </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>📇 概念目录</h2>
+    <p>点击任一概念名进入该概念的完整学习资料。17 个概念页均已生成。</p>
+
+    <div class="board bg1">板块一 · Python 起步 <span class="goal">第 1–3 课 ｜ 能写能跑，看得懂报错</span></div>
+    <div class="grid">
+      <a class="ccard" href="variables-and-data-types.html">
+        <div class="cn">变量与数据类型 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 1 课 ｜ 前置：无</div>
+        <div class="cs">赋值是「贴标签」而不是「装盒子」；str / int / float / bool 四种类型与转换。</div>
+      </a>
+      <a class="ccard" href="strings-and-text.html">
+        <div class="cn">字符串与文本处理 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 2 课 ｜ 前置：变量与数据类型</div>
+        <div class="cs">索引切片、split / join / strip / replace、f-string；把脏稿件清洗成规范文本。</div>
+      </a>
+      <a class="ccard" href="booleans-and-conditionals.html">
+        <div class="cn">布尔逻辑与条件判断 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 3 课 ｜ 前置：变量与数据类型、字符串与文本处理</div>
+        <div class="cs">True / False 与比较运算；if / elif / else；用关键词规则给文本打标签及其局限。</div>
+      </a>
+    </div>
+
+    <div class="board bg2">板块二 · 循环与容器 <span class="goal">第 4–6 课 ｜ 批量处理，替代手工</span></div>
+    <div class="grid">
+      <a class="ccard" href="lists.html">
+        <div class="cn">列表 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 4 课 ｜ 前置：变量与数据类型</div>
+        <div class="cs">有序容器：增删改查、索引与切片、sort / sorted，一次装一批数据。</div>
+      </a>
+      <a class="ccard" href="loops.html">
+        <div class="cn">循环（for / while） <span class="st st-done">已生成</span></div>
+        <div class="cm">第 4、6 课 ｜ 前置：列表</div>
+        <div class="cs">range、enumerate、break / continue；从处理一条数据到处理一万条。</div>
+      </a>
+      <a class="ccard" href="dictionaries-and-sets.html">
+        <div class="cn">字典与集合 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 5 课 ｜ 前置：列表、循环</div>
+        <div class="cs">键值对映射与去重集合；get / setdefault；词频统计与 Top-N 排行。</div>
+      </a>
+      <a class="ccard" href="comprehensions.html">
+        <div class="cn">推导式 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 6 课 ｜ 前置：列表、循环、字典与集合</div>
+        <div class="cs">把「建容器 + 循环 + 判断」三件事写成一行；列表推导式与字典推导式。</div>
+      </a>
+    </div>
+
+    <div class="board bg3">板块三 · 函数与工程化 <span class="goal">第 7–9 课 ｜ 代码可复用，能读写文件</span></div>
+    <div class="grid">
+      <a class="ccard" href="functions.html">
+        <div class="cn">函数 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 7 课 ｜ 前置：推导式</div>
+        <div class="cs">def、参数与返回值、默认参数、作用域、docstring；把重复代码打包。</div>
+      </a>
+      <a class="ccard" href="file-io-and-encoding.html">
+        <div class="cn">文件读写与编码 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 8 课 ｜ 前置：字符串与文本处理、字典与集合</div>
+        <div class="cs">open / with、读写 txt 与 CSV、utf-8 与 gbk 中文乱码的成因与解决。</div>
+      </a>
+      <a class="ccard" href="exceptions.html">
+        <div class="cn">异常处理 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 8 课 ｜ 前置：函数</div>
+        <div class="cs">try / except / else / finally；读懂报错栈，坏数据不至于让程序整体崩掉。</div>
+      </a>
+      <a class="ccard" href="modules-and-packages.html">
+        <div class="cn">模块与包 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 9 课 ｜ 前置：函数</div>
+        <div class="cs">import 机制、pip 安装第三方库、__name__、虚拟环境；从单文件走向项目。</div>
+      </a>
+    </div>
+
+    <div class="board bg4">板块四 · AI 前置数据能力 <span class="goal">第 10–13 课 ｜ 会正则、NumPy、pandas</span></div>
+    <div class="grid">
+      <a class="ccard" href="regular-expressions.html">
+        <div class="cn">正则表达式 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 10 课 ｜ 前置：字符串与文本处理</div>
+        <div class="cs">元字符、字符类、量词、分组；批量清洗评论，去表情、去网址、提取日期。</div>
+      </a>
+      <a class="ccard" href="numpy-and-vectorization.html">
+        <div class="cn">NumPy 与向量化 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 11 课 ｜ 前置：列表、循环</div>
+        <div class="cs">ndarray、形状与维度、索引切片、广播；为什么向量化比 for 循环快得多。</div>
+      </a>
+      <a class="ccard" href="pandas-dataframe.html">
+        <div class="cn">pandas 与 DataFrame <span class="st st-done">已生成</span></div>
+        <div class="cm">第 12–13 课 ｜ 前置：字典与集合、NumPy 与向量化</div>
+        <div class="cs">读写 CSV / Excel、筛选排序、缺失值处理、groupby 分组聚合。</div>
+      </a>
+      <a class="ccard" href="matplotlib-basics.html">
+        <div class="cn">matplotlib 可视化 <span class="st st-done">已生成</span></div>
+        <div class="cm">第 13 课 ｜ 前置：pandas 与 DataFrame</div>
+        <div class="cs">用直方图 / 柱状图 / 折线图把统计结果画出来，以及中文乱码的解决。</div>
+      </a>
+    </div>
+
+    <div class="board bg5">选修与综合 <span class="goal">不占正课 ｜ 按需自学与结课项目</span></div>
+    <div class="grid">
+      <a class="ccard" href="classes-and-objects.html">
+        <div class="cn">类与对象（选修） <span class="st st-done">已生成</span></div>
+        <div class="cm">选修 ｜ 前置：函数、字典与集合</div>
+        <div class="cs">读懂别人代码里的 class：属性、方法、实例化。做 AI 应用只需能读懂。</div>
+      </a>
+      <a class="ccard" href="text-analysis-project.html">
+        <div class="cn">新闻评论文本分析（综合实践） <span class="st st-done">已生成</span></div>
+        <div class="cm">第 13 课结课项目 ｜ 前置：pandas、matplotlib、正则表达式</div>
+        <div class="cs">把清洗、统计、分组、出图串成完整流水线，产出一份可交付的分析小结。</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>🧩 拓展阅读 · AI 概念（早期资料）</h2>
+    <p>以下五页由同一套 <code>concept-learner</code> 技能在更早阶段生成，主题属人工智能方向，结构与上面的 Python 概念页一致，可用于进阶预习或按需查阅。</p>
+    <div class="grid">
+      <a class="ccard" href="agent.html">
+        <div class="cn">AI Agent（智能体）</div>
+        <div class="cm">主题：AI 概念 ｜ 前置：无</div>
+        <div class="cs">组成结构、与聊天机器人的分界、执行流程；LLM + 工具 + 指令记忆 + 编排循环。</div>
+      </a>
+      <a class="ccard" href="llm-context.html">
+        <div class="cn">大模型的上下文</div>
+        <div class="cm">主题：AI 概念 ｜ 前置：无</div>
+        <div class="cs">上下文窗口是有上限的工作记忆、里面装着什么、越大不等于越好、压缩与检索取用。</div>
+      </a>
+      <a class="ccard" href="skill.html">
+        <div class="cn">Skill（智能体技能）</div>
+        <div class="cm">主题：AI 概念 ｜ 前置：AI Agent</div>
+        <div class="cs">SKILL.md 是什么、三级渐进式披露、个人级与项目级技能的区别。</div>
+      </a>
+      <a class="ccard" href="concept-relationship.html">
+        <div class="cn">三者关系：Agent / 上下文 / Skill</div>
+        <div class="cm">主题：AI 概念 ｜ 前置：上述三页</div>
+        <div class="cs">上下文如何影响 Agent 表现、Skill 如何沉淀可复用任务知识、三者如何串成工作流。</div>
+      </a>
+      <a class="ccard" href="context-window.html">
+        <div class="cn">上下文窗口（进阶）</div>
+        <div class="cm">主题：AI 概念 ｜ 前置：大模型的上下文</div>
+        <div class="cs">输入与输出共享预算、位置带来的效果差异、标称窗口与有效窗口的差距。</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>🔗 前置依赖表：某个概念看不懂，该回头补什么</h2>
+    <table>
+      <tr><th style="width:24%">概念</th><th style="width:38%">前置（必须先掌握）</th><th>直接支撑的后续概念</th></tr>
+      <tr><td><a href="variables-and-data-types.html">变量与数据类型</a></td><td>无——整套内容的起点</td><td>字符串与文本处理、布尔逻辑与条件判断、列表</td></tr>
+      <tr><td><a href="strings-and-text.html">字符串与文本处理</a></td><td>变量与数据类型</td><td>布尔逻辑与条件判断、正则表达式</td></tr>
+      <tr><td><a href="booleans-and-conditionals.html">布尔逻辑与条件判断</a></td><td>变量与数据类型、字符串与文本处理</td><td>循环、推导式</td></tr>
+      <tr><td><a href="lists.html">列表</a></td><td>变量与数据类型</td><td>循环、字典与集合、推导式</td></tr>
+      <tr><td><a href="loops.html">循环</a></td><td>列表</td><td>字典与集合、推导式、函数</td></tr>
+      <tr><td><a href="dictionaries-and-sets.html">字典与集合</a></td><td>列表、循环</td><td>推导式、pandas 与 DataFrame</td></tr>
+      <tr><td><a href="comprehensions.html">推导式</a></td><td>列表、循环、字典与集合</td><td>函数</td></tr>
+      <tr><td><a href="functions.html">函数</a></td><td>推导式</td><td>异常处理、模块与包</td></tr>
+      <tr><td><a href="file-io-and-encoding.html">文件读写与编码</a></td><td>字符串与文本处理、字典与集合</td><td>异常处理、pandas 与 DataFrame</td></tr>
+      <tr><td><a href="exceptions.html">异常处理</a></td><td>函数</td><td>模块与包</td></tr>
+      <tr><td><a href="modules-and-packages.html">模块与包</a></td><td>函数</td><td>NumPy 与向量化、pandas 与 DataFrame</td></tr>
+      <tr><td><a href="regular-expressions.html">正则表达式</a></td><td>字符串与文本处理</td><td>NumPy 与向量化、pandas 与 DataFrame</td></tr>
+      <tr><td><a href="numpy-and-vectorization.html">NumPy 与向量化</a></td><td>列表、循环</td><td>pandas 与 DataFrame</td></tr>
+      <tr><td><a href="pandas-dataframe.html">pandas 与 DataFrame</a></td><td>字典与集合、NumPy 与向量化</td><td>matplotlib 可视化</td></tr>
+      <tr><td><a href="matplotlib-basics.html">matplotlib 可视化</a></td><td>pandas 与 DataFrame</td><td>结课综合实践</td></tr>
+      <tr><td><a href="classes-and-objects.html">类与对象（选修）</a></td><td>函数、字典与集合</td><td>阅读第三方库源码（如 sklearn 模型对象）</td></tr>
+      <tr><td><a href="text-analysis-project.html">新闻评论文本分析（综合）</a></td><td>pandas 与 DataFrame、matplotlib、正则表达式</td><td>人工智能阶段的数据准备环节</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>♻️ 跨课复用表：同一个概念在哪里被反复用到</h2>
+    <p>这张表回答「为什么现在要学它」——每个概念都会在后续课程里再次出现，复用次数越多，越值得在第一次学的时候多花十分钟。</p>
+    <table>
+      <tr><th style="width:22%">概念</th><th style="width:14%">首次出现</th><th>后续复用点</th></tr>
+      <tr>
+        <td><strong>变量与数据类型</strong></td><td>第 1 课</td>
+        <td><span class="chain">第 2 课 字符串切片</span> <span class="chain">第 5 课 计数累加</span> <span class="chain">第 8 课 读文件后转 int</span> <span class="chain">第 11 课 数组 dtype</span></td>
+      </tr>
+      <tr>
+        <td><strong>字符串与文本处理</strong></td><td>第 2 课</td>
+        <td><span class="chain">第 3 课 关键词匹配</span> <span class="chain">第 8 课 CSV 字段清洗</span> <span class="chain">第 10 课 正则前置</span> <span class="chain">第 12 课 文本长度统计</span></td>
+      </tr>
+      <tr>
+        <td><strong>布尔逻辑与条件判断</strong></td><td>第 3 课</td>
+        <td><span class="chain">第 4 课 筛选标题</span> <span class="chain">第 6 课 推导式条件</span> <span class="chain">第 8 课 try/except 分支</span> <span class="chain">AI 阶段 模型判断阈值</span></td>
+      </tr>
+      <tr>
+        <td><strong>列表</strong></td><td>第 4 课</td>
+        <td><span class="chain">第 5 课 词表</span> <span class="chain">第 6 课 推导式</span> <span class="chain">第 11 课 转 ndarray</span> <span class="chain">第 12 课 DataFrame 列</span></td>
+      </tr>
+      <tr>
+        <td><strong>循环</strong></td><td>第 4 课</td>
+        <td><span class="chain">第 5 课 词频统计</span> <span class="chain">第 8 课 逐行读 CSV</span> <span class="chain">第 10 课 批量清洗</span> <span class="chain">第 12 课 遍历行</span></td>
+      </tr>
+      <tr>
+        <td><strong>字典与集合</strong></td><td>第 5 课</td>
+        <td><span class="chain">第 8 课 统计结果容器</span> <span class="chain">第 9 课 配置项</span> <span class="chain">第 12 课 Series 原型</span> <span class="chain">AI 阶段 标签计数</span></td>
+      </tr>
+      <tr>
+        <td><strong>推导式</strong></td><td>第 6 课</td>
+        <td><span class="chain">第 7 课 函数内一行完成筛选</span> <span class="chain">第 9 课 模块内实用写法</span> <span class="chain">第 11 课 向量化的思想来源</span></td>
+      </tr>
+      <tr>
+        <td><strong>函数</strong></td><td>第 7 课</td>
+        <td><span class="chain">第 8 课 封装清洗与统计</span> <span class="chain">第 9 课 拆成模块</span> <span class="chain">第 10 课 写清洗函数</span> <span class="chain">第 13 课 流水线各步骤</span></td>
+      </tr>
+      <tr>
+        <td><strong>文件读写与编码</strong></td><td>第 8 课</td>
+        <td><span class="chain">第 12 课 read_csv</span> <span class="chain">第 13 课 导出结果</span> <span class="chain">AI 阶段 批量预测输入输出</span></td>
+      </tr>
+      <tr>
+        <td><strong>异常处理</strong></td><td>第 8 课</td>
+        <td><span class="chain">第 10 课 清洗时的容错</span> <span class="chain">第 12 课 缺失值处理思路</span> <span class="chain">第 13 课 批量跑不中断</span></td>
+      </tr>
+      <tr>
+        <td><strong>模块与包</strong></td><td>第 9 课</td>
+        <td><span class="chain">第 10 课 import re</span> <span class="chain">第 11 课 import numpy</span> <span class="chain">第 12 课 import pandas</span> <span class="chain">AI 阶段 import sklearn</span></td>
+      </tr>
+      <tr>
+        <td><strong>正则表达式</strong></td><td>第 10 课</td>
+        <td><span class="chain">第 12 课 文本列清洗</span> <span class="chain">第 13 课 去除噪声词</span> <span class="chain">AI 阶段 分词前预处理</span></td>
+      </tr>
+      <tr>
+        <td><strong>NumPy 与向量化</strong></td><td>第 11 课</td>
+        <td><span class="chain">第 12 课 DataFrame 底层</span> <span class="chain">AI 阶段 特征矩阵</span> <span class="chain">AI 阶段 模型输入张量</span></td>
+      </tr>
+      <tr>
+        <td><strong>pandas 与 DataFrame</strong></td><td>第 12 课</td>
+        <td><span class="chain">第 13 课 groupby 与出图</span> <span class="chain">AI 阶段 数据集加载与划分</span></td>
+      </tr>
+      <tr>
+        <td><strong>matplotlib 可视化</strong></td><td>第 13 课</td>
+        <td><span class="chain">结课项目配图</span> <span class="chain">AI 阶段 混淆矩阵与效果图</span></td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>📌 使用与核查说明</h2>
+    <ul>
+      <li><strong>资料生成方式</strong>：全部由本地 <code>concept-learner</code> 技能生成，遵循其固定的九板块结构与来源纪律。</li>
+      <li><strong>权威结论与辅助理解的区别</strong>：每页第九节列出可点核查的官方来源；类比、示意图、示例代码属于辅助理解的通俗化产物，页面中已逐处标注。</li>
+      <li><strong>离线可用</strong>：所有页面为自包含 HTML，不依赖网络与外部资源，双击即可打开。</li>
+      <li><strong>与学习地图的关系</strong>：本目录页是《Python 基础学习地图（13 次课版）》的配套概念库；地图负责「什么时候学什么」，本页负责「这个概念到底是什么」。</li>
+    </ul>
+    <div class="divider" style="height:1px;background:var(--line);margin:16px 0"></div>
+    <p style="font-size:13px;color:var(--muted)">配套文档：<a href="../Python学习地图_13次课版.html">Python 基础学习地图（13 次课版）</a> · <a href="../Python学习地图_13次课版.md">Markdown 版</a></p>
+  </section>
+
+  <footer>📎 概念学习资料库 · 目录页 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+</body>
+</html>

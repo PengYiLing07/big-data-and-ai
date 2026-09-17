@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · matplotlib 可视化</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块四 · AI 前置数据能力 ｜ 第 13 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>matplotlib 可视化</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础 · 数据可视化</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li><code>Figure</code> 与 <code>Axes</code> 各指什么？为什么官方文档强调「<code>Axes</code> 不是 <code>axis</code> 的复数」？</li>
+      <li>面向对象接口（<code>fig, ax = plt.subplots()</code> 后调 <code>ax.*</code>）与 <code>pyplot</code> 简写接口（直接 <code>plt.*</code>）各适合什么场合？</li>
+      <li><code>plot</code> / <code>bar</code> / <code>hist</code> / <code>scatter</code> 分别适合表达哪类信息，什么时候该用哪一个？</li>
+      <li>中文标题显示成方块，与负号显示异常，为什么是两个不同的问题、对应两处不同的设置？</li>
+      <li>图「不显示」通常有哪几种原因？<code>show()</code> 与 <code>savefig()</code> 是什么关系？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——统计结果已经算出来了（词频排行、长度分布），怎么把它变成一张能直接放进稿件、能一眼看懂的图？</li>
+      <li><strong>它由什么组成</strong>——一张图内部由哪几层对象构成？谁负责画布，谁负责坐标轴，谁负责具体的数据线？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——matplotlib 与 pandas 的 <code>df.plot()</code> 是什么关系？<code>pyplot</code> 与面向对象接口是不是两套库？</li>
+      <li><strong>它的边界在哪</strong>——哪些问题出在数据上而不是绘图代码上？中文字体、后端选择、全局状态各自会带来什么后果？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      matplotlib 是 Python 最常用的绘图库。官方文档给出的核心模型很简洁：图形画在 <strong>Figure</strong> 上，一张 Figure 可以包含一个或多个 <strong>Axes</strong>——<code>Axes</code> 指「一块用于绘图的区域」，而不是「坐标轴（axis）的复数」。每个 <code>Axes</code> 通常带有两个（三维图是三个）<code>Axis</code> 对象，负责刻度与刻度标签；此外还带有标题、x 轴标签、y 轴标签等元素。
+    </p>
+    <p>
+      理解这个层次，就能明白为什么同一个效果会有两种写法。第一种是<strong>显式（面向对象）接口</strong>：先用 <code>fig, ax = plt.subplots()</code> 拿到画布和绘图区域，再调用 <code>ax.plot(...)</code>、<code>ax.set_title(...)</code> 这样的方法。第二种是<strong>隐式（pyplot）接口</strong>：直接写 <code>plt.plot(...)</code>、<code>plt.title(...)</code>，由 pyplot 在背后自动创建并记住「当前 Figure」和「当前 Axes」。官方文档的说明是：复杂图形、以及需要被复用的函数与脚本，一般建议使用显式接口；而快速交互式的探索，pyplot 简写更省事。
+    </p>
+    <p>
+      之所以要强调这一点，是因为 pyplot 维护的是一份<strong>全局状态</strong>——它记得最近创建的 Figure 与 Axes，后续 <code>plt.*</code> 调用都作用在它认为「用户想要的那个」对象上。这带来了一种常见故障：连续画多张图时，第二张图的元素画到了第一张上，或者修饰语句作用到了错误的子图上。显式保存 <code>fig</code> 与 <code>ax</code>，然后调用 <code>ax</code> 上的方法，可以规避这类问题。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      Figure 可类比为一张画纸，Axes 可类比为画纸上用铅笔框出来的若干块画格；同一张纸上可以并排放好几个画格，每个画格各有自己的边框、刻度和标题。画数据时是往某个具体画格里画，而不是「往纸上随便画」。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      pyplot 简写接口可类比为「默认接着上一次那块画格继续画」：说「画一条线」时，系统会自动挑一块画格；而面向对象接口相当于每次都明确指定「画在第 2 格的这块区域里」。前者省字，后者不容易画错地方。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答：一张图内部由哪几层对象构成、两种接口怎么对照、以及中文乱码与负号乱码为什么是两回事。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 一张图内部的四层对象：Figure → Axes → Axis → Artist</div>
+      <div class="vsub">左侧是嵌套关系示意（一张 Figure 内并排放两个 Axes）；右侧说明每一层各自管什么。</div>
+      <svg viewBox="0 0 700 290" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>matplotlib 图形对象层次结构示意图</title>
+        <desc>外层大矩形表示 Figure 画布，内含两个 Axes 绘图区域；每个 Axes 上方有标题、下方有 x 轴标签、左侧有 y 轴标签，其中一个 Axes 内含图例；右侧列出四层对象各自的职责。</desc>
+        <defs>
+          <marker id="mpA" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="36" width="420" height="216" rx="12" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.6"/>
+        <text x="34" y="26" font-size="12.5" font-weight="700" fill="#4c3aa8">Figure（整张画布 / 窗口）</text>
+
+        <rect x="44" y="72" width="172" height="130" rx="9" fill="#ffffff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="130" y="62" font-size="11.5" fill="#1c4fb8" text-anchor="middle">标题 set_title()</text>
+        <text x="38" y="137" font-size="11.5" fill="#1c4fb8" text-anchor="middle" transform="rotate(-90 38 137)">y 轴标签</text>
+        <text x="130" y="216" font-size="11.5" fill="#1c4fb8" text-anchor="middle">x 轴标签 set_xlabel()</text>
+        <text x="130" y="100" font-size="12" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">Axes（绘图区域）</text>
+        <rect x="62" y="118" width="136" height="70" rx="7" fill="#eaf1ff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="130" y="145" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">数据：ax.plot / bar / hist</text>
+        <text x="130" y="167" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">图例 ax.legend()</text>
+
+        <rect x="240" y="72" width="176" height="130" rx="9" fill="#ffffff" stroke="#2f6fed" stroke-width="1.4"/>
+        <text x="328" y="62" font-size="11.5" fill="#1c4fb8" text-anchor="middle">标题 set_title()</text>
+        <text x="234" y="137" font-size="11.5" fill="#1c4fb8" text-anchor="middle" transform="rotate(-90 234 137)">y 轴标签</text>
+        <text x="328" y="216" font-size="11.5" fill="#1c4fb8" text-anchor="middle">x 轴标签 set_xlabel()</text>
+        <text x="328" y="100" font-size="12" font-weight="700" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">Axes（绘图区域）</text>
+        <rect x="258" y="118" width="140" height="70" rx="7" fill="#eaf1ff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="328" y="145" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">刻度与刻度标签 = Axis</text>
+        <text x="328" y="167" font-size="11" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">由 Axis 对象负责</text>
+
+        <text x="20" y="272" font-size="11.5" fill="#5b6472">可见元素（文字、线、方块、图例框……）在术语上都属于 Artist</text>
+
+        <rect x="470" y="36" width="214" height="216" rx="10" fill="#fcfdff" stroke="#e3e7ee" stroke-width="1.1"/>
+        <text x="484" y="58" font-size="12.5" font-weight="700" fill="#1f2430" dominant-baseline="central">四层对象各管什么</text>
+        <line x1="482" y1="72" x2="672" y2="72" stroke="#e3e7ee"/>
+        <text x="484" y="92" font-size="11.5" fill="#4c3aa8" font-weight="700" dominant-baseline="central">Figure</text>
+        <text x="484" y="110" font-size="11" fill="#5b6472" dominant-baseline="central">整张画布，管理所有子图</text>
+        <text x="484" y="130" font-size="11.5" fill="#2f6fed" font-weight="700" dominant-baseline="central">Axes</text>
+        <text x="484" y="148" font-size="11" fill="#5b6472" dominant-baseline="central">一块绘图区域，是配置图形的</text>
+        <text x="484" y="164" font-size="11" fill="#5b6472" dominant-baseline="central">主要入口（不是 axis 的复数）</text>
+        <text x="484" y="184" font-size="11.5" fill="#1a9e5a" font-weight="700" dominant-baseline="central">Axis</text>
+        <text x="484" y="202" font-size="11" fill="#5b6472" dominant-baseline="central">负责刻度位置与刻度标签文字</text>
+        <text x="484" y="222" font-size="11.5" fill="#d97706" font-weight="700" dominant-baseline="central">Artist</text>
+        <text x="484" y="240" font-size="11" fill="#5b6472" dominant-baseline="central">画面上一切可见元素</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：先有 Figure，再有 Axes，标题、轴标签、图例都挂在某个具体 Axes 上；理解这一点，就不会把「给第 2 张子图加标题」误写成给整张画布加标题。示意图，用于帮助理解，非 matplotlib 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 同一件事的两种写法：面向对象接口与 pyplot 简写接口</div>
+      <div class="vsub">左右两栏实现同样的图形；中间的对应关系说明二者不是两套库，而是同一套 API 的两种调用路径。</div>
+      <svg viewBox="0 0 700 288" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>matplotlib 面向对象接口与 pyplot 简写接口对照图</title>
+        <desc>左栏列出面向对象接口的四行写法，右栏列出 pyplot 简写接口的对应写法，中间标注两者与 Axes 方法、pyplot 函数的对应关系，底部说明推荐的取舍原则。</desc>
+
+        <rect x="20" y="36" width="300" height="150" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.5"/>
+        <text x="36" y="58" font-size="12.5" font-weight="700" fill="#1c4fb8" dominant-baseline="central">面向对象接口（显式）</text>
+        <text x="36" y="82" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">fig, ax = plt.subplots()</text>
+        <text x="36" y="104" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">ax.plot(x, y, label="词频")</text>
+        <text x="36" y="126" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">ax.set_title("标题")</text>
+        <text x="36" y="148" font-size="11.5" fill="#1c4fb8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">ax.legend()</text>
+        <text x="36" y="172" font-size="11" fill="#3a5d94" dominant-baseline="central">先拿到对象，再对对象调用方法</text>
+
+        <rect x="380" y="36" width="300" height="150" rx="10" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.5"/>
+        <text x="396" y="58" font-size="12.5" font-weight="700" fill="#4c3aa8" dominant-baseline="central">pyplot 简写接口（隐式）</text>
+        <text x="396" y="82" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">（无对应行，隐式创建）</text>
+        <text x="396" y="104" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">plt.plot(x, y, label="词频")</text>
+        <text x="396" y="126" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">plt.title("标题")</text>
+        <text x="396" y="148" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">plt.legend()</text>
+        <text x="396" y="172" font-size="11" fill="#5b4b9e" dominant-baseline="central">由 pyplot 记住「当前 Axes」</text>
+
+        <line x1="322" y1="110" x2="376" y2="110" stroke="#5b6472" stroke-width="1.4" marker-end="url(#mpA)"/>
+        <text x="349" y="100" font-size="11" fill="#5b6472" text-anchor="middle">同一操作</text>
+
+        <rect x="20" y="200" width="660" height="72" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.2"/>
+        <text x="36" y="220" font-size="12" font-weight="700" fill="#b45309" dominant-baseline="central">官方给出的取舍原则</text>
+        <text x="36" y="241" font-size="11.5" fill="#78350f" dominant-baseline="central">复杂图形、需要复用的函数与脚本 → 用面向对象接口；两者可混用，但混用容易出错。</text>
+        <text x="36" y="261" font-size="11.5" fill="#78350f" dominant-baseline="central">pyplot 会记住「当前 Figure / 当前 Axes」，连续画多张图时状态会互相影响。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>ax.plot()</code> 与 <code>plt.plot()</code> 是同名同参的两种调用路径，不是两套库；区别只在于「作用对象由用户明确指定，还是由 pyplot 自动记住」。示意图，用于帮助理解，非 matplotlib 官方插图。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 中文乱码与负号乱码是两处互不相干的设置</div>
+      <div class="vsub">左半部分是字体缺字形导致的中文方块，右半部分是 Unicode 负号缺字形导致的负号异常。</div>
+      <svg viewBox="0 0 700 262" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>matplotlib 中文乱码与负号乱码的两类原因示意图</title>
+        <desc>左侧说明中文显示为方块的原因是默认字体不含中日韩字形，需要设置 font.family 或 font.sans-serif；右侧说明负号异常的原因是 Unicode 减号字形缺失，需要设置 axes.unicode_minus 为 False。</desc>
+
+        <rect x="20" y="34" width="322" height="168" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.4"/>
+        <text x="36" y="56" font-size="12.5" font-weight="700" fill="#b45309" dominant-baseline="central">问题一：中文显示为方块</text>
+        <line x1="32" y1="70" x2="330" y2="70" stroke="#f3c9a3"/>
+        <text x="36" y="90" font-size="11" fill="#78350f" dominant-baseline="central">现象</text>
+        <text x="86" y="90" font-size="11.5" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">标题变成 □□□□</text>
+        <text x="36" y="112" font-size="11" fill="#78350f" dominant-baseline="central">原因</text>
+        <text x="86" y="112" font-size="11.5" fill="#78350f" dominant-baseline="central">默认字体 DejaVu Sans 不含中日韩字形</text>
+        <text x="36" y="134" font-size="11" fill="#78350f" dominant-baseline="central">设置</text>
+        <text x="86" y="134" font-size="11" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">rcParams["font.family"]</text>
+        <text x="86" y="152" font-size="11" fill="#78350f" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">= ["含中文字形的字体", "sans-serif"]</text>
+        <text x="36" y="178" font-size="11" fill="#78350f" dominant-baseline="central">官方补充</text>
+        <text x="106" y="178" font-size="11" fill="#78350f" dominant-baseline="central">推荐直接改 font.family；末尾留一个通用族兜底</text>
+        <text x="36" y="194" font-size="11" fill="#78350f" dominant-baseline="central">效果范围</text>
+        <text x="106" y="194" font-size="11" fill="#78350f" dominant-baseline="central">影响所有含中文的文字元素</text>
+
+        <rect x="358" y="34" width="322" height="168" rx="10" fill="#f5f3ff" stroke="#7c5cff" stroke-width="1.4"/>
+        <text x="374" y="56" font-size="12.5" font-weight="700" fill="#4c3aa8" dominant-baseline="central">问题二：负号显示异常</text>
+        <line x1="370" y1="70" x2="668" y2="70" stroke="#cfc4f7"/>
+        <text x="374" y="90" font-size="11" fill="#4c3aa8" dominant-baseline="central">现象</text>
+        <text x="424" y="90" font-size="11.5" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">−1 显示为方块或空框</text>
+        <text x="374" y="112" font-size="11" fill="#4c3aa8" dominant-baseline="central">原因</text>
+        <text x="424" y="112" font-size="11.5" fill="#4c3aa8" dominant-baseline="central">rcParams 默认用 Unicode 减号而非连字符</text>
+        <text x="374" y="134" font-size="11" fill="#4c3aa8" dominant-baseline="central">设置</text>
+        <text x="424" y="134" font-size="11" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">rcParams["axes.unicode_minus"]</text>
+        <text x="424" y="152" font-size="11" fill="#4c3aa8" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">= False　（改回普通连字符）</text>
+        <text x="374" y="178" font-size="11" fill="#4c3aa8" dominant-baseline="central">官方补充</text>
+        <text x="444" y="178" font-size="11" fill="#4c3aa8" dominant-baseline="central">该参数默认值为 True，是独立的可配置项</text>
+        <text x="374" y="194" font-size="11" fill="#4c3aa8" dominant-baseline="central">效果范围</text>
+        <text x="444" y="194" font-size="11" fill="#4c3aa8" dominant-baseline="central">只影响负号的字形选择</text>
+
+        <rect x="20" y="214" width="660" height="40" rx="9" fill="#f1f4f9" stroke="#e3e7ee"/>
+        <text x="36" y="234" font-size="11.5" fill="#5b6472" dominant-baseline="central">两者的共同点是：都源于「所选字体里没有这个字形」。区别在于缺的是不同的字形，因此要用两处不同的设置分别处理。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：中文变方块要改<strong>字体族</strong>，负号变方块要改<strong>是否使用 Unicode 减号</strong>；只改其中一处，另一处的问题照旧。示意图，用于帮助理解，非 matplotlib 官方插图。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 matplotlib 官方原文插图。图 1 的对象层次、图 2 的两种接口与取舍原则、图 3 的两处 rcParams 均依据 matplotlib 官方《Quick start guide》《Matplotlib Application Interfaces (APIs)》《Text properties and layout》与《Customizing Matplotlib》整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>matplotlib 的图形由四层对象搭起来，一次绘图调用实际是在某个 <code>Axes</code> 上添加一个 <code>Artist</code>。理解这四层的分工，就能读懂官方文档与网上大多数示例代码。</p>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th><th>典型写法</th></tr>
+      <tr><td><strong>Figure</strong></td><td>整张画布（在交互环境中对应一个窗口或一块内嵌区域）。它管理所有子 Axes，以及标题、图例、颜色条等「图级」的特殊 Artist。</td><td><code>fig = plt.figure()</code><br><code>fig, ax = plt.subplots()</code></td></tr>
+      <tr><td><strong>Axes</strong></td><td>一块绘图区域，是配置图形的主要入口：加数据、控制坐标轴范围、加标签都在它上面完成。注意它<strong>不是</strong> <code>axis</code> 的复数。</td><td><code>ax.plot(...)</code><br><code>ax.set_title("...")</code></td></tr>
+      <tr><td><strong>Axis</strong></td><td>负责刻度位置与刻度标签文字，由 Locator 决定刻度打在哪里、Formatter 决定刻度怎么显示。</td><td>一般无需直接操作，由 Axes 间接管理</td></tr>
+      <tr><td><strong>Artist</strong></td><td>画面上一切可见元素都是 Artist，包括 Figure、Axes、Axis 自身，以及文字、折线、方块、图例框等。大多数 Artist 归属于某一个 Axes，不能同时被多个 Axes 共用。</td><td><code>line, = ax.plot(...)</code> 拿到的是 Line2D（一种 Artist）</td></tr>
+    </table>
+
+    <h3>四种常用图形与它们的适用场合</h3>
+    <table>
+      <tr><th>函数</th><th>主要参数</th><th>适合表达什么</th></tr>
+      <tr><td><code>plot(x, y)</code></td><td>x、y 数据；可加 <code>label</code> 以便图例识别</td><td>折线：随顺序变化的量，例如发布时间轴上的每日评论量。只传一组数据时，x 会自动生成为 0、1、2……</td></tr>
+      <tr><td><code>bar(x, height)</code></td><td>x 为类别标签或位置，height 为柱高，<code>width</code> 为柱宽</td><td>柱状图：类别之间的量值比较，例如词频 Top 10 排行。x 可直接传一列类别名。</td></tr>
+      <tr><td><code>hist(x, bins=...)</code></td><td>x 为一组数值，<code>bins</code> 为分箱数或分箱边界</td><td>直方图：一组数值落在各区间内的频数，例如评论文本长度分布。<code>bins</code> 越大柱子越细。</td></tr>
+      <tr><td><code>scatter(x, y)</code></td><td>x、y 数据；<code>s</code> 控制点大小，<code>c</code> 控制点颜色</td><td>散点图：两组数值之间的关系，或按第三个变量给点上色的分布图。</td></tr>
+    </table>
+
+    <h3>修饰、布局与输出</h3>
+    <table>
+      <tr><th>环节</th><th>写法</th><th>作用 / 说明</th></tr>
+      <tr><td rowspan="3">文字修饰</td><td><code>ax.set_title("...")</code></td><td>给该 Axes 加标题。</td></tr>
+      <tr><td><code>ax.set_xlabel("...")</code> / <code>set_ylabel("...")</code></td><td>加 x 轴、y 轴标签。柱状图与直方图的 y 轴通常是「频数 / 条数」，需要写明。</td></tr>
+      <tr><td><code>ax.legend()</code></td><td>显示图例。图例内容来自绘制时传入的 <code>label</code>；不传任何参数时会自动收集带标签的元素，若没有任何带标签的元素，会得到空图例并给出提示。</td></tr>
+      <tr><td rowspan="3">中文字体</td><td><code>rcParams["font.family"]</code></td><td>官方推荐的做法：把支持所需字形的字体名放进字体族列表，并建议在末尾附加一个通用族作为兜底。</td></tr>
+      <tr><td><code>rcParams["font.sans-serif"]</code></td><td>另一种写法：先设 <code>font.family = ["sans-serif"]</code>，再改写 sans-serif 这个别名指向的字体列表。</td></tr>
+      <tr><td><code>rcParams["axes.unicode_minus"]</code></td><td>控制负号是否使用 Unicode 减号，默认 <code>True</code>。字体不含该字形时可设为 <code>False</code>，改用普通连字符。</td></tr>
+      <tr><td rowspan="2">布局</td><td><code>fig, axs = plt.subplots(2, 2)</code></td><td>一次创建一张 Figure 和一组子图；返回的 <code>axs</code> 按行列组织，可用 <code>axs[0, 1]</code> 这样的下标访问具体一块。</td></tr>
+      <tr><td><code>layout="constrained"</code></td><td>让子图间距自动避让标签，减少文字被裁切的情况。</td></tr>
+      <tr><td rowspan="2">输出</td><td><code>plt.savefig("out.png", dpi=200, bbox_inches="tight")</code></td><td>把当前图形保存为文件。官方参数表说明：<code>dpi</code> 默认取图形自身的 dpi，<code>bbox_inches="tight"</code> 表示只保存图形的紧凑边界，可去掉多余留白。</td></tr>
+      <tr><td><code>plt.show()</code></td><td>在交互环境中显示图形。官方《Quick start guide》提示：在部分环境（如 Jupyter）中可以不写这一句，图形会自动显示。</td></tr>
+      <tr><td>与 pandas 衔接</td><td><code>df.plot(kind="bar")</code></td><td>pandas 的绘图方法是对 matplotlib 的封装，官方文档明确说明「默认使用 matplotlib」作为后端，并返回 Axes 对象，因此可以继续用 <code>ax.set_title(...)</code> 修饰。</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上对象定义、参数名与默认值均来自 matplotlib 官方《Quick start guide》《Matplotlib Application Interfaces (APIs)》《Backends》《Text properties and layout》《Customizing Matplotlib》及 <code>pyplot</code> 各函数参考页，可经第九节链接逐条核查。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 一个具体应用场景</h2>
+    <p>
+      上一份资料里已经算出了两个结果：评论表中的词频排行，以及评论文本长度的分布。编辑部需要为稿件配两张图——一张展示最常出现的关键词，一张展示评论长度的集中区间。下面这一段把中文字体设置、柱状图、直方图与文件导出串起来。
+    </p>
+    <pre><span class="c"># 场景：把词频排行与文本长度分布画成图，直接作为稿件配图</span>
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+
+<span class="c"># ① 中文显示：默认字体不含中日韩字形，需指定一个含中文字形的字体</span>
+matplotlib.rcParams[<span class="s">"font.family"</span>] = [<span class="s">"Microsoft YaHei"</span>, <span class="s">"sans-serif"</span>]
+matplotlib.rcParams[<span class="s">"axes.unicode_minus"</span>] = False   <span class="c"># 负号改用普通连字符</span>
+
+<span class="c"># ② 准备数据：词频排行（Series）与文本长度（Series）</span>
+df = pd.read_csv(<span class="s">"comments.csv"</span>, encoding=<span class="s">"utf-8"</span>)
+df[<span class="s">"文本长度"</span>] = df[<span class="s">"评论内容"</span>].str.len()
+
+word_freq = pd.Series({<span class="s">"地铁"</span>: 128, <span class="s">"票价"</span>: 96, <span class="s">"换乘"</span>: 74,
+                      <span class="s">"通勤"</span>: 61, <span class="s">"早高峰"</span>: 45}).sort_values()
+
+<span class="c"># ③ 建图：显式拿到 fig 与 ax，后续修饰都作用在这块 Axes 上</span>
+fig, axs = plt.subplots(1, 2, figsize=(11, 4), layout=<span class="s">"constrained"</span>)
+
+<span class="c"># ④ 左图：词频排行用横向柱状图，类别多时比竖向更易读</span>
+axs[0].barh(word_freq.index, word_freq.values, color=<span class="s">"#2f6fed"</span>)
+axs[0].set_title(<span class="s">"评论关键词 Top 5"</span>)
+axs[0].set_xlabel(<span class="s">"出现次数"</span>)
+
+<span class="c"># ⑤ 右图：文本长度分布用直方图，bins 决定分箱粗细</span>
+axs[1].hist(df[<span class="s">"文本长度"</span>].dropna(), bins=20, color=<span class="s">"#7c5cff"</span>)
+axs[1].set_title(<span class="s">"评论文本长度分布"</span>)
+axs[1].set_xlabel(<span class="s">"字数"</span>)
+axs[1].set_ylabel(<span class="s">"评论条数"</span>)
+
+<span class="c"># ⑥ 输出：先 savefig 存文件，再 show 显示；dpi 与紧凑边界便于稿件排版</span>
+plt.savefig(<span class="s">"评论配图.png"</span>, dpi=200, bbox_inches=<span class="s">"tight"</span>)
+plt.show()</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明各环节在流程中的位置，属于辅助理解示例，非某个来源的原文代码。其中字体设置写法依据 matplotlib 官方《Text properties and layout》「Text with non-latin glyphs」一节，<code>savefig</code> 参数依据官方 <code>pyplot.savefig</code> 参考页。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>图「不显示」通常是两类原因。</strong>一类是代码里既没有调用 <code>plt.show()</code>、也没有调用 <code>savefig()</code>，脚本运行完就结束了；另一类是所在后端是非交互后端（如 Agg，只能写文件、不能开窗口），此时官方文档建议的排查办法是先打印 <code>matplotlib.get_backend()</code> 看当前用的是哪个后端。官方《Backends》一章还专门列了「图形窗口不显示」的调试步骤。</li>
+      <li><strong>中文乱码与负号乱码是两个独立的设置。</strong>中文方块源于所选字体缺少中日韩字形，官方给出的做法是设置 <code>font.family</code>（推荐）或在 <code>font.sans-serif</code> 别名里加上含中文字形的字体；负号异常源于 <code>axes.unicode_minus</code> 默认为 <code>True</code>，即使用 Unicode 减号字符，若该字形不在所选字体里就会显示异常，需把它设为 <code>False</code>。常见误解是「设了中文字体，负号问题就一起解决了」——如果换上的中文字体恰好含减号字形，看起来像是顺带修好了，但那是巧合而非同一处设置。</li>
+      <li><strong>pyplot 的全局状态会互相污染。</strong>官方《Pyplot tutorial》说明：pyplot 保留了「当前 Figure」与「当前 Axes」的概念，所有绘图函数都作用于当前 Axes，<code>gca()</code> 返回当前 Axes、<code>gcf()</code> 返回当前 Figure。因此连续绘制多张图时，若不显式保存 <code>fig</code> / <code>ax</code>，第二张图很容易画到第一张上。官方在《Matplotlib Application Interfaces (APIs)》中给出的建议是：一开始就显式创建并保存对象引用。</li>
+      <li><strong><code>ax.plot()</code> 与 <code>plt.plot()</code> 不是两套库。</strong>官方接口对照表列出了二者的一一对应关系：绘图函数同名同参（<code>ax.plot(x, y)</code> 与 <code>plt.plot(x, y)</code>），取属性时 Axes 用 <code>get_</code> 前缀（<code>ax.get_xlabel()</code>）而 pyplot 用同名函数（<code>plt.xlabel()</code>），设属性时 Axes 用 <code>set_</code> 前缀（<code>ax.set_xlabel("time")</code>）而 pyplot 用同名函数（<code>plt.xlabel("time")</code>）。理解这个对应关系，就能在两种风格的示例代码之间自由翻译。</li>
+      <li><strong><code>savefig()</code> 与 <code>show()</code> 的顺序值得注意。</strong>官方 FAQ 在「不打开窗口生成图片」一条中给出的做法是：调用 <code>savefig</code> 之后要 <code>close</code>，否则 pyplot 会一直保留对未显示图形的引用，形成内存占用。也就是说，保存与显示是两件事，哪个在前、是否需要关闭，取决于运行环境。</li>
+      <li><strong>matplotlib 不能替数据质量负责。</strong>图的形状取决于清洗与统计口径：<code>bins</code> 取得太粗会掩盖分布形态，太细会显得杂乱；文本长度如果没去掉空白与网址，直方图整体会向右偏移。边界在于——图形只是呈现方式，口径问题需要在数据环节解决。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条的技术结论均以 matplotlib 官方文档为依据。后端与窗口不显示见《Backends》；中文与非拉丁字形见《Text properties and layout》「Text with non-latin glyphs」；<code>axes.unicode_minus</code> 见《Customizing Matplotlib with style sheets and rcParams》；pyplot 全局状态见《Pyplot tutorial》；两种接口的对照见《Matplotlib Application Interfaces (APIs)》；<code>savefig</code> 与关闭图形见官方 FAQ。具体链接见第九节。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 在 matplotlib 中，<code>Figure</code> 与 <code>Axes</code> 的关系通常描述为？</div>
+      <button class="opt" data-v="A">A. <code>Figure</code> 是坐标轴，<code>Axes</code> 是整张画布</button>
+      <button class="opt" data-v="B">B. 二者是同一个对象的两个名字，可以互相替换</button>
+      <button class="opt" data-v="C">C. <code>Figure</code> 是整张画布（容器），<code>Axes</code> 是画布上的一块绘图区域，一张 Figure 可包含多个 Axes</button>
+      <button class="opt" data-v="D">D. 一张 Figure 只能有一个 Axes，且必须由 <code>plt.plot()</code> 创建</button>
+      <div class="fb" data-ok="✅ 正确。官方《Quick start guide》说明：图形画在 Figure 上，每张 Figure 可以包含一个或多个 Axes，Axes 是用于指定点的区域；最简单的创建方式是 plt.subplots()。官方还特别提醒注意 Axes 与 Axis 的区别——Axes 是绘图区域，不是 axis 的复数。"></div>
+      <div class="src">📎 来源：matplotlib 官方《Quick start guide》（A simple example / Parts of a Figure） — matplotlib.org/stable/users/explain/quick_start.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-e">入门</span>2. 要把当前图形保存为图片文件，通常用哪个写法？</div>
+      <button class="opt" data-v="A">A. <code>plt.savefig("out.png")</code></button>
+      <button class="opt" data-v="B">B. <code>plt.show("out.png")</code></button>
+      <button class="opt" data-v="C">C. <code>plt.write("out.png")</code></button>
+      <button class="opt" data-v="D">D. 只能靠屏幕截图，没有保存方法</button>
+      <div class="fb" data-ok="✅ 正确。官方 pyplot.savefig 参考页的说明是「Save the current figure as an image or vector graphic to a file」。若不指定 format，格式由文件扩展名推断；未指定扩展名时使用 rcParams['savefig.format']（默认 png）。show 用于显示，不接受文件名。"></div>
+      <div class="src">📎 来源：matplotlib 官方参考 <code>matplotlib.pyplot.savefig</code> — matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 绘图时中文标题显示为一个个方块，通常的处理方式是？</div>
+      <button class="opt" data-v="A">A. 把标题改成英文，这是唯一的解决办法</button>
+      <button class="opt" data-v="B">B. 把 <code>font.family</code>（或 <code>font.sans-serif</code>）设置为含中文字形的字体；默认字体 DejaVu Sans 不含中日韩字形</button>
+      <button class="opt" data-v="C">C. 设置 <code>axes.unicode_minus = False</code></button>
+      <button class="opt" data-v="D">D. 升级 matplotlib 版本即可自动支持</button>
+      <div class="fb" data-ok="✅ 正确。官方《Text properties and layout》的「Text with non-latin glyphs」一节写明：自 v2.0 起默认字体 DejaVu 包含许多西方字母的字形，但不含中文、韩文、日文等其他文字的字形；解决办法是把支持所需码位的字体名加入 font.family（推荐），或加入对应的别名列表。选项 C 处理的是负号问题，与中文字形无关。"></div>
+      <div class="src">📎 来源：matplotlib 官方《Text properties and layout》— matplotlib.org/stable/users/explain/text/text_props.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 在普通 Python 脚本里画完图，运行后既没有窗口弹出、也没有生成图片文件。最常见的原因是？</div>
+      <button class="opt" data-v="A">A. matplotlib 一定没有安装成功，会报 <code>ImportError</code></button>
+      <button class="opt" data-v="B">B. 数据太少，画不出来</button>
+      <button class="opt" data-v="C">C. 必须先调用 <code>plt.figure()</code> 才能画任何图</button>
+      <button class="opt" data-v="D">D. 既没有调用 <code>plt.show()</code> 显示，也没有调用 <code>savefig()</code> 保存；或者当前使用的是非交互后端（如 Agg），其能力只限于写文件</button>
+      <div class="fb" data-ok="✅ 正确。官方《Backends》一章说明后端分两类：交互后端（可显示到屏幕）与非交互后端（只能写文件，如 Agg）；没有显式设置时 matplotlib 会自动检测可用后端，若都不可用则退回 Agg。官方同时提供了排查步骤：先打印 matplotlib.get_backend() 确认当前后端，再试着画一个最简单的新图。"></div>
+      <div class="src">📎 来源：matplotlib 官方《Backends》（Selecting a backend / Debugging the figure windows not showing） — matplotlib.org/stable/users/explain/figure/backends.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 关于 pyplot 维护的「当前 Figure / 当前 Axes」这一全局状态，下列说法通常正确的是？</div>
+      <button class="opt" data-v="A">A. pyplot 会记住最近创建的 Figure 与 Axes，后续 <code>plt.*</code> 调用作用在它上面，连续画多张图时容易互相影响；显式保存 <code>fig</code> / <code>ax</code> 并调用 <code>ax</code> 上的方法可以避免</button>
+      <button class="opt" data-v="B">B. pyplot 每次调用都会新建一张 Figure，因此不同图形之间不会互相影响</button>
+      <button class="opt" data-v="C">C. 只要不调用 <code>plt.show()</code>，全局状态就不会被记录</button>
+      <button class="opt" data-v="D">D. 面向对象接口不存在任何状态，因此与 pyplot 完全无关</button>
+      <div class="fb" data-ok="✅ 正确。官方《Pyplot tutorial》写明：pyplot 会跨函数调用保留各种状态，因此它记得当前 Figure 与当前绘图区域，绘图函数都被导向当前 Axes；gca() 返回当前 Axes、gcf() 返回当前 Figure。官方在《Matplotlib Application Interfaces (APIs)》中指出，显式接口下每个对象都被明确引用，便于在显示前继续自定义，这也是推荐显式创建并保存对象引用的原因。选项 D 的错误在于：两种接口都要通过 pyplot 来创建 Figure 与 Axes，pyplot 仍然是必需的。"></div>
+      <div class="src">📎 来源：matplotlib 官方《Pyplot tutorial》（Introduction to pyplot / Working with multiple figures and Axes） — matplotlib.org/stable/tutorials/introductory/pyplot.html ；《Matplotlib Application Interfaces (APIs)》 — matplotlib.org/stable/users/explain/figure/api_interfaces.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处（生成时已逐条访问确认）：</p>
+    <ul class="source-list">
+      <li>matplotlib 官方《Quick start guide》（Figure 与 Axes 的关系、Parts of a Figure、两种接口的取舍、plot/hist 示例） — <a href="https://matplotlib.org/stable/users/explain/quick_start.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/quick_start.html</a></li>
+      <li>matplotlib 官方《Matplotlib Application Interfaces (APIs)》（显式 Axes 接口与隐式 pyplot 接口的对照表、推荐的写法） — <a href="https://matplotlib.org/stable/users/explain/figure/api_interfaces.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/figure/api_interfaces.html</a></li>
+      <li>matplotlib 官方《Pyplot tutorial》（pyplot 的当前 Axes / 当前 Figure 状态、gca 与 gcf、subplot） — <a href="https://matplotlib.org/stable/tutorials/introductory/pyplot.html" target="_blank" rel="noopener">matplotlib.org/stable/tutorials/introductory/pyplot.html</a></li>
+      <li>matplotlib 官方《Text properties and layout》（默认字体、Text with non-latin glyphs：中日韩字形与设字体族的做法） — <a href="https://matplotlib.org/stable/users/explain/text/text_props.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/text/text_props.html</a></li>
+      <li>matplotlib 官方《Fonts in Matplotlib》（字体选择机制、CJK 字体子集化、字体回退） — <a href="https://matplotlib.org/stable/users/explain/text/fonts.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/text/fonts.html</a></li>
+      <li>matplotlib 官方《Customizing Matplotlib with style sheets and rcParams》（rcParams 配置方式；<code>axes.unicode_minus</code> 默认 True 及其含义） — <a href="https://matplotlib.org/stable/users/explain/customizing.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/customizing.html</a></li>
+      <li>matplotlib 官方《Backends》（交互与非交互后端的区别、如何选择后端、图形窗口不显示的调试步骤） — <a href="https://matplotlib.org/stable/users/explain/figure/backends.html" target="_blank" rel="noopener">matplotlib.org/stable/users/explain/figure/backends.html</a></li>
+      <li>matplotlib 官方 FAQ（不打开窗口生成图片、保存后关闭图形等常见问题） — <a href="https://matplotlib.org/stable/users/faq.html" target="_blank" rel="noopener">matplotlib.org/stable/users/faq.html</a></li>
+      <li>matplotlib 官方《matplotlib.axes》（Axes 类代表图中的一块（子）绘图区，其方法是操作图形的主要接口） — <a href="https://matplotlib.org/stable/api/axes_api.html" target="_blank" rel="noopener">matplotlib.org/stable/api/axes_api.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.subplots</code>（一次创建 Figure 与一组 Axes） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.hist</code>（bins、density、histtype 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.hist.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.hist.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.bar</code>（x、height、width、tick_label 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.scatter</code>（s、c、marker 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html</a></li>
+      <li>matplotlib API 参考：<code>matplotlib.pyplot.legend</code>（图例的自动收集规则与 loc 等参数） — <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html" target="_blank" rel="noopener">matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html</a></li>
+      <li>pandas 官方《Chart visualization》（<code>df.plot()</code> 是对 matplotlib 的封装、默认后端为 matplotlib、kind 取值与 xlabel/ylabel 参数） — <a href="https://pandas.pydata.org/docs/user_guide/visualization.html" target="_blank" rel="noopener">pandas.pydata.org/docs/user_guide/visualization.html</a></li>
+      <li>pandas API 参考：<code>pandas.DataFrame.plot</code>（kind 取值列表、返回 Axes 对象） — <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html" target="_blank" rel="noopener">pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html</a></li>
+      <li>Python 官方文档《3. 数据模型》（环境与解释器，用于理解「对象 + 方法」的调用形式） — <a href="https://docs.python.org/zh-cn/3/reference/datamodel.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/datamodel.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格中的对象定义、参数名与默认值，以及第七节六条辨析中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

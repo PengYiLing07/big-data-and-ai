@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 字典与集合</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .viz-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;font-size:13px}
+  .viz-flow .fnode{background:var(--brand-bg);border:1px solid #c9dcff;color:#1c4fb8;border-radius:8px;padding:6px 12px}
+  .viz-flow .fnode.hot{background:#fff1e6;border-color:#f3c9a3;color:#a9560d}
+  .viz-flow .farrow{color:var(--muted)}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块二 · 循环与容器 ｜ 第 5 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>字典与集合（dict / set）</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：大数据与人工智能</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>字典保存的是什么？为什么它比「两个平行列表」更好用？</li>
+      <li><code>keys()</code> / <code>values()</code> / <code>items()</code> 各返回什么？为什么它们会随字典变化而变化？</li>
+      <li>读取一个可能不存在的键，为什么推荐 <code>get()</code> 而不是方括号？<code>setdefault()</code> 又解决什么麻烦？</li>
+      <li>为什么列表不能当字典的键？「可哈希」这个条件到底在要求什么？</li>
+      <li>集合为什么能去重？交集、并集、差集各对应什么运算符号？</li>
+      <li>从一段语料出发，怎样统计词频并排出高频词？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——当数据不是「一列同类的值」，而是「某个名字对应某个值」的一组对应关系时，用什么结构来装？</li>
+      <li><strong>它由什么组成</strong>——一个字典条目由哪两部分构成？查找为什么能比逐项比对快？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——字典与列表、字典的键与值、字典与集合、<code>get()</code> 与 <code>setdefault()</code> 的边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——哪些东西不能当键？字典的顺序是有保证的吗？集合的无序会带来什么后果？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      <strong>字典（dict）</strong>保存的是「键 → 值」的对应关系。官方术语表对它的定义是：一个关联数组，其中的任意键都映射到相应的值；键可以是任何具有 <code>__hash__()</code> 和 <code>__eq__()</code> 方法的对象。用花括号写出来就是
+      <code>{"标题": "地铁票价调整方案公布", "字数": 128}</code>，其中 <code>"标题"</code> 和 <code>"字数"</code> 是键，冒号后面的是值。与列表按位置取元素不同，字典按<em>名字</em>取值，因此不必记住某项排在第几位。
+    </p>
+    <p>
+      读取字典有一个常见的区别：用方括号读取不存在的键会直接抛 <code>KeyError</code>；而 <code>d.get(k)</code> 在键不存在时返回 <code>None</code>，也可以指定一个默认值，例如 <code>d.get(k, 0)</code>。做计数时
+      <code>counts[w] = counts.get(w, 0) + 1</code> 是最常见的写法之一。
+    </p>
+    <p>
+      <strong>集合（set）</strong>是「不重复元素组成的无序多项集」。官方教程的表述是：集合是由不重复元素组成的无序多项集，基本用法包括成员检测和消除重复元素，集合对象还支持合集、交集、差集和对称差集等数学运算。注意创建空集合只能用 <code>set()</code>，因为 <code>{}</code> 创建的是空字典。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      字典可类比为一份对照卡片盒：盒子里每一张卡片的正面是一个名字（键），背面是它对应的内容（值）；按名字抽卡很快，但卡片本身没有「第一张、第二张」的概念。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      集合可类比为一份「去重后的名单」：每个名字在名单上只出现一次，名单内部没有排序；判断某人在不在名单上很快，而对两份名单做交集就是「两边都出现过的名字」。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：字典的样子和键的限制、集合去重与三种运算、以及词频统计从语料到排行的整条链路。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 字典是「键 → 值」的映射表</div>
+      <div class="vsub">左列是键，右列是值，中间的箭头表示对应关系；下方橙色区是键的硬性限制。</div>
+      <svg viewBox="0 0 700 316" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>字典的键值映射结构与键的可哈希限制示意图</title>
+        <desc>三行键值对应关系：标题对应地铁票价调整方案公布、字数对应 128、版面对应要闻版；下方说明键必须是可哈希对象，列表不能作键。</desc>
+        <defs>
+          <marker id="ka" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#2f6fed"/>
+          </marker>
+        </defs>
+
+        <text x="60" y="24" font-size="12.5" fill="#5b6472" text-anchor="middle">键（key）</text>
+        <text x="470" y="24" font-size="12.5" fill="#5b6472" text-anchor="middle">值（value）</text>
+
+        <rect x="20" y="38" width="120" height="38" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="80" y="58" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">"标题"</text>
+        <line x1="146" y1="57" x2="330" y2="57" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ka)"/>
+        <rect x="338" y="38" width="300" height="38" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="488" y="58" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central">"地铁票价调整方案公布"</text>
+
+        <rect x="20" y="86" width="120" height="38" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="80" y="106" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">"字数"</text>
+        <line x1="146" y1="105" x2="330" y2="105" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ka)"/>
+        <rect x="338" y="86" width="300" height="38" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="488" y="106" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central">128</text>
+
+        <rect x="20" y="134" width="120" height="38" rx="8" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="80" y="154" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">"版面"</text>
+        <line x1="146" y1="153" x2="330" y2="153" stroke="#2f6fed" stroke-width="1.5" marker-end="url(#ka)"/>
+        <rect x="338" y="134" width="300" height="38" rx="8" fill="#ffffff" stroke="#b9c9ee" stroke-width="1"/>
+        <text x="488" y="154" font-size="12.5" fill="#1f2430" text-anchor="middle" dominant-baseline="central">"要闻版"</text>
+
+        <text x="20" y="196" font-size="11.5" fill="#5b6472">按名字取值：d["字数"] → 128　｜　键不存在时 d["年份"] → KeyError，改用 d.get("年份", 0) → 0</text>
+
+        <rect x="20" y="212" width="660" height="92" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.1"/>
+        <text x="40" y="236" font-size="12.5" font-weight="700" fill="#b45309">⚠ 键的硬性限制：必须是可哈希对象</text>
+        <line x1="36" y1="250" x2="664" y2="250" stroke="#f3c9a3" stroke-width="0.8"/>
+        <text x="40" y="270" font-size="12" fill="#78350f">可以作为键：字符串、数字、布尔、None、元组（且元组内元素也都可哈希）</text>
+        <text x="40" y="292" font-size="12" fill="#78350f">不能作为键：列表、字典、集合 —— 它们是可变对象，会抛 TypeError: unhashable type</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：字典靠「键的哈希值」定位条目，因此键必须可哈希；可哈希的前提是值在生命周期内不变，所以可变对象（列表、字典、集合）被排除在外。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 集合：先去掉重复，再做三种运算</div>
+      <div class="vsub">上半部分是 <code>set()</code> 对列表中重复元素的处理；下半部分用三个小图表示交集、并集、差集。</div>
+      <svg viewBox="0 0 700 320" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>集合去重与交集、并集、差集示意图</title>
+        <desc>列表中的重复元素经 set() 处理后只剩唯一值；下方三个示意图形分别标出交集 a 与 b、并集 a 或 b、差集 a 减 b 的覆盖范围。</desc>
+        <defs>
+          <marker id="sa" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="26" width="290" height="46" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="165" y="49" font-size="12.5" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">['头条', '体育', '头条', '财经']</text>
+        <line x1="316" y1="49" x2="376" y2="49" stroke="#5b6472" stroke-width="1.5" marker-end="url(#sa)"/>
+        <text x="346" y="32" font-size="11.5" fill="#5b6472" text-anchor="middle">set()</text>
+        <rect x="384" y="26" width="296" height="46" rx="9" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.1"/>
+        <text x="532" y="49" font-size="12.5" fill="#127a44" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace,Consolas,monospace">{'头条', '体育', '财经'}</text>
+        <text x="20" y="92" font-size="11.5" fill="#5b6472">重复的 '头条' 只保留一个；集合无序，打印顺序可能与书写顺序不同</text>
+
+        <line x1="20" y1="104" x2="680" y2="104" stroke="#e3e7ee" stroke-width="1"/>
+
+        <circle cx="112" cy="196" r="46" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <circle cx="168" cy="196" r="46" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2" fill-opacity="0.55"/>
+        <path d="M140 155 A46 46 0 0 1 140 237 A46 46 0 0 1 140 155" fill="#1a9e5a" fill-opacity="0.55"/>
+        <text x="84" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">a</text>
+        <text x="196" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">b</text>
+        <text x="140" y="264" font-size="12" fill="#127a44" text-anchor="middle">a &amp; b　两者都有</text>
+        <text x="140" y="286" font-size="11.5" fill="#5b6472" text-anchor="middle">例：{1,2,3} &amp; {2,3,4} → {2,3}</text>
+
+        <circle cx="322" cy="196" r="46" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <circle cx="378" cy="196" r="46" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2" fill-opacity="0.55"/>
+        <text x="294" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">a</text>
+        <text x="406" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">b</text>
+        <text x="350" y="264" font-size="12" fill="#127a44" text-anchor="middle">a | b　至少一边有</text>
+        <text x="350" y="286" font-size="11.5" fill="#5b6472" text-anchor="middle">例：{1,2,3} | {2,3,4} → {1,2,3,4}</text>
+
+        <circle cx="532" cy="196" r="46" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.2"/>
+        <circle cx="588" cy="196" r="46" fill="#ffffff" stroke="#b9c9ee" stroke-width="1.2"/>
+        <path d="M504 196 A46 46 0 0 0 560 237 A46 46 0 0 0 560 155 A46 46 0 0 0 504 196" fill="#7c5cff" fill-opacity="0.45"/>
+        <text x="504" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">a</text>
+        <text x="616" y="200" font-size="13" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">b</text>
+        <text x="560" y="264" font-size="12" fill="#5b46c0" text-anchor="middle">a - b　只在 a 中</text>
+        <text x="560" y="286" font-size="11.5" fill="#5b6472" text-anchor="middle">例：{1,2,3} - {2,3,4} → {1}</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：<code>set()</code> 先去重再运算；<code>&amp;</code> 取交集、<code>|</code> 取并集、<code>-</code> 取差集、<code>^</code> 取对称差集。集合无序，因此不能指望它按写入顺序输出。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 从一段语料到高频词排行</div>
+      <div class="vsub">词频统计的三步：先切出词，再逐个累加计数，最后排序取前若干名。</div>
+      <svg viewBox="0 0 700 208" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>词频统计三步流程示意图</title>
+        <desc>第一步把文本切成词，第二步用字典累加每个词的出现次数，第三步排序并取出现次数最多的前若干名。</desc>
+        <defs>
+          <marker id="fa" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+            <polygon points="0 0,8 4,0 8" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="18" y="52" width="196" height="76" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="116" y="76" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">① 切成词</text>
+        <text x="116" y="98" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">text.split()</text>
+        <text x="116" y="118" font-size="11.5" fill="#5b6472" text-anchor="middle">必要时先统一大小写</text>
+        <line x1="220" y1="90" x2="256" y2="90" stroke="#5b6472" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <rect x="262" y="52" width="196" height="76" rx="10" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="360" y="76" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">② 逐个累加计数</text>
+        <text x="360" y="98" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">counts[w] += 1</text>
+        <text x="360" y="118" font-size="11.5" fill="#5b6472" text-anchor="middle">也可直接用 Counter</text>
+        <line x1="464" y1="90" x2="500" y2="90" stroke="#5b6472" stroke-width="1.5" marker-end="url(#fa)"/>
+
+        <rect x="506" y="52" width="176" height="76" rx="10" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="594" y="76" font-size="12.5" font-weight="700" fill="#127a44" text-anchor="middle">③ 排序取 Top-N</text>
+        <text x="594" y="98" font-size="11.5" fill="#1f2430" text-anchor="middle" font-family="ui-monospace,Consolas,monospace">most_common(N)</text>
+        <text x="594" y="118" font-size="11.5" fill="#5b6472" text-anchor="middle">或 sorted(..., key=...)</text>
+
+        <text x="18" y="164" font-size="11.5" fill="#5b6472">同一份 counts 字典，既可以按次数排序取高频词，也可以反过来按次数取低频词</text>
+        <text x="18" y="188" font-size="11.5" fill="#d97706">⚠ 计数时若直接写 counts[w] += 1，第一次遇到某词会因键不存在而抛 KeyError，故需先用 get(w, 0) 取默认值</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：字典在这个流程里充当「词 → 次数」的计数器；有了这份映射，排行榜只是对它做一次排序。这一模式是后续文本特征统计的基础。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中字典的键值结构、键必须可哈希、集合去重与集合运算符号、以及词频统计的写法，均可在第九节所列官方文档中逐条核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>字典与集合同属「靠哈希值定位条目」的一类结构：字典保存的是键与值的对应关系，集合保存的只有键本身。下表先给出字典的组成，再给出两者的常用操作。</p>
+
+    <h3>字典的组成</h3>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>键（key）</strong></td><td>用来标识条目的值，必须可哈希。同一个字典中键不会重复；重复指定同一个键时，最后给出的值生效。</td></tr>
+      <tr><td><strong>值（value）</strong></td><td>与键对应的内容，可以是任何对象，包括列表、字典等可变对象。</td></tr>
+      <tr><td><strong>条目（item）</strong></td><td>一对「键 + 值」。<code>len(d)</code> 返回的是条目数量。</td></tr>
+      <tr><td><strong>字典视图</strong></td><td><code>keys()</code>、<code>values()</code>、<code>items()</code> 返回的对象称为字典视图：它们提供字典条目的一个动态视图，字典改变时视图也会相应改变。</td></tr>
+      <tr><td><strong>顺序</strong></td><td>字典保持插入顺序。官方文档说明，该特性自 Python 3.7 起被正式宣布为语言规范的组成部分。</td></tr>
+    </table>
+
+    <h3>常用操作速查</h3>
+    <table>
+      <tr><th>写法</th><th>行为 / 返回</th><th>需要注意</th></tr>
+      <tr><td><code>d = {}</code></td><td>空字典</td><td><code>{}</code> 是空字典，不是空集合</td></tr>
+      <tr><td><code>d = set()</code></td><td>空集合</td><td>空集合只能用 <code>set()</code> 创建</td></tr>
+      <tr><td><code>d[k]</code></td><td>取出 <code>k</code> 对应的值</td><td>键不存在会抛 <code>KeyError</code></td></tr>
+      <tr><td><code>d.get(k)</code> / <code>d.get(k, 默认值)</code></td><td>键不存在时返回 <code>None</code> 或指定默认值</td><td>做计数与容错读取时的常用写法</td></tr>
+      <tr><td><code>d[k] = v</code></td><td>新增或覆盖条目</td><td>键已存在即覆盖其值</td></tr>
+      <tr><td><code>d.setdefault(k, 默认值)</code></td><td>键存在则返回现有值；不存在则先写入默认值再返回它</td><td>一次完成「取默认值」与「写回」，常用于把同义词归到同一个键下</td></tr>
+      <tr><td><code>del d[k]</code> / <code>d.pop(k)</code></td><td>删除条目</td><td><code>pop</code> 会返回被删的值；键不存在时两者都会报错，<code>pop(k, 默认值)</code> 可避免</td></tr>
+      <tr><td><code>k in d</code></td><td>判断键是否存在</td><td>判断的是<em>键</em>，不是值</td></tr>
+      <tr><td><code>d.keys()</code> / <code>d.values()</code> / <code>d.items()</code></td><td>键视图 / 值视图 / 条目视图</td><td>视图是动态的；需要固定快照时可先转成 <code>list()</code></td></tr>
+      <tr><td><code>for k, v in d.items():</code></td><td>同时遍历键与值</td><td>只遍历键可以直接写 <code>for k in d:</code></td></tr>
+      <tr><td><code>set(seq)</code></td><td>去重后的集合</td><td>元素也必须可哈希；集合本身无序</td></tr>
+      <tr><td><code>a &amp; b</code> / <code>a | b</code> / <code>a - b</code> / <code>a ^ b</code></td><td>交集 / 并集 / 差集 / 对称差集</td><td>也支持 <code>union()</code>、<code>intersection()</code>、<code>difference()</code> 等方法写法</td></tr>
+      <tr><td><code>Counter(seq)</code></td><td>计数工具，<code>dict</code> 的子类</td><td>查询不存在的键返回 <code>0</code> 而不报错；<code>most_common(N)</code> 直接给出前 N 名</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">上表主要依据 Python 官方教程《5. 数据结构》5.4 集合与 5.5 字典、官方文档《内置类型》映射类型与集合类型、以及 <code>collections</code> 模块文档整理。</p>
+
+    <h3>「可哈希」到底在要求什么</h3>
+    <table>
+      <tr><th>说法</th><th>含义</th></tr>
+      <tr><td>可哈希对象</td><td>具有在其生命期内绝不改变的哈希值（需要有 <code>__hash__()</code> 方法），并且可以同其他对象进行比较（需要有 <code>__eq__()</code> 方法）。可哈希性使得对象能够作为字典键或集合成员使用。</td></tr>
+      <tr><td>哪些可用</td><td>大多数不可变内置对象都是可哈希的：数字、字符串、元组（且内部元素也都可哈希）、<code>frozenset</code>。</td></tr>
+      <tr><td>哪些不可用</td><td>可变容器不可哈希：列表、字典、集合。把它们当键会抛 <code>TypeError: unhashable type</code>。</td></tr>
+    </table>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      统计一段语料里每个词出现了多少次、哪几个词出现得最多，是文本分析里最基础的一步；它同时也是后续给文本做特征时的常见操作。——这正是第 5 课「评论文本词频统计」要做的事。下面的代码可以直接运行。
+    </p>
+    <pre>from collections import Counter
+
+text = <span class="s">"地铁 票价 调整 地铁 票价 地铁 公交"</span>
+
+<span class="c"># 方式一：用普通字典手动计数</span>
+<span class="c"># 先用 get(w, 0) 取默认值，避免首次遇到某个词时抛 KeyError</span>
+counts = {}
+for w in text.split():
+    counts[w] = counts.get(w, 0) + 1
+print(counts)   <span class="c"># {'地铁': 3, '票价': 2, '调整': 1, '公交': 1}</span>
+
+<span class="c"># 方式二：用 Counter，写法更短；查询不存在的键返回 0</span>
+counts = Counter(text.split())
+print(counts.most_common(2))   <span class="c"># [('地铁', 3), ('票价', 2)]</span>
+
+<span class="c"># 只看出现次数最多的一个词</span>
+top_word, top_n = counts.most_common(1)[0]
+print(top_word, top_n)         <span class="c"># 地铁 3</span>
+
+<span class="c"># setdefault：把「词 → 它出现过的位置」记下来</span>
+index = {}
+for i, w in enumerate(text.split()):
+    index.setdefault(w, []).append(i)
+print(index[<span class="s">"地铁"</span>])   <span class="c"># [0, 3, 6]</span>
+
+<span class="c"># 集合去重：先看这段语料一共用到多少个不同的词</span>
+words = text.split()
+uniq = set(words)
+print(len(uniq))               <span class="c"># 4</span>
+
+<span class="c"># 集合运算：停用词与正文词的差集</span>
+stopwords = {<span class="s">"的"</span>, <span class="s">"了"</span>, <span class="s">"在"</span>}
+print(set(stopwords) &amp; set(words))   <span class="c"># set()——两者没有共同元素</span>
+content_words = set(words) | set(stopwords)
+print(len(content_words))            <span class="c"># 7</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明字典与集合在真实文本统计中的组合方式，属于辅助理解示例，非某个来源的原文代码。</p>
+    <div class="person"><span class="lbl">✅ 核查说明（人工）</span>
+      示例中 <code>get()</code> 的默认值用法、字典视图与插入顺序、<code>set()</code> 的去重与集合运算符号、<code>Counter</code> 的 <code>most_common()</code> 行为，均与第九节官方文档一致。<code>Counter('abracadabra').most_common(3)</code> 得到 <code>[('a', 5), ('b', 2), ('r', 2)]</code> 是官方文档中的原例。
+    </div>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong><code>{}</code> 是空字典，不是空集合。</strong>官方教程明确指出：创建集合用花括号或 <code>set()</code> 函数，注意创建空集合只能用 <code>set()</code>，不能用 <code>{}</code>，<code>{}</code> 创建的是空字典。因此 <code>type({})</code> 得到 <code>dict</code>，<code>type(set())</code> 得到 <code>set</code>。</li>
+      <li><strong>键必须可哈希，因此列表不能当键。</strong>官方术语表对「可哈希」的说明是：可哈希性使得对象能够作为字典键或集合成员使用；可变容器（例如列表或字典）都不可哈希。把列表当键会直接抛 <code>TypeError</code>。需要把「一组值」当作键时，可以改用元组。</li>
+      <li><strong>用方括号读不存在的键会抛 <code>KeyError</code>，用 <code>get()</code> 不会。</strong>这是初学者最常见的报错之一。<code>d.get(k)</code> 返回 <code>None</code>，<code>d.get(k, 0)</code> 返回 0；做计数时后者几乎是标准写法。</li>
+      <li><strong><code>get()</code> 与 <code>setdefault()</code> 的分工不同。</strong><code>get()</code> 只负责读取，不改变字典；<code>setdefault()</code> 在键不存在时会<em>顺手把默认值写进字典</em>。前者适合做统计取值，后者适合「把多个条目按同一个键归并」这类需要写回的场景。</li>
+      <li><strong>字典的顺序是有保证的，集合的顺序没有。</strong>官方文档明确说明，字典保持插入顺序这一特性自 Python 3.7 起成为语言规范的正式组成部分；而关于集合，官方教程写道：由于集合是无序的，在迭代或打印它们时可能会以不符合预期的顺序输出元素。需要固定顺序时，可配合 <code>sorted()</code> 使用。</li>
+      <li><strong>字典视图是动态的，不是快照。</strong>官方术语表的表述是：它们提供了字典条目的一个动态视图，这意味着当字典改变时，视图也会相应改变。因此遍历 <code>d.items()</code> 的同时增删条目会带来问题；需要固定下来时先转成 <code>list()</code>。</li>
+      <li><strong>字典的键不能重复，集合的元素也不能重复。</strong>官方文档指出，字典中重复键之间的冲突不会被检测，指定键所保存的最后一个值将成为最终的值。集合同理，重复写入不报错，但只保留一个。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节七条均以 Python 官方文档为依据。空集合的创建、集合无序、集合运算见官方教程《5. 数据结构》5.4 节；可哈希的定义与「可变容器不可哈希」见官方术语表 <code>hashable</code> 词条；<code>KeyError</code> 与 <code>get()</code> 的差别见官方文档《内置类型》映射类型与官方语言参考《6. 表达式》6.2.8 节；字典保持插入顺序见《Python 3.7 有什么新变化》；字典视图的动态性见官方术语表 <code>dictionary view</code> 词条；<code>Counter</code> 的行为见 <code>collections</code> 模块文档。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 想创建一个<strong>空集合</strong>，正确的写法是？</div>
+      <button class="opt" data-v="A">A. <code>{}</code></button>
+      <button class="opt" data-v="B">B. <code>[]</code></button>
+      <button class="opt" data-v="C">C. <code>set()</code></button>
+      <button class="opt" data-v="D">D. <code>()</code></button>
+      <div class="fb" data-ok="✅ 正确。{} 创建的是空字典，[] 是空列表，() 是空元组；创建空集合只能用 set()。非空集合可以写成 {'a', 'b'}，但空集合没有对应的字面量写法。"></div>
+      <div class="src">📎 来源：Python 官方教程《5. 数据结构》5.4 集合 —— docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-e">入门</span>2. 已知 <code>d = {"字数": 128}</code>，执行 <code>d.get("年份")</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. 抛出 <code>KeyError</code></button>
+      <button class="opt" data-v="B">B. <code>None</code></button>
+      <button class="opt" data-v="C">C. <code>0</code></button>
+      <button class="opt" data-v="D">D. <code>""</code></button>
+      <div class="fb" data-ok="✅ 正确。get() 在键不存在时返回 None（也可以写成 d.get("年份", 0) 指定默认值），而 d["年份"] 会直接抛 KeyError。做计数时常用 counts.get(w, 0) + 1 这种写法。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型》—— 映射类型 dict 的 get 方法；docs.python.org/zh-cn/3/library/stdtypes.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 下列哪一种对象<strong>不能</strong>作为字典的键？</div>
+      <button class="opt" data-v="A">A. 字符串 <code>"标题"</code></button>
+      <button class="opt" data-v="B">B. 整数 <code>2026</code></button>
+      <button class="opt" data-v="C">C. 元组 <code>("要闻版", 3)</code></button>
+      <button class="opt" data-v="D">D. 列表 <code>["要闻版", 3]</code></button>
+      <div class="fb" data-ok="✅ 正确。可哈希性使得对象能够作为字典键或集合成员使用；可变容器（例如列表或字典）都不可哈希，用它当键会抛 TypeError: unhashable type。如果确实需要把一组值当作键，改用元组即可——只要元组内部元素也都是可哈希的。"></div>
+      <div class="src">📎 来源：Python 官方术语表 hashable（可哈希）词条 —— docs.python.org/zh-cn/3/glossary.html</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 关于字典的顺序，下列哪一种说法符合官方文档？</div>
+      <button class="opt" data-v="A">A. 字典保持插入顺序，该特性自 Python 3.7 起成为语言规范的正式组成部分</button>
+      <button class="opt" data-v="B">B. 字典总是按键的字母顺序排列，与插入顺序无关</button>
+      <button class="opt" data-v="C">C. 字典的遍历顺序是随机的，每次运行都不一样</button>
+      <button class="opt" data-v="D">D. 字典保持插入顺序这一行为只存在于 CPython，其他实现不需要遵守</button>
+      <div class="fb" data-ok="✅ 正确。Python 3.7 的新特性文档写明：dict 对象会保持插入时的顺序这个特性正式宣布成为 Python 语言官方规范的一部分。对比之下，集合是无序的，迭代或打印顺序可能与预期不符。"></div>
+      <div class="src">📎 来源：Python 官方文档《Python 3.7 有什么新变化》—— docs.python.org/zh-cn/3/whatsnew/3.7.html；集合无序见官方教程《5. 数据结构》5.4</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 执行 <code>Counter('abracadabra').most_common(3)</code> 的结果是？</div>
+      <button class="opt" data-v="A">A. <code>[('a', 5), ('b', 2), ('r', 2)]</code></button>
+      <button class="opt" data-v="B">B. <code>[('a', 5), ('r', 2), ('b', 2)]</code></button>
+      <button class="opt" data-v="C">C. <code>[('a', 5), ('b', 2), ('c', 1)]</code></button>
+      <button class="opt" data-v="D">D. 抛出 <code>KeyError</code>，因为计数器中不存在键 3</button>
+      <div class="fb" data-ok="✅ 正确。这是 collections 文档中的原例：most_common(n) 返回最常见的 n 个元素及其计数，按常见程度从高到低排序；计数值相等的元素按首次出现的顺序排列。'b' 与 'r' 都出现 2 次，而 'b' 在字符串中先出现，所以 'b' 排在 'r' 前面。"></div>
+      <div class="src">📎 来源：Python 官方文档《collections —— 容器数据类型》Counter 对象与 most_common() —— docs.python.org/zh-cn/3/library/collections.html</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为可核查的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《5. 数据结构》5.4 集合与 5.5 字典（集合由不重复元素组成的无序多项集、空集合只能用 <code>set()</code>、集合运算、字典的键值结构与遍历方式） — <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/datastructures.html</a></li>
+      <li>Python 官方文档《内置类型》（映射类型 dict、<code>get()</code> 与 <code>setdefault()</code>、字典视图对象、集合类型 set / frozenset 与集合运算、真值检测） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html</a></li>
+      <li>Python 官方术语表（<code>hashable</code> 可哈希词条、<code>dictionary</code>、<code>dictionary view</code>、<code>key</code>、<code>set comprehension</code> 等） — <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/glossary.html</a></li>
+      <li>Python 官方文档《<code>collections</code> —— 容器数据类型》（<code>Counter</code> 是 <code>dict</code> 的子类、缺失键查询返回 0、<code>most_common(n)</code> 及其并列时的排序规则） — <a href="https://docs.python.org/zh-cn/3/library/collections.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/collections.html</a></li>
+      <li>Python 官方文档《Python 3.7 有什么新变化》（「<code>dict</code> 对象会保持插入时的顺序这个特性正式宣布成为 Python 语言官方规范的一部分」） — <a href="https://docs.python.org/zh-cn/3/whatsnew/3.7.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/whatsnew/3.7.html</a></li>
+      <li>Python 官方语言参考《6. 表达式》6.2.8 字典显示（键必须是可哈希类型、重复键以最靠右的值为准） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html</a></li>
+      <li>Python 官方文档《数据模型》（可变对象与不可变对象、字典与列表是可变的，键的取值限制） — <a href="https://docs.python.org/zh-cn/3/reference/datamodel.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/datamodel.html</a></li>
+      <li>Python 官方文档《内置函数》（<code>dict()</code>、<code>set()</code>、<code>len()</code>、<code>sorted()</code> 等） — <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/functions.html</a></li>
+      <li>PEP 8 —— Style Guide for Python Code（缩进使用 4 个空格，命名规范） — <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">peps.python.org/pep-0008/</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格、第七节七条辨析与第八节全部题解中的技术结论，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+/* 自测判分（可靠实现：以按钮 .selected 显式状态为准，不依赖 input.checked） */
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>

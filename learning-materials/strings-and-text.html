@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料 · 字符串与文本处理</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2430; --muted:#5b6472;
+    --line:#e3e7ee; --brand:#2f6fed; --brand-bg:#eaf1ff;
+    --ok:#1a9e5a; --warn:#d97706; --tag:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  .navbar{margin-bottom:14px;font-size:13px}
+  .navbar a{color:var(--brand);text-decoration:none}
+  header.hero{background:linear-gradient(135deg,#2f6fed,#5b8cff);color:#fff;border-radius:16px;padding:28px 28px;margin-bottom:26px}
+  header.hero .kicker{font-size:13px;opacity:.85;letter-spacing:1px}
+  header.hero h1{margin:6px 0 4px;font-size:28px}
+  header.hero .meta{font-size:13px;opacity:.9;margin-top:8px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 12px;font-size:12px;margin-right:6px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin-bottom:26px}
+  .toc h2{margin:0 0 10px;font-size:16px}
+  .toc ol{margin:0;padding-left:20px}
+  .toc a{color:var(--brand);text-decoration:none}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+  section h2{margin-top:0;font-size:20px;display:flex;align-items:center;gap:8px}
+  section h3{font-size:16px;color:var(--brand)}
+  .goal-list li,.confuse li,.source-list li{margin-bottom:6px}
+  .analogy{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
+  .analogy .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f4f9}
+  code{background:#f1f4f9;border-radius:4px;padding:1px 5px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.7;font-family:ui-monospace,Consolas,monospace}
+  pre .c{color:#94a3b8}
+  pre .s{color:#7dd3fc}
+  pre .k{color:#f0abfc}
+  .person{background:#f0fdf6;border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .person .lbl{font-weight:700;color:var(--ok);font-size:13px;display:block;margin-bottom:2px}
+  .warnbox{background:#fff7ed;border-left:4px solid var(--warn);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px}
+  .warnbox .lbl{font-weight:700;color:#b45309;font-size:13px;display:block;margin-bottom:2px}
+  .source-list{background:#fafbfc;border:1px dashed var(--line);border-radius:8px;padding:12px 16px;list-style:none;margin:12px 0}
+  .source-list li{padding-left:22px;position:relative}
+  .source-list li:before{content:"🔗";position:absolute;left:0}
+  .source-list a{color:var(--brand);word-break:break-all}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;background:#fcfdff}
+  .quiz .q{font-weight:700;margin-bottom:10px}
+  .quiz .q .lv{font-size:12px;font-weight:600;border-radius:20px;padding:1px 10px;margin-right:6px;vertical-align:1px}
+  .lv-e{background:#e8f5ee;color:#1a9e5a}.lv-m{background:#eaf1ff;color:#2f6fed}.lv-h{background:#fff1e6;color:#d2691e}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .quiz .opt:hover{border-color:#b9c9ee;background:#f7faff}
+  .quiz .opt.selected{border-color:var(--brand);background:var(--brand-bg)}
+  .quiz .opt.correct{border-color:var(--ok);background:#eefaf3}
+  .quiz .opt.wrong{border-color:#d9534f;background:#fdf0ef}
+  .quiz .fb{font-size:13px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none}
+  .quiz .fb.show{display:block}
+  .quiz .fb.ok{background:#eefaf3;color:#127a44}
+  .quiz .fb.no{background:#fdf0ef;color:#b03a36}
+  .quiz .src{font-size:12px;color:var(--muted);margin-top:6px}
+  .quiz-actions{margin:16px 0}
+  .quiz-actions button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;cursor:pointer;margin-right:8px}
+  .quiz-actions button.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .score{display:none;background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0;font-weight:600}
+  .score.show{display:block}
+  footer{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+  .viz{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fcfdff}
+  .viz .vcap{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .viz .vsub{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .viz svg{width:100%;height:auto;display:block}
+  .viz-note{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fig-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .fig-legend span{display:inline-flex;align-items:center;gap:5px}
+  .fig-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  @media(max-width:560px){header.hero h1{font-size:22px}section{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="navbar">📁 <a href="index.html">← 返回概念目录</a> ｜ 板块一 · Python 起步 ｜ 第 2 课</div>
+
+  <header class="hero">
+    <div class="kicker">📚 概念学习资料 · 由 concept-learner 生成</div>
+    <h1>字符串与文本处理</h1>
+    <div class="meta">
+      <span class="badge">学科 / 领域：Python 编程基础</span>
+      <span class="badge">课程：Python 基础（13 次课 · 新闻学专业定制）</span>
+      <span class="badge">生成版本：v1.0</span>
+      <span class="badge">日期：2026-09-17</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <h2>本页目录</h2>
+    <ol>
+      <li><a href="#goals">学习目标</a></li>
+      <li><a href="#questions">核心问题</a></li>
+      <li><a href="#explain">概念的通俗解释</a></li>
+      <li><a href="#visual">可视化图解（核心概念 / 难点）</a></li>
+      <li><a href="#mechanism">核心机制 / 组成</a></li>
+      <li><a href="#scenario">一个具体应用场景</a></li>
+      <li><a href="#confusions">易混与边界</a></li>
+      <li><a href="#quiz">自测问题</a></li>
+      <li><a href="#sources">资料来源与可核查链接</a></li>
+    </ol>
+  </nav>
+
+  <section id="goals">
+    <h2>🧭 一、学习目标</h2>
+    <p>学完本页后，读者应该能够回答：</p>
+    <ul class="goal-list">
+      <li>一段文本在 Python 里以什么形式存在？单引号、双引号、三重引号分别用在什么场合？</li>
+      <li>如何从「地铁票价调整公布」里单独取出「票价」两个字？负数索引和切片各按什么规则计数？</li>
+      <li><code>split()</code> / <code>join()</code> / <code>strip()</code> / <code>replace()</code> / <code>find()</code> 各自解决文本处理的哪一步？它们的默认行为是什么？</li>
+      <li>为什么 <code>word[0] = "J"</code> 会报错，而 <code>"J" + word[1:]</code> 可以正常工作？字符串不可修改会带来哪些实际后果？</li>
+      <li>怎样把一段带多余空格、换行、混用标点的脏稿件，清洗成一条可以进入统计流程的规范文本？</li>
+    </ul>
+  </section>
+
+  <section id="questions">
+    <h2>❓ 二、核心问题</h2>
+    <ul>
+      <li><strong>它解决什么问题</strong>——新闻素材、稿件、评论、采访记录本质上都是文本，程序要以什么形式接住它们，才能做检索、切分与统计？</li>
+      <li><strong>它由什么组成</strong>——一个字符串对象包含哪些部分？索引、切片与方法调用分别作用在什么位置上？</li>
+      <li><strong>它和相邻概念怎么区分</strong>——字符串与数字、字符串与列表、<code>find()</code> 与 <code>in</code>、<code>strip()</code> 与 <code>replace()</code>，边界各在哪里？</li>
+      <li><strong>它的边界在哪</strong>——为什么字符串改不动？为什么切片越界静默通过，而索引越界直接报错？</li>
+    </ul>
+  </section>
+
+  <section id="explain">
+    <h2>📖 三、概念的通俗解释</h2>
+    <p>
+      Python 里的字符串（<code>str</code>）就是「一段文字」，用成对的单引号 <code>'...'</code> 或双引号 <code>"..."</code> 标出来，两种写法的结果完全相同。官方教程明确写道：单引号与双引号唯一的区别，是不需要在单引号里转义双引号，反之亦然。引号里面即便是纯数字，例如 <code>'1975'</code>，得到的仍然是字符串而不是整数。
+    </p>
+    <p>
+      字符串是一串<strong>排列有序的字符</strong>，每个字符都有位置编号，从 <code>0</code> 开始。因此它支持两种基本取用方式：<strong>索引</strong>取单个字符（<code>s[2]</code>），<strong>切片</strong>取一段子串（<code>s[2:5]</code>）。官方教程给出了一个形象的读法：索引指向的是字符<strong>之间</strong>的空隙，第一个字符的左侧标为 0，最后一个字符的右侧标为字符串长度 n。
+    </p>
+    <p>
+      字符串最需要记住的性质是<strong>不可修改（immutable）</strong>。官方教程的原话是「Python 字符串不能修改」，为字符串中某个索引位置赋值会报 <code>TypeError: 'str' object does not support item assignment</code>。所有看起来像「修改」的操作——拼接、替换、去空白——实际上都是<strong>生成一个新字符串</strong>，原字符串原封不动。
+    </p>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      字符串可类比为<strong>已经印刷装订好的一页报纸</strong>：字符的位置固定，可以按页码取阅（索引），也可以剪下连续的一段（切片），但已经印好的这一页无法涂改。要得到不同内容，只能重印一页新报纸——这正是 <code>"J" + word[1:]</code> 所做的事。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+    <div class="analogy"><span class="lbl">💡 一个类比</span>
+      文本清洗方法可类比为<strong>编辑部的校对工序</strong>：<code>strip()</code> 像修掉页边多余的空白，<code>replace()</code> 像统一标点体例，<code>split()</code> 像按句切条，<code>join()</code> 像把切好的条目按新规则重新排版。每一道工序都产出一份新稿样，而不是在旧稿上涂改。这一类比属于帮助理解的通俗化说法，非官方原文。
+    </div>
+  </section>
+
+  <section id="visual">
+    <h2>🎨 四、可视化图解（核心概念 / 难点）</h2>
+    <p>下面三张图分别回答三个最容易卡住的问题：索引与切片到底怎么数、为什么字符串改不动、脏稿件清洗按什么顺序做。</p>
+
+    <figure class="viz">
+      <div class="vcap">图 1 · 索引与切片的坐标尺</div>
+      <div class="vsub">以 <code>s = "地铁票价调整公布"</code> 为例，正向索引从 0 开始，负向索引从 -1 开始；切片取的是两个索引之间的字符。</div>
+      <svg viewBox="0 0 700 290" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>字符串的索引与切片坐标尺示意图</title>
+        <desc>一个由八个字符组成的字符串，上方标注正向索引 0 到 7，下方标注负向索引 -8 到 -1；再用括号标出切片 s[:2]、s[2:] 与 s[-3:] 各自覆盖的字符范围。</desc>
+        <defs>
+          <marker id="st-a" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#2f6fed"/>
+          </marker>
+        </defs>
+
+        <text x="30" y="24" font-size="13" fill="#1f2430">s = "地铁票价调整公布"　　len(s) 的结果是 8</text>
+
+        <text x="30" y="54" font-size="12" fill="#5b6472">正向索引 →</text>
+        <text x="30" y="136" font-size="12" fill="#7c5cff">负向索引 →</text>
+
+        <rect x="150" y="62" width="62" height="48" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="212" y="62" width="62" height="48" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="274" y="62" width="62" height="48" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <rect x="336" y="62" width="62" height="48" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <rect x="398" y="62" width="62" height="48" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <rect x="460" y="62" width="62" height="48" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="522" y="62" width="62" height="48" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="584" y="62" width="62" height="48" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+
+        <text x="181" y="86" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">地</text>
+        <text x="243" y="86" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">铁</text>
+        <text x="305" y="86" font-size="16" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">票</text>
+        <text x="367" y="86" font-size="16" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">价</text>
+        <text x="429" y="86" font-size="16" fill="#1c4fb8" text-anchor="middle" dominant-baseline="central">调</text>
+        <text x="491" y="86" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">整</text>
+        <text x="553" y="86" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">公</text>
+        <text x="615" y="86" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">布</text>
+
+        <text x="181" y="52" font-size="12" fill="#5b6472" text-anchor="middle">0</text>
+        <text x="243" y="52" font-size="12" fill="#5b6472" text-anchor="middle">1</text>
+        <text x="305" y="52" font-size="12" fill="#5b6472" text-anchor="middle">2</text>
+        <text x="367" y="52" font-size="12" fill="#5b6472" text-anchor="middle">3</text>
+        <text x="429" y="52" font-size="12" fill="#5b6472" text-anchor="middle">4</text>
+        <text x="491" y="52" font-size="12" fill="#5b6472" text-anchor="middle">5</text>
+        <text x="553" y="52" font-size="12" fill="#5b6472" text-anchor="middle">6</text>
+        <text x="615" y="52" font-size="12" fill="#5b6472" text-anchor="middle">7</text>
+
+        <text x="181" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-8</text>
+        <text x="243" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-7</text>
+        <text x="305" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-6</text>
+        <text x="367" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-5</text>
+        <text x="429" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-4</text>
+        <text x="491" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-3</text>
+        <text x="553" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-2</text>
+        <text x="615" y="130" font-size="12" fill="#7c5cff" text-anchor="middle">-1</text>
+
+        <line x1="150" y1="170" x2="274" y2="170" stroke="#2f6fed" stroke-width="1.6"/>
+        <line x1="150" y1="164" x2="150" y2="176" stroke="#2f6fed" stroke-width="1.6"/>
+        <line x1="274" y1="164" x2="274" y2="176" stroke="#2f6fed" stroke-width="1.6"/>
+        <text x="212" y="192" font-size="12" fill="#1c4fb8" text-anchor="middle">s[:2] → 「地铁」</text>
+
+        <line x1="274" y1="170" x2="646" y2="170" stroke="#1a9e5a" stroke-width="1.6"/>
+        <line x1="274" y1="164" x2="274" y2="176" stroke="#1a9e5a" stroke-width="1.6"/>
+        <line x1="646" y1="164" x2="646" y2="176" stroke="#1a9e5a" stroke-width="1.6"/>
+        <text x="470" y="192" font-size="12" fill="#127a44" text-anchor="middle">s[2:] → 「票价调整公布」</text>
+
+        <line x1="460" y1="222" x2="646" y2="222" stroke="#7c5cff" stroke-width="1.6"/>
+        <line x1="460" y1="216" x2="460" y2="228" stroke="#7c5cff" stroke-width="1.6"/>
+        <line x1="646" y1="216" x2="646" y2="228" stroke="#7c5cff" stroke-width="1.6"/>
+        <text x="553" y="244" font-size="12" fill="#5b3fd6" text-anchor="middle">s[-3:] → 「公布」加上「整」，即 s[5:]</text>
+
+        <text x="150" y="270" font-size="12" fill="#d97706">切片规则：含起点、不含终点。因此 s[:2] + s[2:] 的结果恒等于 s 本身。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：索引是「取一个位置」，切片是「取两个位置之间的一段」；切片用「含起点、不含终点」的规则，所以 <code>s[:i] + s[i:]</code> 总是等于 <code>s</code>。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 2 · 字符串不可修改：两条路径，一条报错一条可行</div>
+      <div class="vsub">左路试图就地改动一个字符，直接触发 <code>TypeError</code>；右路把原字符串切片后拼接，生成一个全新字符串，原对象不受影响。</div>
+      <svg viewBox="0 0 700 290" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>字符串就地修改报错与拼接新建的对比示意图</title>
+        <desc>左侧演示对字符串按下标赋值会抛出 TypeError；右侧演示用切片加拼接生成新字符串，原字符串保持不变。</desc>
+
+        <rect x="8" y="14" width="330" height="258" rx="12" fill="#fdf0ef" stroke="#d9534f" stroke-width="1.2"/>
+        <text x="28" y="42" font-size="13.5" font-weight="700" fill="#b03a36">✗ 就地修改：类型错误</text>
+        <text x="28" y="66" font-size="12.5" fill="#1f2430" font-family="ui-monospace,Consolas,monospace">word[0] = "J"</text>
+
+        <rect x="28" y="84" width="52" height="40" fill="#ffd9d6" stroke="#d9534f" stroke-width="1.2"/>
+        <rect x="80" y="84" width="52" height="40" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="132" y="84" width="52" height="40" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="184" y="84" width="52" height="40" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="236" y="84" width="52" height="40" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="288" y="84" width="30" height="40" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="54" y="105" font-size="16" fill="#b03a36" text-anchor="middle" dominant-baseline="central">P</text>
+        <text x="106" y="105" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">y</text>
+        <text x="158" y="105" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">t</text>
+        <text x="210" y="105" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">h</text>
+        <text x="262" y="105" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">o</text>
+        <text x="303" y="105" font-size="16" fill="#1f2430" text-anchor="middle" dominant-baseline="central">n</text>
+
+        <text x="54" y="142" font-size="11" fill="#d97706" text-anchor="middle">目标位置</text>
+
+        <text x="28" y="172" font-size="12" fill="#5b6472">报错内容：</text>
+        <text x="28" y="194" font-size="11.5" fill="#b03a36" font-family="ui-monospace,Consolas,monospace">TypeError: 'str' object does not</text>
+        <text x="28" y="212" font-size="11.5" fill="#b03a36" font-family="ui-monospace,Consolas,monospace">support item assignment</text>
+
+        <text x="28" y="244" font-size="12" fill="#78350f">原因：字符串是不可修改对象，</text>
+        <text x="28" y="262" font-size="12" fill="#78350f">不提供按位置赋值的操作。</text>
+
+        <rect x="362" y="14" width="330" height="258" rx="12" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="382" y="42" font-size="13.5" font-weight="700" fill="#127a44">✓ 拼接新建：生成新对象</text>
+        <text x="382" y="66" font-size="12.5" fill="#1f2430" font-family="ui-monospace,Consolas,monospace">"J" + word[1:]</text>
+
+        <text x="382" y="96" font-size="11.5" fill="#5b6472">原对象 word（未被改动）</text>
+        <rect x="382" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="428" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="474" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="520" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="566" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="612" y="104" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="405" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">P</text>
+        <text x="451" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">y</text>
+        <text x="497" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">t</text>
+        <text x="543" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">h</text>
+        <text x="589" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">o</text>
+        <text x="635" y="122" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">n</text>
+
+        <text x="382" y="166" font-size="11.5" fill="#127a44">新对象（拼接结果）</text>
+        <rect x="382" y="174" width="46" height="34" fill="#d6f5e6" stroke="#1a9e5a" stroke-width="1.2"/>
+        <rect x="428" y="174" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="474" y="174" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="520" y="174" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="566" y="174" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <rect x="612" y="174" width="46" height="34" fill="#ffffff" stroke="#b9c9ee" stroke-width="0.9"/>
+        <text x="405" y="192" font-size="14" fill="#127a44" text-anchor="middle" dominant-baseline="central">J</text>
+        <text x="451" y="192" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">y</text>
+        <text x="497" y="192" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">t</text>
+        <text x="543" y="192" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">h</text>
+        <text x="589" y="192" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">o</text>
+        <text x="635" y="192" font-size="14" fill="#1f2430" text-anchor="middle" dominant-baseline="central">n</text>
+
+        <text x="382" y="240" font-size="12" fill="#127a44">写法拆解：新字符 "J" 与旧字符串的</text>
+        <text x="382" y="260" font-size="12" fill="#127a44">后半段 word[1:] 拼在一起。</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：在 Python 里「改字符串」永远是「造一个新字符串」，旧对象从头到尾没有被改动过——这也是 <code>strip()</code>、<code>replace()</code> 都返回新值而必须重新赋值的原因。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <figure class="viz">
+      <div class="vcap">图 3 · 脏稿件清洗的五道工序</div>
+      <div class="vsub">从导出的原始文本到可统计的规范文本，每一步由一个字符串方法承担，顺序不可随意调换。</div>
+      <svg viewBox="0 0 700 300" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,'Microsoft YaHei',sans-serif">
+        <title>脏稿件文本清洗流程示意图</title>
+        <desc>原始脏文本经过 strip 去首尾空白、replace 统一标点、replace 去多余符号、split 切分成句、join 重新拼接五道工序，得到规范文本。</desc>
+        <defs>
+          <marker id="st-b" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+            <polygon points="0 0,7 3.5,0 7" fill="#5b6472"/>
+          </marker>
+        </defs>
+
+        <rect x="8" y="30" width="684" height="56" rx="10" fill="#fff7ed" stroke="#d97706" stroke-width="1.2"/>
+        <text x="26" y="54" font-size="12" fill="#b45309">原始导出文本（含全角空格、多余叹号、混用标点）</text>
+        <text x="26" y="74" font-size="12.5" fill="#78350f" font-family="ui-monospace,Consolas,monospace">"　地铁票价调整！！　记者３人受伤。　"</text>
+
+        <line x1="350" y1="90" x2="350" y2="112" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="8" y="118" width="124" height="66" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="70" y="140" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">① strip()</text>
+        <text x="70" y="160" font-size="11" fill="#1f2430" text-anchor="middle">去掉首尾空白</text>
+        <text x="70" y="176" font-size="11" fill="#5b6472" text-anchor="middle">空白包含全角空格</text>
+
+        <line x1="136" y1="151" x2="146" y2="151" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="150" y="118" width="124" height="66" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="212" y="140" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">② replace()</text>
+        <text x="212" y="160" font-size="11" fill="#1f2430" text-anchor="middle">全角数字转半角</text>
+        <text x="212" y="176" font-size="11" fill="#5b6472" text-anchor="middle">「３」→「3」</text>
+
+        <line x1="278" y1="151" x2="288" y2="151" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="292" y="118" width="124" height="66" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="354" y="140" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">③ replace()</text>
+        <text x="354" y="160" font-size="11" fill="#1f2430" text-anchor="middle">压掉重复标点</text>
+        <text x="354" y="176" font-size="11" fill="#5b6472" text-anchor="middle">「！！」→「！」</text>
+
+        <line x1="420" y1="151" x2="430" y2="151" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="434" y="118" width="124" height="66" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="496" y="140" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">④ split()</text>
+        <text x="496" y="160" font-size="11" fill="#1f2430" text-anchor="middle">按句切成列表</text>
+        <text x="496" y="176" font-size="11" fill="#5b6472" text-anchor="middle">得到若干短句</text>
+
+        <line x1="562" y1="151" x2="572" y2="151" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="576" y="118" width="116" height="66" rx="9" fill="#eaf1ff" stroke="#2f6fed" stroke-width="1.1"/>
+        <text x="634" y="140" font-size="12.5" font-weight="700" fill="#1c4fb8" text-anchor="middle">⑤ join()</text>
+        <text x="634" y="160" font-size="11" fill="#1f2430" text-anchor="middle">用统一分隔符拼回</text>
+        <text x="634" y="176" font-size="11" fill="#5b6472" text-anchor="middle">便于逐句统计</text>
+
+        <line x1="350" y1="194" x2="350" y2="216" stroke="#5b6472" stroke-width="1.4" marker-end="url(#st-b)"/>
+
+        <rect x="8" y="222" width="684" height="60" rx="10" fill="#eefaf3" stroke="#1a9e5a" stroke-width="1.2"/>
+        <text x="26" y="246" font-size="12" fill="#127a44">规范文本（可用于字数统计、关键词检索、打标签）</text>
+        <text x="26" y="268" font-size="12.5" fill="#0f5c35" font-family="ui-monospace,Consolas,monospace">"地铁票价调整！记者3人受伤。"</text>
+      </svg>
+      <div class="viz-note">🎯 读图要点：清洗不是一步到位的操作，而是若干「取新值并覆盖旧名字」的串联；先修边缘（strip）、再统一内部（replace）、最后结构重排（split → join）。示意图，用于帮助理解，非精确结构。</div>
+    </figure>
+
+    <div class="divider"></div>
+    <p>✅ <strong>图示说明：</strong>三张图均为帮助理解的示意图，非 Python 官方原文插图。图中索引计数规则、切片规则、不可修改性质与各方法的默认行为，均依据 Python 官方文档《Python 速览》3.1.2 节与《内置类型 · 字符串方法》整理，可经第九节链接核查。</p>
+  </section>
+
+  <section id="mechanism">
+    <h2>⚙️ 五、核心机制 / 组成</h2>
+    <p>一个字符串对象可以拆成「值的存放方式」「取用方式」「加工方式」三层来理解。官方教程把字符串归入<strong>序列类型</strong>，因此它天然支持序列的索引与切片操作；而文本加工则由一批字符串方法提供。</p>
+
+    <h3>组成与职责</h3>
+    <table>
+      <tr><th>组成部分</th><th>作用 / 说明</th></tr>
+      <tr><td><strong>字符序列</strong></td><td>字符串内部是一串有序字符，每个字符有一个位置编号。官方教程说明：单字符没有专用类型，就是长度为一的字符串。</td></tr>
+      <tr><td><strong>引号与字面值写法</strong></td><td>成对的单引号或双引号标出字符串，两种写法结果完全相同；三重引号允许跨行并保留换行；字面值前加 <code>r</code> 得到原始字符串，反斜杠不再被当作转义引导符。</td></tr>
+      <tr><td><strong>索引与切片</strong></td><td>索引取单个字符，支持负数（从 -1 开始）；切片取子串，采用「含起点、不含终点」规则，省略起点默认为 0，省略终点默认到末尾。</td></tr>
+      <tr><td><strong>内置函数 <code>len()</code></strong></td><td>返回字符串长度，即字符个数，也是切片可用的最大右边界值。</td></tr>
+      <tr><td><strong>字符串方法</strong></td><td>以 <code>s.方法名(...)</code> 形式调用，用于查找、切分、拼接、替换、去除边缘字符与格式化。所有方法都返回新值，不改动原对象。</td></tr>
+      <tr><td><strong>不可修改性质</strong></td><td>官方教程明确指出：Python 字符串不能修改，是 immutable 的。按下标赋值会触发 <code>TypeError</code>。</td></tr>
+    </table>
+
+    <h3>五个高频方法对照</h3>
+    <table>
+      <tr><th>方法</th><th>默认行为（官方文档表述）</th><th>新闻场景中的用途</th></tr>
+      <tr><td><code>s.split(sep)</code></td><td>未指定 <code>sep</code> 或为 <code>None</code> 时，连续的空白会被视为单个分隔符，结果不含首尾空字符串；指定 <code>sep</code> 时，连续分隔符之间会被判为空的字符串。</td><td>把一段采访记录按空白切分成词，或按 <code>。</code> 切分成短句。</td></tr>
+      <tr><td><code>sep.join(iterable)</code></td><td>用调用该方法的字符串作为分隔符，把可迭代对象中的字符串拼接起来；若其中存在非字符串值（含 <code>bytes</code>），会引发 <code>TypeError</code>。</td><td>把关键词列表拼成「关键词一｜关键词二｜关键词三」的标签串。</td></tr>
+      <tr><td><code>s.strip(chars)</code></td><td><code>chars</code> 省略或为 <code>None</code> 时，默认移除首尾的空白字符；<code>chars</code> 参数不是前缀或后缀，而是「字符集合」，其所有组合都会被移除。</td><td>清掉稿件首尾误带的空格、制表符与换行符。</td></tr>
+      <tr><td><code>s.replace(old, new)</code></td><td>返回副本，其中所有出现的子串 <code>old</code> 都被替换为 <code>new</code>；给出 <code>count</code> 时只替换前 <code>count</code> 处。</td><td>全角标点转半角、压缩重复标点、抹掉占位符号。</td></tr>
+      <tr><td><code>s.find(sub)</code></td><td>返回子串出现的最低索引，找不到时返回 <code>-1</code>。官方文档同时提示：只需判断子串是否存在时，应使用 <code>in</code> 运算符。</td><td>定位标题中「记者」二字的起始位置，为后续截取做准备。</td></tr>
+    </table>
+
+    <h3>转义与字面值写法</h3>
+    <table>
+      <tr><th>写法</th><th>含义</th><th>说明</th></tr>
+      <tr><td><code>"a\nb"</code></td><td>换行符</td><td>反斜杠引导转义序列，<code>\n</code> 表示换行、<code>\t</code> 表示制表符</td></tr>
+      <tr><td><code>"C:\\data"</code></td><td>单个反斜杠</td><td>要得到反斜杠本身，须写成两个</td></tr>
+      <tr><td><code>r"C:\data"</code></td><td>原始字符串</td><td>转义序列不被特殊对待，反斜杠被当作字面字符；原始字符串不能以奇数个反斜杠结尾</td></tr>
+      <tr><td><code>"""多行"""</code></td><td>三重引号</td><td>允许未转义换行并保留在字符串中，常用于长段引语或说明文字</td></tr>
+      <tr><td><code>f"{title}｜{n}字"</code></td><td>f-字符串</td><td>前缀 <code>f</code> 标出格式化字符串字面值，花括号内的表达式在运行时求值后替换；由 PEP 498 引入，即 Python 3.6 起可用</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">以上转义序列与字面值写法引自 Python 官方文档《词法分析》2.5 节，f-字符串引自同页 2.5.7 节与 PEP 498，字符串方法引自《内置类型》文档。</p>
+  </section>
+
+  <section id="scenario">
+    <h2>🚀 六、一个具体应用场景</h2>
+    <p>
+      从采编系统导出的一批稿件，往往是「脏」的：行首行尾带全角空格、句末混用半角与全角标点、数字夹在全角字符里、还有连写的感叹号。这样的文本直接进入字数统计或关键词检索，会得到错误的计数结果。第 2 课的练习就是写一段清洗逻辑，把它整理成规范文本。
+    </p>
+    <pre><span class="c"># 场景：清洗一条从采编系统导出的脏稿件</span>
+raw = <span class="s">"　 地铁票价调整！！记者３人受伤，现场秩序正常。 　"</span>
+
+<span class="c"># 第 1 步：strip() 去掉首尾空白（默认移除空白字符，无需传参）</span>
+s = raw.strip()
+print(<span class="s">"去皮 →"</span>, repr(s))
+
+<span class="c"># 第 2 步：replace() 把全角数字换成半角，便于后续统计</span>
+s = s.replace(<span class="s">"３"</span>, <span class="s">"3"</span>)
+
+<span class="c"># 第 3 步：replace() 压缩重复标点</span>
+s = s.replace(<span class="s">"！！"</span>, <span class="s">"！"</span>)
+print(<span class="s">"标点 →"</span>, s)
+
+<span class="c"># 第 4 步：split() 按句末标点切成短句列表</span>
+sentences = s.split(<span class="s">"。"</span>)
+print(<span class="s">"句数 →"</span>, len(sentences))
+
+<span class="c"># 第 5 步：join() 用统一分隔符拼回一行，方便写入发版台账</span>
+parts = [x.strip() <span class="k">for</span> x <span class="k">in</span> sentences <span class="k">if</span> x.strip()]
+ledger_line = <span class="s">" ｜ "</span>.join(parts)
+print(<span class="s">"台账 →"</span>, ledger_line)
+
+<span class="c"># 字符串不可修改：下面这行会报 TypeError，必须改成重新赋值</span>
+<span class="c"># s[0] = "新"   →  TypeError: 'str' object does not support item assignment</span>
+s = <span class="s">"新"</span> + s[1:]        <span class="c"># 正确写法：拼接生成新字符串再赋回同名变量</span>
+print(<span class="s">"改首字 →"</span>, s)
+
+<span class="c"># 顺带一提：字数统计用 len()，它数的是字符个数</span>
+print(<span class="s">"字数 →"</span>, len(s))</pre>
+    <p style="font-size:13.5px;color:var(--muted)">这一段是文章级别的示例，用于说明清洗流程与各方法的分工，属于辅助理解示例，非某个来源的原文代码。</p>
+  </section>
+
+  <section id="confusions">
+    <h2>⚠️ 七、易混与边界</h2>
+    <ul class="confuse">
+      <li><strong>字符串不可修改，所有方法都返回新值。</strong>官方教程写明「Python 字符串不能修改，是 immutable 的」，<code>word[0] = "J"</code> 会直接抛 <code>TypeError</code>。由此带来一个常见疏漏：<code>s.strip()</code> 本身不会改变 <code>s</code>，必须写成 <code>s = s.strip()</code> 才生效。</li>
+      <li><strong>切片越界不报错，索引越界会报错。</strong>官方教程给出的例子是：<code>word[42]</code> 触发 <code>IndexError</code>，而 <code>word[4:42]</code> 与 <code>word[42:]</code> 都能正常返回（分别得到一段子串与空字符串）。切片会自动处理越界索引，因此「切片结果为空」通常不是报错，而是一个需要留意的信号。</li>
+      <li><strong><code>+</code> 只能拼接同类型序列，不能把字符串与数字相加。</strong><code>"字数：" + 12</code> 会抛 <code>TypeError</code>，因为加法要求两个操作数要么都是数字，要么都是<strong>同一类型</strong>的序列。正确做法是先 <code>str(12)</code>，或改用 f-字符串 <code>f"字数：{12}"</code>。另需注意：字符串 <code>*</code> 整数表示重复，官方教程例子为 <code>3 * 'un' + 'ium'</code> 得到 <code>'unununium'</code>。</li>
+      <li><strong><code>strip()</code> 默认去的是空白，不是「任意多余字符」。</strong>官方文档说明：<code>chars</code> 省略或为 <code>None</code> 时默认移除首尾的空白字符；一旦传入参数，该参数被理解为<strong>字符集合</strong>而非前缀或后缀，其所有组合都会被移除。<code>'www.example.com'.strip('cmowz.')</code> 得到 <code>'example'</code> 正是这个原因。它也不会移除字符串<strong>内部</strong>的空白。</li>
+      <li><strong><code>find()</code> 与 <code>in</code> 用途不同，也不与 <code>index()</code> 等价。</strong><code>find()</code> 找不到时返回 <code>-1</code>，从不抛异常；官方文档建议只判断存在性时改用 <code>in</code>。而同族的 <code>index()</code> 在找不到时会抛 <code>ValueError</code>，两者不可互换。</li>
+      <li><strong>单引号与双引号没有功能差异，三重引号才有。</strong>官方教程备注说明：单引号与双引号里 <code>\n</code> 等特殊字符意义完全一样，唯一区别是不需要在单引号里转义双引号。因此「用双引号更正式」之类的说法在 Python 中并不成立。三重引号的区别在于允许未转义的换行并会将其保留。</li>
+    </ul>
+    <div class="divider"></div>
+    <p>✅ <strong>核查说明：</strong>本节六条均以 Python 官方文档为依据。不可修改性质、<code>IndexError</code> 与切片越界的差别、<code>+</code> 与 <code>*</code> 的行为、单双引号区别，见官方教程《Python 速览》3.1.2 节；<code>strip()</code> 的 <code>chars</code> 语义与 <code>find()</code> 返回 <code>-1</code> 见《内置类型 · 字符串方法》；<code>index()</code> 抛 <code>ValueError</code> 的对比见同页 <code>str.index()</code> 条目；<code>+</code> 要求操作数为同类型序列见《表达式》6.7 节。</p>
+  </section>
+
+  <section id="quiz">
+    <h2>🧪 八、自测问题（可点击作答）</h2>
+    <p>先自己作答，再点「查看成绩」对照。每题下方标注对应知识点与来源，方便回溯。</p>
+
+    <div class="quiz" data-ans="C">
+      <div class="q"><span class="lv lv-e">入门</span>1. 设 <code>s = "新闻标题"</code>，下列哪个表达式的结果是 <code>"标题"</code>？</div>
+      <button class="opt" data-v="A">A. <code>s[0:2]</code></button>
+      <button class="opt" data-v="B">B. <code>s[-1]</code></button>
+      <button class="opt" data-v="C">C. <code>s[2:4]</code></button>
+      <button class="opt" data-v="D">D. <code>s[2]</code></button>
+      <div class="fb" data-ok="✅ 正确。切片采用「含起点、不含终点」规则：s[2:4] 取下标 2 和 3 两个字符，即「标题」。s[0:2] 得到「新闻」；s[-1] 得到长度为一的字符串「题」；s[2] 只取单个字符「标」。"></div>
+      <div class="src">📎 来源：Python 官方教程《3.1.2 文本》（索引、负数索引、切片与 s[:i] + s[i:] 恒等式）—— docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-e">入门</span>2. 对 <code>s = "  标题  \n"</code> 调用 <code>s.strip()</code>，结果是什么？</div>
+      <button class="opt" data-v="A">A. 字符串保持不变，因为 <code>strip()</code> 是原地修改并返回 <code>None</code></button>
+      <button class="opt" data-v="B">B. <code>"标题\n"</code>，因为 <code>strip()</code> 只移除空格，不移除换行符</button>
+      <button class="opt" data-v="C">C. 抛出 <code>TypeError</code>，因为 <code>strip()</code> 必须显式给出要移除的字符</button>
+      <button class="opt" data-v="D">D. <code>"标题"</code>，因为 <code>chars</code> 参数省略时默认移除首尾的空白字符</button>
+      <div class="fb" data-ok="✅ 正确。官方文档写明：如果 chars 省略或为 None，则默认移除空白字符。空格的判定依据 str.isspace()，换行符属于空白字符，因此首尾空格与换行都会被去掉。同时也需记得：strip() 返回新字符串，原 s 不变。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型 · str.strip()》—— docs.python.org/zh-cn/3/library/stdtypes.html#string-methods</div>
+    </div>
+
+    <div class="quiz" data-ans="B">
+      <div class="q"><span class="lv lv-m">进阶</span>3. 执行 <code>word = "Python"</code> 之后，再执行 <code>word[0] = "J"</code>，会发生什么？</div>
+      <button class="opt" data-v="A">A. <code>word</code> 变成 <code>"Jython"</code></button>
+      <button class="opt" data-v="B">B. 抛出 <code>TypeError</code>，字符串不支持元素赋值；要得到 <code>"Jython"</code> 应写成 <code>"J" + word[1:]</code></button>
+      <button class="opt" data-v="C">C. 抛出 <code>IndexError</code>，因为下标 0 越界</button>
+      <button class="opt" data-v="D">D. 静默失败，<code>word</code> 保持不变且不报错</button>
+      <div class="fb" data-ok="✅ 正确。官方教程写的是「Python 字符串不能修改，是 immutable 的」，并给出报错信息 TypeError: 'str' object does not support item assignment。要生成不同的字符串，应新建一个字符串，例如 'J' + word[1:]。"></div>
+      <div class="src">📎 来源：Python 官方教程《3.1.2 文本》（字符串不可修改与新建字符串的写法）—— docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </div>
+
+    <div class="quiz" data-ans="D">
+      <div class="q"><span class="lv lv-m">进阶</span>4. 在 <code>text = "spam, spam, spam"</code> 上调用 <code>text.find("eggs")</code>，返回值是什么？</div>
+      <button class="opt" data-v="A">A. <code>None</code></button>
+      <button class="opt" data-v="B">B. 抛出 <code>ValueError: substring not found</code></button>
+      <button class="opt" data-v="C">C. <code>0</code></button>
+      <button class="opt" data-v="D">D. <code>-1</code></button>
+      <div class="fb" data-ok="✅ 正确。官方文档明确写着 find() 在找不到子串时返回 -1。抛 ValueError 的是同族的 index()，两者行为不同。此外官方文档提示：只判断子串是否存在时应使用 in 运算符，例如写成 'eggs' in text 而不是依赖 find() 的返回值。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型 · str.find() 与 str.index()》—— docs.python.org/zh-cn/3/library/stdtypes.html#string-methods</div>
+    </div>
+
+    <div class="quiz" data-ans="A">
+      <div class="q"><span class="lv lv-h">挑战</span>5. 现有 <code>s = "  地铁 票价 调整  "</code>，执行 <code>"-".join(s.strip().split())</code> 之后，结果字符串的 <code>len()</code> 是多少？</div>
+      <button class="opt" data-v="A">A. <code>8</code></button>
+      <button class="opt" data-v="B">B. <code>6</code></button>
+      <button class="opt" data-v="C">C. <code>10</code></button>
+      <button class="opt" data-v="D">D. <code>7</code></button>
+      <div class="fb" data-ok="✅ 正确。分三步走：① s.strip() 去掉首尾空白，得到「地铁 票价 调整」；② .split() 未给 sep，连续的空白被视为单个分隔符，得到 ['地铁','票价','调整']；③ 以「-」为分隔符 join，得到「地铁-票价-调整」，字符数为 2+1+2+1+2 = 8。若忘了 join 会插入分隔符，容易误选 6。"></div>
+      <div class="src">📎 来源：Python 官方文档《内置类型 · str.split() / str.join() / str.strip()》—— docs.python.org/zh-cn/3/library/stdtypes.html#string-methods</div>
+    </div>
+
+    <div class="quiz-actions">
+      <button onclick="gradeQuiz()">✔ 查看成绩</button>
+      <button class="ghost" onclick="revealQuiz()">👁 直接看答案</button>
+      <button class="ghost" onclick="resetQuiz()">↺ 重新作答</button>
+    </div>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section id="sources">
+    <h2>🔗 九、资料来源与可核查链接</h2>
+    <p>以下来源支撑本页的关键论断，均为已逐条访问核查过的官方出处：</p>
+    <ul class="source-list">
+      <li>Python 官方教程《3. Python 速览 · 3.1.2 文本》（引号规则、转义与原始字符串、三重引号、<code>+</code> 与 <code>*</code>、索引与负数索引、切片与 <code>s[:i] + s[i:]</code>、越界报错差异、不可修改性质、<code>len()</code>） — <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/introduction.html</a></li>
+      <li>Python 官方文档《内置类型 · 字符串方法（Text Sequence Type — str）》（<code>split()</code> 的默认分隔规则、<code>join()</code> 与 <code>TypeError</code>、<code>strip()</code> 的 <code>chars</code> 语义、<code>replace()</code> 的全量替换、<code>find()</code> 返回 <code>-1</code>、<code>index()</code> 抛 <code>ValueError</code>） — <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#string-methods" target="_blank" rel="noopener">docs.python.org/zh-cn/3/library/stdtypes.html#string-methods</a></li>
+      <li>Python 官方文档《2. 词法分析 · 2.5 字符串与字节串字面量》（转义序列表、原始字符串 <code>r"..."</code> 与其限制、三引号字符串、字符串前缀） — <a href="https://docs.python.org/zh-cn/3/reference/lexical_analysis.html#strings" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/lexical_analysis.html#strings</a></li>
+      <li>Python 官方文档《2. 词法分析 · 2.5.7 f-字符串》（f-字符串的语法、替换字段与格式说明符） — <a href="https://docs.python.org/zh-cn/3/reference/lexical_analysis.html#f-strings" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/lexical_analysis.html#f-strings</a></li>
+      <li>PEP 498 —— Literal String Interpolation（f-字符串的官方提案，状态 Final，随 Python 3.6 发布） — <a href="https://peps.python.org/pep-0498/" target="_blank" rel="noopener">peps.python.org/pep-0498/</a></li>
+      <li>Python 官方文档《6. 表达式 · 6.7 二元算术运算符》（<code>+</code> 要求操作数同为数字或同为同类型序列，字符串由 <code>*</code> 实现重复） — <a href="https://docs.python.org/zh-cn/3/reference/expressions.html#binary-arithmetic-operations" target="_blank" rel="noopener">docs.python.org/zh-cn/3/reference/expressions.html#binary-arithmetic-operations</a></li>
+      <li>Python 官方教程《7. 输入与输出 · 7.1 更漂亮的输出格式》（f-字符串在输出中的基本用法） — <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">docs.python.org/zh-cn/3/tutorial/inputoutput.html</a></li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted)">📌 <strong>哪部分是权威结论、哪部分是辅助理解：</strong>第五节三张表格中的技术结论与第七节六条辨析，均可在上述官方文档中逐条核查。第三节的两个类比、第四节三张示意图、第六节的示例代码，均为辅助理解的通俗化产物，非官方原文。本页综合多来源整理，表述方向以官方文档为准。</p>
+  </section>
+
+  <footer>📎 学习资料 · 权威结论见来源，图示为辅助理解 · concept-learner 生成 · v1.0 · 2026-09-17</footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.quiz .opt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.quiz');
+      card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      card.querySelector('.fb').classList.remove('show');
+    });
+  });
+})();
+function _ans(card){
+  var raw = card.getAttribute('data-ans') || '';
+  try { var v = JSON.parse(raw); return Array.isArray(v) ? v.slice().sort() : String(v); }
+  catch(e){ return String(raw); }
+}
+function gradeQuiz(){
+  var cards = document.querySelectorAll('.quiz'), right = 0;
+  cards.forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('correct','wrong'); });
+    var fb = card.querySelector('.fb');
+    var sel = [];
+    card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) sel.push(b.getAttribute('data-v')); });
+    sel.sort();
+    var ok = Array.isArray(key) ? (JSON.stringify(sel) === JSON.stringify(key)) : (sel.length === 1 && sel[0] === key);
+    if(ok){
+      right++;
+      card.querySelectorAll('.opt').forEach(function(b){ if(b.classList.contains('selected')) b.classList.add('correct'); });
+      fb.className = 'fb ok show'; fb.textContent = fb.getAttribute('data-ok');
+    } else {
+      card.querySelectorAll('.opt').forEach(function(b){
+        if(b.getAttribute('data-v') === key) b.classList.add('correct');
+        else if(b.classList.contains('selected')) b.classList.add('wrong');
+      });
+      fb.className = 'fb no show';
+      fb.textContent = '再想想～ 正确答案已用绿色标出，可对照下方来源回顾。';
+    }
+  });
+  var sc = document.getElementById('score');
+  sc.className = 'score show';
+  var tip = right === cards.length ? '🎉 满分通过，这个概念你已经掌握！' : (right >= cards.length * 0.6 ? '👍 基本掌握，错题回看来源即可。' : '📖 建议回到对应板块再读一遍。');
+  sc.textContent = '得分：' + right + ' / ' + cards.length + '　' + tip;
+}
+function revealQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    var key = _ans(card);
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.classList.remove('correct','wrong','selected');
+      var v = b.getAttribute('data-v');
+      if(Array.isArray(key) ? key.indexOf(v) > -1 : v === key) b.classList.add('correct');
+    });
+    var fb = card.querySelector('.fb');
+    fb.className = 'fb ok show'; fb.textContent = '✅ 正确答案：' + (Array.isArray(key) ? key.join('、') : key);
+  });
+}
+function resetQuiz(){
+  document.querySelectorAll('.quiz').forEach(function(card){
+    card.querySelectorAll('.opt').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    var fb = card.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+  });
+  var sc = document.getElementById('score'); sc.className = 'score'; sc.textContent = '';
+}
+</script>
+</body>
+</html>
