@@ -39,9 +39,20 @@ for(const b of blocks){
   card.setAttribute('data-ans', b[1]);
   const body = b[2];
   // 逐行扫描 div/button 起止，构造扁平结构（opt/fb 都是 card 的直接子元素）
-  const re = /<(div|button)\b([^>]*?)(\/?)>/g; let m;
-  while((m = re.exec(body))){
-    const attrs = m[2];
+  // 注意：属性值里允许出现 '>'（例如 data-ok 中的 "-1 > 0"），
+  // 因此不能用 [^>]* 截取属性，需按引号状态扫描到引号外的 '>'。
+  const tagRe = /<(div|button)\b/g; let m;
+  while((m = tagRe.exec(body))){
+    let i = tagRe.lastIndex, quote = null;
+    while(i < body.length){
+      const ch = body[i];
+      if(quote){ if(ch === quote) quote = null; }
+      else if(ch === '"' || ch === "'") quote = ch;
+      else if(ch === '>') break;
+      i++;
+    }
+    const attrs = body.slice(tagRe.lastIndex, i);
+    tagRe.lastIndex = i + 1;
     const el = new El(m[1]); el.parent = card; card.children.push(el);
     const cm = /class="([^"]*)"/.exec(attrs); if(cm) el.classes = new Set(cm[1].split(/\s+/).filter(Boolean));
     const da = /data-(ans|v|ok)="([^"]*)"/g; let d;
@@ -94,7 +105,12 @@ cards.forEach((c, i) => {
   if(vs.indexOf(c.getAttribute('data-ans')) < 0) bad.push('Q' + (i + 1) + ' 答案不在选项中');
   if(vs.length !== 4) bad.push('Q' + (i + 1) + ' 选项数不是 4');
   const fb = c.children.find(e => e.classes.has('fb'));
-  if(!fb || !fb.getAttribute('data-ok')) bad.push('Q' + (i + 1) + ' 缺 data-ok 反馈');
+  if(!fb || !fb.getAttribute('data-ok')){
+    bad.push('Q' + (i + 1) + ' 缺 data-ok 反馈');
+  } else if(/</.test(fb.getAttribute('data-ok'))){
+    // data-ok 由 fb.textContent 渲染，写了标签会原样显示出来
+    bad.push('Q' + (i + 1) + ' data-ok 含 HTML 标签，会被当纯文本显示');
+  }
   const src = c.children.find(e => e.classes.has('src'));
   if(!src || !/来源/.test(src.textContent)) bad.push('Q' + (i + 1) + ' 缺来源标注');
 });

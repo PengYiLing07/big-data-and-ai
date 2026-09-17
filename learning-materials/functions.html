@@ -428,7 +428,7 @@ print(top_words([<span class="s">"地铁调价 客流下降"</span>, <span class
       <button class="opt" data-v="B">B. 关键字参数，只能在调用时写成 <code>max_len=20</code></button>
       <button class="opt" data-v="C">C. 带有默认值的参数，调用时不传就取 20</button>
       <button class="opt" data-v="D">D. 可变参数，可以收集任意多个长度值</button>
-      <div class="fb" data-ok="✅ 正确。为参数指定默认值后，调用函数时可以使用比定义时更少的参数；未传入时 <code>max_len</code> 取默认值 20，需要时也可以用关键字形式 <code>max_len=12</code> 覆盖它。"></div>
+      <div class="fb" data-ok="✅ 正确。为参数指定默认值后，调用函数时可以使用比定义时更少的参数；未传入时 max_len 取默认值 20，需要时也可以用关键字形式 max_len=12 覆盖它。"></div>
       <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.9.1 默认值参数 —— docs.python.org/zh-cn/3/tutorial/controlflow.html</div>
     </div>
 
@@ -438,7 +438,7 @@ print(top_words([<span class="s">"地铁调价 客流下降"</span>, <span class
       <button class="opt" data-v="B">B. <code>None</code></button>
       <button class="opt" data-v="C">C. 报错，因为没有写 return 就不能赋值</button>
       <button class="opt" data-v="D">D. <code>0</code></button>
-      <div class="fb" data-ok="✅ 正确。屏幕上的 <code>地铁调价</code> 来自 <code>print</code>，那是送到标准输出的内容，不是返回值。官方教程明确写道：即使没有 return 语句的函数也有返回值，这个值被称为 None。"></div>
+      <div class="fb" data-ok="✅ 正确。屏幕上的 地铁调价 来自 print，那是送到标准输出的内容，不是返回值。官方教程明确写道：即使没有 return 语句的函数也有返回值，这个值被称为 None。"></div>
       <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.8 定义函数（无 return 时返回 None；return 不带表达式参数时返回 None）</div>
     </div>
 
@@ -448,7 +448,7 @@ print(top_words([<span class="s">"地铁调价 客流下降"</span>, <span class
       <button class="opt" data-v="B">B. <code>6</code>，因为调用时 <code>i</code> 已经变成 6</button>
       <button class="opt" data-v="C">C. <code>None</code>，因为 <code>i</code> 被重新赋值了</button>
       <button class="opt" data-v="D">D. 报错，因为形参不能写别的变量名</button>
-      <div class="fb" data-ok="✅ 正确。默认值在定义作用域里的函数定义中求值，所以 <code>arg</code> 在定义那一刻就已经绑定了当时的 5；之后把 <code>i</code> 改成 6，不会回头影响已经算好的默认值。"></div>
+      <div class="fb" data-ok="✅ 正确。默认值在定义作用域里的函数定义中求值，所以 arg 在定义那一刻就已经绑定了当时的 5；之后把 i 改成 6，不会回头影响已经算好的默认值。"></div>
       <div class="src">📎 来源：Python 官方教程《4. 更多控制流工具》4.9.1 默认值参数（「默认值在定义作用域里的函数定义中求值」示例）</div>
     </div>
 
@@ -468,7 +468,7 @@ print(top_words([<span class="s">"地铁调价 客流下降"</span>, <span class
       <button class="opt" data-v="B">B. 名字从最内层作用域开始逐层向外查找，内置名称最后被搜索；只有用 <code>global</code> 声明，引用与赋值才直接指向模块全局作用域</button>
       <button class="opt" data-v="C">C. 函数内部使用内置函数 <code>len</code> 之前，必须先写 <code>global len</code></button>
       <button class="opt" data-v="D">D. <code>nonlocal</code> 用于把名称声明为模块级变量</button>
-      <div class="fb" data-ok="✅ 正确。官方教程给出的搜索顺序是：最内层局部作用域 → 外层闭包函数的作用域 → 当前模块的全局名称 → 内置名称命名空间；并指出「如果不存在生效的 global 或 nonlocal 语句，则对名称的赋值总是会进入最内层作用域」。<code>nonlocal</code> 的指向是外层函数作用域，不是模块级。"></div>
+      <div class="fb" data-ok="✅ 正确。官方教程给出的搜索顺序是：最内层局部作用域 → 外层闭包函数的作用域 → 当前模块的全局名称 → 内置名称命名空间；并指出「如果不存在生效的 global 或 nonlocal 语句，则对名称的赋值总是会进入最内层作用域」。nonlocal 的指向是外层函数作用域，不是模块级。"></div>
       <div class="src">📎 来源：Python 官方教程《9. 类》9.2 Python 作用域和命名空间 —— docs.python.org/zh-cn/3/tutorial/classes.html#python-scopes-and-namespaces</div>
     </div>
 

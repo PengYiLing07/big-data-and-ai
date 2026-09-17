@@ -48,6 +48,7 @@ big-data-and-ai/
 ├── scripts/
 │   ├── 01.py                         # 第 1 课：环境自检脚本（可运行，打印版本 / 解释器 / pip 源）
 │   ├── 01.ipynb                      # 第 1 课：Jupyter 练习（自带执行输出）
+│   ├── audit_materials.py            # 资料库自检：板块 / 图解 / 自测 / 人称 / 断链一次性核查
 │   └── quiz_selftest.js              # 自测判分逻辑的离线校验脚本（node 运行）
 ├── hello.py                          # 早期课程示例
 ├── agent-skill-guide*.html           # 早期实验产物（教学 HTML）
@@ -121,7 +122,7 @@ big-data-and-ai/
 | `learning-materials/agent.html` | AI Agent（智能体） | 通俗解释、可视化图解（组成结构/分界对比/执行流程）、LLM+工具+指令/记忆+编排循环、订票场景、与聊天机器人的区别 |
 | `learning-materials/llm-context.html` | 大模型的上下文 | 通俗解释、可视化图解（内容构成/容量误区/信息取舍）、上下文窗口=有限工作记忆、内含组成、越大≠越好、对话压缩/RAG |
 | `learning-materials/skill.html` | Skill（智能体技能） | 通俗解释、可视化图解（目录结构/三级披露/与Prompt对比）、SKILL.md、三级渐进式披露、个人 vs 项目级 |
-| `learning-materials/concept-relationship.html` | 三者关系 | 上下文影响 Agent 的表现、Skill 沉淀可复用任务知识、关系图与工作流 |
+| `learning-materials/concept-relationship.html` | 三者关系（Agent × 上下文 × Skill） | 通俗解释、可视化图解（连接关系/分工边界/工作流闭环）、逐对关系表、Skill 沉淀三层面、完整工作流、易混与边界 3 条 |
 | `learning-materials/context-window.html` | 上下文窗口（拓展） | 输入与输出共享预算、token 粒度、位置 U 型曲线、context rot、标称≠有效窗口、RAG 精排 |
 
 ---
@@ -134,8 +135,10 @@ big-data-and-ai/
 2. **辅助理解在场且克制**：每份资料都有“💡 一个类比 / ✅ 核查说明（人工）”块，与权威结论明确区分。全文统一第三人称客观表述，不出现“我 / 我的”等第一人称；类比用陈述句而非命令句，读者指称用“用户/读者”而非通篇“你”，判断句用“通常/常见误解是”，尽量减少主观色彩。
 3. **内容方向核对**：各页核心表述与多个独立来源交叉比对后采信（详见各页“核查说明”）。以 `modules-and-packages.html` 为例，模块定义、`__init__.py` 的作用、搜索路径构成与同名遮蔽、`__name__` 与相对导入的关系，分别核对 Python 官方教程第 6 章、官方文档《`__main__`》、PEP 328 与 Python 打包用户指南。
 4. **示例代码实跑验证**：`modules-and-packages.html` 第六节的应用场景代码，先在临时目录以 `news_tools` 包的形式实际运行通过（`python -m news_tools` 输出与页中记录一致），页面定稿后又从 HTML 中反抽代码重跑一次；同时保留对照组证据——直接执行包内模块会报 `ImportError: attempted relative import with no known parent package`。`scripts/01.py` 与 `scripts/01.ipynb` 同样经过实跑。
-5. **结构自检**：按 Skill 中定义的自检清单核对 9 板块齐全（含可视化图解）、来源可点、无敏感信息后再提交；自测题的判分逻辑用 `scripts/quiz_selftest.js` 离线校验（全对得满分、全错得 0 分、单选错判定正确）。目录页的站内链接做过全量断链检查。
-6. **一次纠错记录**：在早期开发 HTML 学习页时，发现并修复了“判分把未选中项当错误”的逻辑 bug——教训是：规则类交互应先做逻辑自测再交付，本仓库的 Skill 已把“交付前自检”写进规范。另一次修正是目录页的状态标记：17 页全部生成完成后，把原先的“生成中”标记统一更正为“已生成”，避免索引与实际文件状态不一致。
+5. **结构自检（已脚本化）**：`scripts/audit_materials.py` 一次性核查全部 22 个页面——9 板块是否齐全、内联 SVG 数量与 `role="img"`/`<title>`/`<desc>` 三件套、是否含外部依赖、自测题数与答案键、`data-ok` 反馈完整性、叙述人称、站内断链；`scripts/quiz_selftest.js` 离线复跑判分逻辑（全对得满分、全错得 0 分、单选错判定正确、未作答得 0 分）。当前结果：**22 页结构自检 0 问题、22 页判分自测全部通过、0 处站内断链**。外链曾做全量可达性探测（110 条，含失败重试以区分真失效与网络抖动）。
+6. **两次纠错记录**：
+   - 早期开发 HTML 学习页时，发现并修复“判分把未选中项当错误”的逻辑 bug——教训是规则类交互应先做逻辑自测再交付，本仓库的 Skill 已把“交付前自检”写进规范。
+   - 资料库自检这一轮又发现两处：① `functions.html`、`variables-and-data-types.html` 共 6 道题的 `data-ok` 反馈文案里误写了 `<code>` 标签，而模板用 `textContent` 渲染，答对时会把 `<code>` 原样显示出来，已改为纯文本；② `scripts/quiz_selftest.js` 的属性解析用 `[^>]*` 截断，遇到属性值内的 `>`（如反馈里的 `-1 > 0`）会误报“缺 data-ok”，已改为按引号状态扫描。同时目录页的状态标记已随 17 页全部生成而统一更正为“已生成”。
 
 > 诚实说明：本仓库不是“纯手工”资料，而是**AI 辅助产出 + 人工核查把关**的成果；这也正是本作业对“AI 使用规范”的回应——善用 AI 但不盲信，人为主导、来源可查。
 
