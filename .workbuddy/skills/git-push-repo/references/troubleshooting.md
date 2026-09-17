@@ -89,3 +89,30 @@ git filter-repo --path .env --invert-paths
 | `fatal: not a git repository` | 目录不对，或需 `git init`（本 skill `push --init`） |
 | `dubious ownership in repository` | 目录属主与当前用户不一致：`git config --global --add safe.directory <path>` |
 | `error: cannot lock ref` / `index.lock` 残留 | 确认没有其它 git 进程后删除 `.git/index.lock` |
+
+## 九、追踪引用不更新（`.git/packed-refs` 里留了陈旧条目）
+
+**现象**：远端明明已是最新，`git status` 却长期显示 `[ahead N]`；`git fetch` 输出 `xxx..yyy  main -> origin/main`，但 `git rev-parse refs/remotes/origin/main` 的值始终不变；`git push` 成功且远端 SHA 正确。
+
+**判定**（逐条比对三个值）：
+
+```
+git ls-remote --heads origin            # 远端真实 SHA
+git rev-parse HEAD                      # 本地 HEAD
+git rev-parse refs/remotes/origin/main  # 本地追踪引用
+grep origin/main .git/packed-refs       # 打包引用中的值
+```
+
+若「远端 SHA == 本地 HEAD ≠ 追踪引用」，说明问题只在本地记录，远端内容无误，可照常继续推送。
+
+**处置**（把正确值写回）：
+
+```
+git update-ref refs/remotes/origin/main <远端 SHA>
+git pack-refs --all     # 关键一步：让 packed-refs 采用当前值
+git fetch origin        # 复核：值应保持不变，status 不再 ahead
+```
+
+**成因**：`refs/remotes/*` 一旦被 `pack-refs` 打包过，git 更新时会写入一个「松引用」`.git/refs/remotes/<remote>/<branch>`；本机曾出现松引用写入未生效、而 `packed-refs` 中的旧值持续被读取的情况，于是远端更新与本地记录脱钩。按上表手工写值再 `pack-refs --all` 可让两边重新对齐（本仓库 2026-09-17 实测有效）。
+
+**规避**：只判断「是否需要推送」时不要依赖追踪引用，直接比对 `git rev-parse HEAD` 与 `git ls-remote --heads origin`。

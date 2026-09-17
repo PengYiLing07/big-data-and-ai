@@ -114,15 +114,29 @@ def cfg(cwd, key):
 
 # ---------------------------------------------------------------- scan helpers
 def parse_status(cwd):
-    """返回 (staged, modified, untracked, untracked_files)。"""
-    code, so, _ = git(["status", "--porcelain", "-uall"], cwd)
+    """返回 (staged, modified, untracked, untracked_files)。
+
+    这里刻意不走 git() 辅助函数：git() 会对 stdout 做 strip()，
+    而 porcelain 的首行形如 " M 文件"，行首那个空格正是「索引列」，
+    被 strip 掉后列位左移，会把「未暂存」误判成「已暂存」。
+    """
+    try:
+        p = subprocess.run(
+            ["git", "status", "--porcelain", "-uall"],
+            cwd=str(cwd), capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=180,
+        )
+    except (subprocess.TimeoutExpired, OSError):
+        return 0, 0, 0, []
+    if p.returncode != 0:
+        return 0, 0, 0, []
     staged = modified = 0
     untracked = []
-    if code != 0:
-        return 0, 0, 0, []
-    for line in so.splitlines():
+    for line in (p.stdout or "").splitlines():
         if line.startswith("??"):
             untracked.append(line[3:].strip().strip('"'))
+            continue
+        if len(line) < 2:
             continue
         x, y = line[0], line[1]
         if x not in (" ", "?"):
