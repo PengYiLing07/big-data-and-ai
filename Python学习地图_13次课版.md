@@ -1,7 +1,7 @@
 # Python 基础学习地图（13 次课版 · 新闻学专业定制）
 
 > **课时口径**：13 次课 × 90 分钟（上半场 45 分钟 + 下半场 45 分钟）= 19.5 小时
-> 若实际为「每次课 45 分钟」，按本文第五节《45 分钟版的裁切方案》精简
+> 若实际为「每次课 45 分钟」，按本文第六节《45 分钟版的裁切方案》精简
 > 定位：不追求培养程序员，而是为后续「人工智能理论与应用」阶段储备足够用的 Python 能力
 > 阶段目标：结课时手里有 13 个能跑的脚本 + 一个完整的数据分析项目，可直接作为 AI 阶段的数据输入
 
@@ -36,7 +36,32 @@
 
 ---
 
-## 三、13 次课详细安排
+## 三、配套概念资料：本地图讲到哪个概念，去哪一页看
+
+本地图负责回答「**什么时候学什么**」；每个概念的完整讲解（通俗解释、可视化图解、易混与边界、5 道可点击自测题、可核查来源）另有一页专门资料。下表是两者的对应关系，每节课末尾也附了直达链接。
+
+| 课次 | 概念页 | 这一页讲什么 |
+|---|---|---|
+| 第 1 课 | [变量与数据类型](learning-materials/variables-and-data-types.html) | 赋值是贴标签；str / int / float / bool 四种基础类型与转换规则 |
+| 第 2 课 | [字符串与文本处理](learning-materials/strings-and-text.html) | 索引切片、split / join / strip / replace、f-string；把脏稿件清洗成规范文本 |
+| 第 3 课 | [布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html) | 比较运算、if / elif / else、and / or / not；用规则给文本打标签及其局限 |
+| 第 4 课 | [列表](learning-materials/lists.html) · [循环（for / while）](learning-materials/loops.html) | 有序容器的增删改查与切片；for / while、range、enumerate、break / continue |
+| 第 5 课 | [字典与集合](learning-materials/dictionaries-and-sets.html) | 键值对映射与去重集合；get / setdefault；词频统计与 Top-N |
+| 第 6 课 | [推导式](learning-materials/comprehensions.html) · [循环（for / while）](learning-materials/loops.html) | 列表 / 字典推导式；把「建容器 + 循环 + 判断」写成一行 |
+| 第 7 课 | [函数](learning-materials/functions.html) | def、参数与返回值、默认参数、作用域、docstring |
+| 第 8 课 | [文件读写与编码](learning-materials/file-io-and-encoding.html) · [异常处理](learning-materials/exceptions.html) | open / with、读写 txt 与 CSV、utf-8 与 gbk 乱码；try / except / else / finally |
+| 第 9 课 | [模块与包](learning-materials/modules-and-packages.html) | import 机制、`__name__`、包与 `__init__.py`、pip 与虚拟环境 |
+| 第 10 课 | [正则表达式](learning-materials/regular-expressions.html) | 元字符、字符类、量词、分组；用 re 批量清洗评论 |
+| 第 11 课 | [NumPy 与向量化](learning-materials/numpy-and-vectorization.html) | ndarray、形状与维度、广播；为什么向量化比 for 循环快 |
+| 第 12 课 | [pandas 与 DataFrame](learning-materials/pandas-dataframe.html) | Series 与 DataFrame、读写 CSV / Excel、筛选排序、缺失值、groupby |
+| 第 13 课 | [matplotlib 可视化](learning-materials/matplotlib-basics.html) · [新闻评论文本分析（综合实践）](learning-materials/text-analysis-project.html) | 直方图 / 柱状图 / 折线图与中文乱码；把清洗、统计、分组、出图串成完整流水线 |
+| 选修 | [类与对象（选修）](learning-materials/classes-and-objects.html) | 读懂别人代码里的 class：属性、方法、实例化 |
+
+全部资料入口见 [概念目录页](learning-materials/index.html)（含概念分布图、前置依赖表、跨课复用表）。**建议用法**：上课前扫一眼对应页的「学习目标」与「可视化图解」建立印象；下课后用它做当堂复习并做那 5 道自测题；卡住时看「易混与边界」。
+
+---
+
+## 四、13 次课详细安排
 
 每节课的课堂节奏统一为：**上半场 = 讲解 20′ + 现场演示 15′ + 互动 10′；下半场 = 跟着做 + 自己改 30′ + 讲评答疑 15′**（第 13 课下半场调整为「讲评 5′ + 综合实战 40′」）。
 作业统一在下一次课开场 5 分钟内讲评。
@@ -47,18 +72,21 @@
 - 上半场：Python 能替记者做什么；Jupyter Notebook 单元格用法；`print()` 与注释；变量与命名规范
 - 下半场：四种基础类型 `str` / `int` / `float` / `bool`；`type()`；`input()`；类型转换
 - 产出：`lesson01.py` 稿件字数统计器
+- 配套资料：[变量与数据类型](learning-materials/variables-and-data-types.html)
 - 课后作业：拿自己写的 3 段导语各跑一次，记下字数与句数
 
 **第 2 课 · 字符串与文本清洗** ｜ 难度 ★★☆☆☆
 - 上半场：字符串索引与切片；`len()` / `split()` / `join()` / `strip()` / `replace()` / `find()`；f-string 格式化
 - 下半场：把一篇脏稿件（多余空格、换行、全角标点混用）清洗成规范文本
 - 产出：`lesson02.py` 文本清洗器
+- 配套资料：[字符串与文本处理](learning-materials/strings-and-text.html)
 - 课后作业：把自己手头一篇真实稿件丢进去清洗，记录哪些脏东西没处理掉
 
 **第 3 课 · 条件判断与规则打标** ｜ 难度 ★★☆☆☆
 - 上半场：布尔值、比较运算符；`if` / `elif` / `else`；`and` / `or` / `not`；`in` 成员判断
 - 下半场：按关键词给标题和评论打标签（正面 / 负面 / 中性）——这是情感分析最原始的形态
 - 产出：`lesson03.py` 关键词规则版情感倾向判断器
+- 配套资料：[布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html)
 - **关键伏笔**：课堂最后留 10 分钟讨论「规则法漏判了什么」——为何「这条明明是负面的却没命中关键词」，为 AI 阶段建立真实痛点
 - 课后作业：找 10 条自己的判断与程序判断不一致的评论，说明原因
 
@@ -68,18 +96,21 @@
 - 上半场：列表增删改查、索引切片；`for` 遍历、`range()`、`enumerate()`；`sort()` / `sorted()`
 - 下半场：遍历一批新闻标题，按关键词筛选、按长度排序
 - 产出：`lesson04.py` 标题批量筛选排序器
+- 配套资料：[列表](learning-materials/lists.html)、[循环（for / while）](learning-materials/loops.html)
 - 课后作业：换成自己收集的 50 条标题，筛出与你选题相关的部分
 
 **第 5 课 · 字典与词频统计** ｜ 难度 ★★★☆☆
 - 上半场：字典键值对、增删改查、遍历；`get()` / `setdefault()`；`set` 去重
 - 下半场：统计语料词频，排序取 Top20
 - 产出：`lesson05.py` 词频排行工具
+- 配套资料：[字典与集合](learning-materials/dictionaries-and-sets.html)
 - 课后作业：对同一选题的 30 条标题跑词频，看看最突出的词是什么
 
 **第 6 课 · while 循环与推导式** ｜ 难度 ★★★☆☆
 - 上半场：`while` 循环、`break` / `continue`；嵌套循环；列表推导式、字典推导式
 - 下半场：用推导式重写第 4、5 课的代码并对比可读性；写一个交互式循环小程序
 - 产出：`lesson06.py` 精简版数据处理脚本
+- 配套资料：[循环（for / while）](learning-materials/loops.html)、[推导式](learning-materials/comprehensions.html)
 - 课后作业：把自己以前写的循环改写成推导式，体会代码变短但没变难懂
 
 ### 板块三 · 函数与工程化（第 7–9 课）
@@ -88,12 +119,14 @@
 - 上半场：`def` 定义、参数与返回值；默认参数、关键字参数；作用域；docstring
 - 下半场：把前 6 课的散装代码封装成 5 个函数
 - 产出：`text_tools.py` 个人文本处理函数库
+- 配套资料：[函数](learning-materials/functions.html)
 - 课后作业：给函数库补上 2 个自己最常用的功能
 
 **第 8 课 · 文件读写与异常处理** ｜ 难度 ★★★☆☆
 - 上半场：`open()` / `with`；读 txt 与 CSV（`csv.DictReader`）；写文件；utf-8 与 gbk 编码；`try` / `except`
 - 下半场：读采访记录 CSV → 清洗统计 → 结果写回新文件
 - 产出：`lesson08.py` 采访记录统计脚本 + `统计结果.csv`
+- 配套资料：[文件读写与编码](learning-materials/file-io-and-encoding.html)、[异常处理](learning-materials/exceptions.html)
 - 课后作业：把 CSV 换成发稿台账或活动名单，只改字段名就能跑通
 - 常见坑：中文乱码时把 `encoding` 从 `utf-8` 改成 `gbk`
 
@@ -101,6 +134,7 @@
 - 上半场：`import` 机制；`pip` 安装第三方库；`__name__`；报错信息解读（从最后一行往上读）；常见报错类型
 - 下半场：把自己的函数库拆成模块导入使用；故意制造 5 种报错并逐个修复
 - 产出：多文件项目结构 + 《报错自查手册》一页
+- 配套资料：[模块与包](learning-materials/modules-and-packages.html)
 - 课后作业：整理自己这段时间遇到的所有报错，归类成表格
 
 ### 板块四 · AI 前置数据能力（第 10–13 课）
@@ -109,39 +143,43 @@
 - 上半场：元字符、字符类、量词、分组；`re` 模块常用函数（`search` / `findall` / `sub`）
 - 下半场：清洗真实新闻评论——去表情、去网址、去 @、提取数字与日期
 - 产出：`lesson10.py` 文本清洗规则集
+- 配套资料：[正则表达式](learning-materials/regular-expressions.html)
 - 课后作业：为你的评论数据集写 5 条清洗规则
 
 **第 11 课 · NumPy 与向量化** ｜ 难度 ★★★★☆
 - 上半场：`ndarray` 创建、形状与维度、索引切片、广播机制；向量化 vs 循环
 - 下半场：统计一批新闻的标题长度、正文长度的均值 / 中位数 / 分位数
 - 产出：`lesson11.py` 长度统计脚本
+- 配套资料：[NumPy 与向量化](learning-materials/numpy-and-vectorization.html)
 - 课后作业：用同一批数据分别用循环和向量化各算一次，比较耗时
 
 **第 12 课 · pandas 入门** ｜ 难度 ★★★★☆
 - 上半场：`Series` 与 `DataFrame`；读写 CSV / Excel；`head()` / `info()` / `describe()`；筛选与排序；缺失值处理
 - 下半场：加载新闻评论数据集，看正负样本分布与文本长度分布
 - 产出：`lesson12.py` 数据概览报告
+- 配套资料：[pandas 与 DataFrame](learning-materials/pandas-dataframe.html)
 - 课后作业：把自己专业的真实表格用 pandas 读一遍，回答 3 个问题
 
 **第 13 课 · 分组统计、可视化与综合交付** ｜ 难度 ★★★★☆
 - 上半场：`groupby` 聚合、`apply`、新增列；matplotlib 基础图表（直方图 / 柱状图 / 折线图）与中文乱码解决
 - 下半场：综合实战——读入评论 CSV → 清洗 → 统计 → 出图 → 导出结果
 - 产出：完整项目 + 一份可直接交的数据分析小结
+- 配套资料：[matplotlib 可视化](learning-materials/matplotlib-basics.html)、[新闻评论文本分析（综合实践）](learning-materials/text-analysis-project.html)
 - 结课小结：用一段话说明最突出的发现是什么、可能意味着什么、结论有什么局限
 
 ---
 
-## 四、两条明确的取舍
+## 五、两条明确的取舍
 
 **① 面向对象列为选修，不占正课**
-做 AI 应用只需要能读懂别人代码里的 `class`（例如 sklearn 的模型对象），不需要自己从零设计类。附一份自学材料即可，课堂上不展开。
+做 AI 应用只需要能读懂别人代码里的 `class`（例如 sklearn 的模型对象），不需要自己从零设计类。课堂上不展开，需要时看配套的 [类与对象（选修）](learning-materials/classes-and-objects.html)。
 
 **② 不自己训练深度学习模型**
 没有 GPU、课时也不够。AI 阶段只讲原理直觉 + 调用现成预训练模型，这是投入产出比最高的教法。
 
 ---
 
-## 五、45 分钟版的裁切方案（若课时口径为 45 分钟）
+## 六、45 分钟版的裁切方案（若课时口径为 45 分钟）
 
 保留每节课上半场的核心讲解 + 一个最小动手任务，砍掉以下内容：
 
@@ -165,7 +203,7 @@
 
 ---
 
-## 六、13 次课后的能力边界
+## 七、13 次课后的能力边界
 
 | 能力 | 状态 | 说明 |
 |---|---|---|
@@ -174,13 +212,13 @@
 | 读懂并改写一段 Python 代码 | ✅ 能 | 知道该改哪几个地方：字段名、关键词、文件名 |
 | 看懂报错并自行修复常见错误 | ✅ 能 | 复杂报错建议直接问 AI |
 | 承接 AI 阶段所需的全部数据准备工作 | ✅ 能 | 这是本阶段最重要的交付 |
-| 从零设计类与面向对象程序 | ⬜ 选修 | 附自学材料，不占正课 |
+| 从零设计类与面向对象程序 | ⬜ 选修 | 不占正课，自学材料见[类与对象（选修）](learning-materials/classes-and-objects.html) |
 | 独立训练深度学习模型 | ⬜ 尚未 | 由 AI 阶段讲调用方式，不做训练 |
 | 网页抓取与反爬应对 | ⬜ 尚未 | 涉及请求头、反爬与合规判断，属拓展方向 |
 
 ---
 
-## 七、第 14 次课起的 AI 阶段（衔接说明）
+## 八、第 14 次课起的 AI 阶段（衔接说明）
 
 | 顺序 | 内容 | 与 Python 阶段的接口 |
 |---|---|---|
@@ -193,7 +231,7 @@
 
 ---
 
-## 八、课前准备清单（一次性，不占课时）
+## 九、课前准备清单（一次性，不占课时）
 
 - **环境**：Anaconda 或在线 Notebook（百度 AI Studio / Cloud Studio）
 - **依赖包**：`jieba`、`pandas`、`numpy`、`matplotlib`、`scikit-learn`
@@ -202,7 +240,7 @@
 
 ---
 
-## 九、三条纪律
+## 十、三条纪律
 
 **课上坚决不做**
 1. 不现场装环境——课前必须解决，否则一次课就没了

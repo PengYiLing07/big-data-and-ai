@@ -37,6 +37,9 @@
   .lesson .row b{color:var(--brand)}
   .lesson .out{font-size:13px;color:var(--ok);margin-top:6px;font-weight:600}
   .lesson .hw{font-size:13px;color:var(--muted);margin-top:3px}
+  .lesson .ref{font-size:13px;color:#4b5563;margin-top:4px}
+  .lesson .ref a{color:var(--brand);text-decoration:none}
+  .lesson .ref a:hover{text-decoration:underline}
   .idea{background:var(--brand-bg);border-left:4px solid var(--brand);border-radius:8px;padding:12px 16px;margin:12px 0}
   .idea .lbl{font-weight:700;color:var(--brand);font-size:13px;display:block;margin-bottom:4px}
   .warn{background:#fff7ed;border-left:4px solid var(--warn);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px}
@@ -91,6 +94,29 @@
   </section>
 
   <section>
+    <h2>📚 配套概念资料：本地图讲到哪个概念，去哪一页看</h2>
+    <p>本地图负责回答「<strong>什么时候学什么</strong>」；每个概念的完整讲解（通俗解释、可视化图解、易混与边界、5 道可点击自测题、可核查来源）另有一页专门资料。下表是两者的对应关系，每节课末尾也附了直达链接。</p>
+    <table>
+      <tr><th style="width:16%">课次</th><th style="width:30%">概念页</th><th>这一页讲什么</th></tr>
+      <tr><td>第 1 课</td><td><a href="learning-materials/variables-and-data-types.html">变量与数据类型</a></td><td>赋值是贴标签；str / int / float / bool 四种基础类型与转换规则</td></tr>
+      <tr><td>第 2 课</td><td><a href="learning-materials/strings-and-text.html">字符串与文本处理</a></td><td>索引切片、split / join / strip / replace、f-string；把脏稿件清洗成规范文本</td></tr>
+      <tr><td>第 3 课</td><td><a href="learning-materials/booleans-and-conditionals.html">布尔逻辑与条件判断</a></td><td>比较运算、if / elif / else、and / or / not；用规则给文本打标签及其局限</td></tr>
+      <tr><td>第 4 课</td><td><a href="learning-materials/lists.html">列表</a> · <a href="learning-materials/loops.html">循环（for / while）</a></td><td>有序容器的增删改查与切片；for / while、range、enumerate、break / continue</td></tr>
+      <tr><td>第 5 课</td><td><a href="learning-materials/dictionaries-and-sets.html">字典与集合</a></td><td>键值对映射与去重集合；get / setdefault；词频统计与 Top-N</td></tr>
+      <tr><td>第 6 课</td><td><a href="learning-materials/comprehensions.html">推导式</a> · <a href="learning-materials/loops.html">循环（for / while）</a></td><td>列表 / 字典推导式；把「建容器 + 循环 + 判断」写成一行</td></tr>
+      <tr><td>第 7 课</td><td><a href="learning-materials/functions.html">函数</a></td><td>def、参数与返回值、默认参数、作用域、docstring</td></tr>
+      <tr><td>第 8 课</td><td><a href="learning-materials/file-io-and-encoding.html">文件读写与编码</a> · <a href="learning-materials/exceptions.html">异常处理</a></td><td>open / with、读写 txt 与 CSV、utf-8 与 gbk 乱码；try / except / else / finally</td></tr>
+      <tr><td>第 9 课</td><td><a href="learning-materials/modules-and-packages.html">模块与包</a></td><td>import 机制、__name__、包与 __init__.py、pip 与虚拟环境</td></tr>
+      <tr><td>第 10 课</td><td><a href="learning-materials/regular-expressions.html">正则表达式</a></td><td>元字符、字符类、量词、分组；用 re 批量清洗评论</td></tr>
+      <tr><td>第 11 课</td><td><a href="learning-materials/numpy-and-vectorization.html">NumPy 与向量化</a></td><td>ndarray、形状与维度、广播；为什么向量化比 for 循环快</td></tr>
+      <tr><td>第 12 课</td><td><a href="learning-materials/pandas-dataframe.html">pandas 与 DataFrame</a></td><td>Series 与 DataFrame、读写 CSV / Excel、筛选排序、缺失值、groupby</td></tr>
+      <tr><td>第 13 课</td><td><a href="learning-materials/matplotlib-basics.html">matplotlib 可视化</a> · <a href="learning-materials/text-analysis-project.html">新闻评论文本分析（综合实践）</a></td><td>直方图 / 柱状图 / 折线图与中文乱码；把清洗、统计、分组、出图串成完整流水线</td></tr>
+      <tr><td>选修</td><td><a href="learning-materials/classes-and-objects.html">类与对象（选修）</a></td><td>读懂别人代码里的 class：属性、方法、实例化</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">全部资料入口见 <a href="learning-materials/index.html">概念目录页</a>（含概念分布图、前置依赖表、跨课复用表）。<strong>建议用法</strong>：上课前扫一眼对应页的「学习目标」与「可视化图解」建立印象；下课后用它做当堂复习并做那 5 道自测题；卡住时看「易混与边界」。</p>
+  </section>
+
+  <section>
     <h2>📘 13 次课详细安排</h2>
 
     <div class="board b1">
@@ -102,6 +128,7 @@
         <div class="row"><b>上半场：</b>Python 能替记者做什么；Jupyter Notebook 单元格用法；<code>print()</code> 与注释；变量与命名规范</div>
         <div class="row"><b>下半场：</b>四种基础类型 <code>str</code>/<code>int</code>/<code>float</code>/<code>bool</code>；<code>type()</code>；<code>input()</code>；类型转换</div>
         <div class="out">📦 产出：lesson01.py 稿件字数统计器</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/variables-and-data-types.html">变量与数据类型</a></div>
         <div class="hw">作业：拿自己写的 3 段导语各跑一次，记下字数与句数</div>
       </div>
 
@@ -110,6 +137,7 @@
         <div class="row"><b>上半场：</b>索引与切片；<code>len()</code>/<code>split()</code>/<code>join()</code>/<code>strip()</code>/<code>replace()</code>/<code>find()</code>；f-string 格式化</div>
         <div class="row"><b>下半场：</b>把一篇脏稿件（多余空格、换行、全角标点混用）清洗成规范文本</div>
         <div class="out">📦 产出：lesson02.py 文本清洗器</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/strings-and-text.html">字符串与文本处理</a></div>
         <div class="hw">作业：把一篇真实稿件丢进去清洗，记录哪些脏东西没处理掉</div>
       </div>
 
@@ -118,6 +146,7 @@
         <div class="row"><b>上半场：</b>布尔值、比较运算符；<code>if</code>/<code>elif</code>/<code>else</code>；<code>and</code>/<code>or</code>/<code>not</code>；<code>in</code> 成员判断</div>
         <div class="row"><b>下半场：</b>按关键词给标题和评论打标签（正面 / 负面 / 中性）——情感分析最原始的形态</div>
         <div class="out">📦 产出：lesson03.py 关键词规则版情感倾向判断器</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/booleans-and-conditionals.html">布尔逻辑与条件判断</a></div>
         <div class="hw">作业：找 10 条自己的判断与程序判断不一致的评论，说明原因</div>
       </div>
       <div class="warn"><span class="lbl">🔑 关键伏笔</span>
@@ -134,6 +163,7 @@
         <div class="row"><b>上半场：</b>列表增删改查、索引切片；<code>for</code> 遍历、<code>range()</code>、<code>enumerate()</code>；<code>sort()</code>/<code>sorted()</code></div>
         <div class="row"><b>下半场：</b>遍历一批新闻标题，按关键词筛选、按长度排序</div>
         <div class="out">📦 产出：lesson04.py 标题批量筛选排序器</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/lists.html">列表</a>、<a href="learning-materials/loops.html">循环（for / while）</a></div>
         <div class="hw">作业：换成自己收集的 50 条标题，筛出与选题相关的部分</div>
       </div>
 
@@ -142,6 +172,7 @@
         <div class="row"><b>上半场：</b>字典键值对、增删改查、遍历；<code>get()</code>/<code>setdefault()</code>；<code>set</code> 去重</div>
         <div class="row"><b>下半场：</b>统计语料词频，排序取 Top20</div>
         <div class="out">📦 产出：lesson05.py 词频排行工具</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/dictionaries-and-sets.html">字典与集合</a></div>
         <div class="hw">作业：对同一选题的 30 条标题跑词频，看最突出的词是什么</div>
       </div>
 
@@ -150,6 +181,7 @@
         <div class="row"><b>上半场：</b><code>while</code> 循环、<code>break</code>/<code>continue</code>；嵌套循环；列表推导式、字典推导式</div>
         <div class="row"><b>下半场：</b>用推导式重写第 4、5 课代码并对比可读性；写一个交互式循环小程序</div>
         <div class="out">📦 产出：lesson06.py 精简版数据处理脚本</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/loops.html">循环（for / while）</a>、<a href="learning-materials/comprehensions.html">推导式</a></div>
         <div class="hw">作业：把以前写的循环改写成推导式，体会代码变短但没变难懂</div>
       </div>
     </div>
@@ -163,6 +195,7 @@
         <div class="row"><b>上半场：</b><code>def</code> 定义、参数与返回值；默认参数、关键字参数；作用域；docstring</div>
         <div class="row"><b>下半场：</b>把前 6 课的散装代码封装成 5 个函数</div>
         <div class="out">📦 产出：text_tools.py 个人文本处理函数库</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/functions.html">函数</a></div>
         <div class="hw">作业：给函数库补上 2 个自己最常用的功能</div>
       </div>
 
@@ -171,6 +204,7 @@
         <div class="row"><b>上半场：</b><code>open()</code>/<code>with</code>；读 txt 与 CSV（<code>csv.DictReader</code>）；写文件；utf-8 与 gbk 编码；<code>try</code>/<code>except</code></div>
         <div class="row"><b>下半场：</b>读采访记录 CSV → 清洗统计 → 结果写回新文件</div>
         <div class="out">📦 产出：lesson08.py 采访记录统计脚本 + 统计结果.csv</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/file-io-and-encoding.html">文件读写与编码</a>、<a href="learning-materials/exceptions.html">异常处理</a></div>
         <div class="hw">作业：把 CSV 换成发稿台账或活动名单，只改字段名就能跑通</div>
       </div>
 
@@ -179,6 +213,7 @@
         <div class="row"><b>上半场：</b><code>import</code> 机制；<code>pip</code> 安装第三方库；<code>__name__</code>；报错信息解读（从最后一行往上读）；常见报错类型</div>
         <div class="row"><b>下半场：</b>把函数库拆成模块导入使用；故意制造 5 种报错并逐个修复</div>
         <div class="out">📦 产出：多文件项目结构 + 《报错自查手册》一页</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/modules-and-packages.html">模块与包</a></div>
         <div class="hw">作业：整理这段时间遇到的所有报错，归类成表格</div>
       </div>
     </div>
@@ -192,6 +227,7 @@
         <div class="row"><b>上半场：</b>元字符、字符类、量词、分组；<code>re</code> 模块常用函数（<code>search</code>/<code>findall</code>/<code>sub</code>）</div>
         <div class="row"><b>下半场：</b>清洗真实新闻评论——去表情、去网址、去 @、提取数字与日期</div>
         <div class="out">📦 产出：lesson10.py 文本清洗规则集</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/regular-expressions.html">正则表达式</a></div>
         <div class="hw">作业：为评论数据集写 5 条清洗规则</div>
       </div>
 
@@ -200,6 +236,7 @@
         <div class="row"><b>上半场：</b><code>ndarray</code> 创建、形状与维度、索引切片、广播机制；向量化 vs 循环</div>
         <div class="row"><b>下半场：</b>统计一批新闻的标题长度、正文长度的均值 / 中位数 / 分位数</div>
         <div class="out">📦 产出：lesson11.py 长度统计脚本</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/numpy-and-vectorization.html">NumPy 与向量化</a></div>
         <div class="hw">作业：同一批数据分别用循环和向量化各算一次，比较耗时</div>
       </div>
 
@@ -208,6 +245,7 @@
         <div class="row"><b>上半场：</b><code>Series</code> 与 <code>DataFrame</code>；读写 CSV / Excel；<code>head()</code>/<code>info()</code>/<code>describe()</code>；筛选排序；缺失值处理</div>
         <div class="row"><b>下半场：</b>加载新闻评论数据集，看正负样本分布与文本长度分布</div>
         <div class="out">📦 产出：lesson12.py 数据概览报告</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/pandas-dataframe.html">pandas 与 DataFrame</a></div>
         <div class="hw">作业：把专业的真实表格用 pandas 读一遍，回答 3 个问题</div>
       </div>
 
@@ -216,6 +254,7 @@
         <div class="row"><b>上半场：</b><code>groupby</code> 聚合、<code>apply</code>、新增列；matplotlib 基础图表与中文乱码解决</div>
         <div class="row"><b>下半场：</b>综合实战——读入评论 CSV → 清洗 → 统计 → 出图 → 导出结果</div>
         <div class="out">📦 产出：完整项目 + 一份可直接交的数据分析小结</div>
+        <div class="ref">📚 配套概念资料：<a href="learning-materials/matplotlib-basics.html">matplotlib 可视化</a>、<a href="learning-materials/text-analysis-project.html">新闻评论文本分析（综合实践）</a></div>
         <div class="hw">小结：用一段话说明最突出的发现、可能意味着什么、结论有什么局限</div>
       </div>
     </div>

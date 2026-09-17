@@ -43,8 +43,8 @@ big-data-and-ai/
 │   ├── text-analysis-project.html · classes-and-objects.html
 │   ├── agent.html                    #    AI 概念 5 页（早期资料，目录页「拓展阅读」已收录）
 │   ├── llm-context.html · skill.html · concept-relationship.html · context-window.html
-├── Python学习地图_13次课版.html / .md  # ⭐ 13 次课教学路线（新闻学专业定制）
-├── Python学习地图_新闻学专业版.html/.md # ⭐ 早期 4 课时版路线
+├── Python学习地图_13次课版.html / .md  # ⭐ 13 次课教学路线（新闻学专业定制）；含「每节课 → 概念页」对应表
+├── Python学习地图_新闻学专业版.html/.md # ⭐ 早期 4 课时版路线；文末已补指向 13 次课版与概念资料库的入口
 ├── scripts/
 │   ├── 01.py                         # 第 1 课：环境自检脚本（可运行，打印版本 / 解释器 / pip 源）
 │   ├── 01.ipynb                      # 第 1 课：Jupyter 练习（自带执行输出）
