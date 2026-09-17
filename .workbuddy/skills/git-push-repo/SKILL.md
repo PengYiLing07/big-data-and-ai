@@ -87,6 +87,21 @@ git -C "<目标目录>" log --oneline @{u}..HEAD     # 应为空，空即已同�
 
 给用户的汇报固定回答这四句：**推到了哪个远端与分支** / **本次提交的 sha 与信息** / **本次涉及的文件范围** / **还有没有未同步的内容或需要他决策的事**。
 
+**当用户追问「是不是真的在远端仓库里」时**，别只回 `git ls-remote`（它只证明分支 SHA 一致，证明不了文件内容）。改用远端接口取证并**读回文件内容**，方法见 `references/troubleshooting.md` 第十节：
+
+```bash
+# 1) 远端分支最新 sha（与本地 HEAD 比对）
+git ls-remote --heads origin
+
+# 2) 该分支完整文件清单（GitHub API，URL 交给 WebFetch 拉取）
+#    https://api.github.com/repos/<owner>/<repo>/git/trees/<branch>?recursive=1
+# 3) 单个文件的真实内容
+#    https://raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>
+#    （Gitee 用 /api/v5/repos/<owner>/<repo>/git/trees/<sha>?recursive=1）
+```
+
+注意：**清单里出现文件名 ≠ 文件有内容**。`.ipynb` 要确认 `execution_count` 有值、`outputs` 非空；`.py` 要确认是能跑的代码而非命令行文本。
+
 ## 遇到问题
 
 - 认证失败、非快进被拒、rebase 冲突、误提交密钥、大文件、Windows 换行与长路径 → 读 `references/troubleshooting.md`，里面按报错关键词给了处置动作。

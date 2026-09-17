@@ -116,3 +116,23 @@ git fetch origin        # 复核：值应保持不变，status 不再 ahead
 **成因**：`refs/remotes/*` 一旦被 `pack-refs` 打包过，git 更新时会写入一个「松引用」`.git/refs/remotes/<remote>/<branch>`；本机曾出现松引用写入未生效、而 `packed-refs` 中的旧值持续被读取的情况，于是远端更新与本地记录脱钩。按上表手工写值再 `pack-refs --all` 可让两边重新对齐（本仓库 2026-09-17 实测有效）。
 
 **规避**：只判断「是否需要推送」时不要依赖追踪引用，直接比对 `git rev-parse HEAD` 与 `git ls-remote --heads origin`。
+
+---
+
+## 十、如何独立核验「文件确实到远端了」
+
+`git ls-remote` 只能证明**分支 SHA 一致**，证明不了文件内容。要把「作业/交付物确实在远端」讲实，用远端自身的接口取证，完全不经过本地 git：
+
+| 目的 | 通道 |
+|---|---|
+| 远端最新提交与时间 | `https://api.github.com/repos/<owner>/<repo>/branches/<branch>` → `commit.sha` / `commit.commit.author.date` |
+| 该分支下的**完整文件清单** | `https://api.github.com/repos/<owner>/<repo>/git/trees/<branch>?recursive=1` → 遍历 `tree[].path` |
+| **文件真实内容** | `https://raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>` |
+
+要点：
+
+1. **清单里有名字 ≠ 文件有内容**。曾遇到远端存在 `scripts/01.py` 但内容是命令行文本（跑起来 SyntaxError）、`.ipynb` 是空壳（无 `execution_count`、`outputs` 为空）。核验必须**读内容**：`.py` 看有没有 `import` / `def` / `print`；`.ipynb` 看每个 code cell 的 `execution_count` 是否有值、`outputs` 是否非空。
+2. **本地 `curl` 可能被沙箱拦掉**（返回 `HTTP 000`），但 WebFetch 通道正常——用 WebFetch 拉上面的 URL，不要据此判定"仓库不存在"。
+3. 公开仓库无需鉴权；私有仓库同样三条 URL 需要带 token。
+4. Gitee 等平台有对应接口（`/api/v5/repos/<owner>/<repo>/git/trees/<sha>?recursive=1`），思路一致。
+
