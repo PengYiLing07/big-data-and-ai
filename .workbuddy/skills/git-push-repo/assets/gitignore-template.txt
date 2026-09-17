@@ -1,0 +1,69 @@
+# ---- 通用 ----
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# ---- 密钥 / 凭据（务必不要提交）----
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+secrets.yml
+secrets.json
+.npmrc
+.pypirc
+.netrc
+.aws/credentials
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pyc
+
+# ---- 数据文件（体积大，按需保留小样本）----
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.sqlite
+*.db
+*.pkl
+*.pickle
+*.npy
+*.npz
+data/raw/
+data/tmp/
+
+# ---- Office 临时文件 ----
+~$*.docx
+~$*.xlsx
+~$*.pptx
+*.tmp
+
+# ---- 日志与输出 ----
+*.log
+logs/
+outputs/tmp/
+
+# ---- 工具缓存 ----
+.workbuddy/memory/
+.cache/
