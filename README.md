@@ -32,8 +32,9 @@ big-data-and-ai/
 │       └── agent-skill-101/          # 早期实验：讲解“Agent Skill”这个概念的示例技能
 ├── learning-materials/               # ⭐ 学习成果（由 concept-learner 生成并人工核查）
 │   ├── index.html                    #    目录页：概念分布、前置依赖表、跨课复用表
-│   ├── _concepts.json                #    17 个概念的结构化清单（含前置 / 后继 / 所属板块）
-│   ├── variables-and-data-types.html #    Python 基础 17 页（第 1–13 课 + 选修 + 结课实践）
+│   ├── _concepts.json                #    18 个概念的结构化清单（含前置 / 后继 / 所属板块）
+│   ├── variables-and-data-types.html #    Python 基础 18 页（第 1–13 课 + 选修 + 结课实践）
+│   ├── operators.html
 │   ├── strings-and-text.html
 │   ├── booleans-and-conditionals.html
 │   ├── lists.html · loops.html · dictionaries-and-sets.html · comprehensions.html
@@ -58,7 +59,7 @@ big-data-and-ai/
 
 > 说明：`agent-skill-101` 与 `agent-skill-guide*.html` 是早期学习「Agent Skill」概念时做的实验性技能与页面。
 > `concept-learner` 是通用概念学习引擎；`git-push-repo` 是本仓库的提交推送工具。
-> `learning-materials/` 下的资料按主题分两批：前 17 页对应 Python 基础 13 次课，后 5 页为早期 AI 概念资料。
+> `learning-materials/` 下的资料按主题分两批：前 18 页对应 Python 基础 13 次课，后 5 页为早期 AI 概念资料。
 
 ---
 
@@ -93,11 +94,12 @@ big-data-and-ai/
 
 ## 五、已生成的学习资料（并已人工核查）
 
-### 5.1 Python 基础（17 页，对应 13 次课）
+### 5.1 Python 基础（18 页，对应 13 次课）
 
 | 板块 | 概念页 | 主题要点 |
 |------|------|---------|
 | 一 · Python 起步（第 1–3 课） | `variables-and-data-types.html` | 赋值是贴标签；str / int / float / bool 与转换 |
+| | `operators.html` | 六类运算符；`=` / `==` / `is` 的分界、and / or 返回操作数、优先级 |
 | | `strings-and-text.html` | 索引切片、split / join / strip / replace、f-string |
 | | `booleans-and-conditionals.html` | 比较运算、if / elif / else、and / or / not |
 | 二 · 循环与容器（第 4–6 课） | `lists.html` | 增删改查、索引切片、sort 与 sorted |

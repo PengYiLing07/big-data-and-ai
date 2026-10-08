@@ -22,8 +22,18 @@
       "board": "b1",
       "lesson": "第 1 课",
       "prereq": [],
-      "next": ["strings-and-text", "booleans-and-conditionals", "lists"],
+      "next": ["operators", "strings-and-text", "booleans-and-conditionals", "lists"],
       "summary": "把「标题」「字数」这些概念装进变量；str / int / float / bool 四种基础类型与其转换规则。"
+    },
+    {
+      "id": "operators",
+      "name": "Python 运算符",
+      "file": "operators.html",
+      "board": "b1",
+      "lesson": "第 1–3 课",
+      "prereq": ["variables-and-data-types"],
+      "next": ["booleans-and-conditionals", "loops", "comprehensions"],
+      "summary": "算术 / 赋值 / 比较 / 逻辑 / 成员 / 身份六类运算符；= 与 == 与 is 的分界、and / or 的返回值、优先级与结合性。"
     },
     {
       "id": "strings-and-text",
@@ -41,7 +51,7 @@
       "file": "booleans-and-conditionals.html",
       "board": "b1",
       "lesson": "第 3 课",
-      "prereq": ["variables-and-data-types", "strings-and-text"],
+      "prereq": ["variables-and-data-types", "operators", "strings-and-text"],
       "next": ["loops", "comprehensions"],
       "summary": "True / False 与比较运算；if / elif / else；and / or / not；用规则给文本打标签及其局限。"
     },
@@ -61,7 +71,7 @@
       "file": "loops.html",
       "board": "b2",
       "lesson": "第 4、6 课",
-      "prereq": ["lists"],
+      "prereq": ["lists", "operators"],
       "next": ["dictionaries-and-sets", "comprehensions", "functions"],
       "summary": "for 与 while、range、enumerate、break / continue；从处理一条数据到处理一万条。"
     },
@@ -81,7 +91,7 @@
       "file": "comprehensions.html",
       "board": "b2",
       "lesson": "第 6 课",
-      "prereq": ["lists", "loops", "dictionaries-and-sets"],
+      "prereq": ["lists", "loops", "dictionaries-and-sets", "operators"],
       "next": ["functions"],
       "summary": "列表推导式与字典推导式：把「建容器 + 循环 + 判断」三件事写成一行。"
     },
