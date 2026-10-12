@@ -32,9 +32,10 @@ big-data-and-ai/
 │       └── agent-skill-101/          # 早期实验：讲解“Agent Skill”这个概念的示例技能
 ├── learning-materials/               # ⭐ 学习成果（由 concept-learner 生成并人工核查）
 │   ├── index.html                    #    目录页：概念分布、前置依赖表、跨课复用表
-│   ├── _concepts.json                #    18 个概念的结构化清单（含前置 / 后继 / 所属板块）
-│   ├── variables-and-data-types.html #    Python 基础 18 页（第 1–13 课 + 选修 + 结课实践）
+│   ├── _concepts.json                #    19 个概念的结构化清单（含前置 / 后继 / 所属板块）
+│   ├── variables-and-data-types.html #    Python 基础 19 页（第 1–13 课 + 选修 + 结课实践）
 │   ├── operators.html
+│   ├── expressions.html
 │   ├── strings-and-text.html
 │   ├── booleans-and-conditionals.html
 │   ├── lists.html · loops.html · dictionaries-and-sets.html · comprehensions.html
@@ -59,7 +60,7 @@ big-data-and-ai/
 
 > 说明：`agent-skill-101` 与 `agent-skill-guide*.html` 是早期学习「Agent Skill」概念时做的实验性技能与页面。
 > `concept-learner` 是通用概念学习引擎；`git-push-repo` 是本仓库的提交推送工具。
-> `learning-materials/` 下的资料按主题分两批：前 18 页对应 Python 基础 13 次课，后 5 页为早期 AI 概念资料。
+> `learning-materials/` 下的资料按主题分两批：前 19 页对应 Python 基础 13 次课，后 5 页为早期 AI 概念资料。
 
 ---
 
@@ -94,12 +95,13 @@ big-data-and-ai/
 
 ## 五、已生成的学习资料（并已人工核查）
 
-### 5.1 Python 基础（18 页，对应 13 次课）
+### 5.1 Python 基础（19 页，对应 13 次课）
 
 | 板块 | 概念页 | 主题要点 |
 |------|------|---------|
 | 一 · Python 起步（第 1–3 课） | `variables-and-data-types.html` | 赋值是贴标签；str / int / float / bool 与转换 |
 | | `operators.html` | 六类运算符；`=` / `==` / `is` 的分界、and / or 返回操作数、优先级 |
+| | `expressions.html` | 表达式 = 能算出值的写法；与语句的边界、求值顺序与短路、条件表达式 / 海象 / lambda |
 | | `strings-and-text.html` | 索引切片、split / join / strip / replace、f-string |
 | | `booleans-and-conditionals.html` | 比较运算、if / elif / else、and / or / not |
 | 二 · 循环与容器（第 4–6 课） | `lists.html` | 增删改查、索引切片、sort 与 sorted |
@@ -137,10 +139,11 @@ big-data-and-ai/
 2. **辅助理解在场且克制**：每份资料都有“💡 一个类比 / ✅ 核查说明（人工）”块，与权威结论明确区分。全文统一第三人称客观表述，不出现“我 / 我的”等第一人称；类比用陈述句而非命令句，读者指称用“用户/读者”而非通篇“你”，判断句用“通常/常见误解是”，尽量减少主观色彩。
 3. **内容方向核对**：各页核心表述与多个独立来源交叉比对后采信（详见各页“核查说明”）。以 `modules-and-packages.html` 为例，模块定义、`__init__.py` 的作用、搜索路径构成与同名遮蔽、`__name__` 与相对导入的关系，分别核对 Python 官方教程第 6 章、官方文档《`__main__`》、PEP 328 与 Python 打包用户指南。
 4. **示例代码实跑验证**：`modules-and-packages.html` 第六节的应用场景代码，先在临时目录以 `news_tools` 包的形式实际运行通过（`python -m news_tools` 输出与页中记录一致），页面定稿后又从 HTML 中反抽代码重跑一次；同时保留对照组证据——直接执行包内模块会报 `ImportError: attempted relative import with no known parent package`。`scripts/01.py` 与 `scripts/01.ipynb` 同样经过实跑。
-5. **结构自检（已脚本化）**：`scripts/audit_materials.py` 一次性核查全部 22 个页面——9 板块是否齐全、内联 SVG 数量与 `role="img"`/`<title>`/`<desc>` 三件套、是否含外部依赖、自测题数与答案键、`data-ok` 反馈完整性、叙述人称、站内断链；`scripts/quiz_selftest.js` 离线复跑判分逻辑（全对得满分、全错得 0 分、单选错判定正确、未作答得 0 分）。当前结果：**22 页结构自检 0 问题、22 页判分自测全部通过、0 处站内断链**。外链曾做全量可达性探测（110 条，含失败重试以区分真失效与网络抖动）。
-6. **两次纠错记录**：
+5. **结构自检（已脚本化）**：`scripts/audit_materials.py` 一次性核查全部 23 个页面——9 板块是否齐全、内联 SVG 数量与 `role="img"`/`<title>`/`<desc>` 三件套、是否含外部依赖、自测题数与答案键、`data-ok` 反馈完整性、叙述人称、站内断链；`scripts/quiz_selftest.js` 离线复跑判分逻辑（全对得满分、全错得 0 分、单选错判定正确、未作答得 0 分）。当前结果：**23 页结构自检 0 问题、23 页判分自测全部通过、0 处站内断链**。外链曾做全量可达性探测（110 条，含失败重试以区分真失效与网络抖动）。
+6. **三次纠错记录**：
    - 早期开发 HTML 学习页时，发现并修复“判分把未选中项当错误”的逻辑 bug——教训是规则类交互应先做逻辑自测再交付，本仓库的 Skill 已把“交付前自检”写进规范。
    - 资料库自检这一轮又发现两处：① `functions.html`、`variables-and-data-types.html` 共 6 道题的 `data-ok` 反馈文案里误写了 `<code>` 标签，而模板用 `textContent` 渲染，答对时会把 `<code>` 原样显示出来，已改为纯文本；② `scripts/quiz_selftest.js` 的属性解析用 `[^>]*` 截断，遇到属性值内的 `>`（如反馈里的 `-1 > 0`）会误报“缺 data-ok”，已改为按引号状态扫描。同时目录页的状态标记已随 17 页全部生成而统一更正为“已生成”。
+   - 新增 `expressions.html` 这一轮，发现并顺带修掉两处旧问题：**13 次课版学习地图（HTML + MD）里，第 1 课与第 3 课的「配套资料」把 `operators.html` 链接写了两次**（同一链接重复），第 4 课的配套资料在 HTML 与 MD 两版之间不一致（HTML 少列了推导式、异常处理等页），已统一更正。新增概念页时同步了六处：`_concepts.json`、目录页（分布图节点 / 目录卡片 / 前置依赖表 / 跨课复用表 / 页头计数）、两份学习地图、本文件。
 
 > 诚实说明：本仓库不是“纯手工”资料，而是**AI 辅助产出 + 人工核查把关**的成果；这也正是本作业对“AI 使用规范”的回应——善用 AI 但不盲信，人为主导、来源可查。
 

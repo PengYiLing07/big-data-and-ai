@@ -40,14 +40,16 @@
 
 本地图负责回答「**什么时候学什么**」；每个概念的完整讲解（通俗解释、可视化图解、易混与边界、5 道可点击自测题、可核查来源）另有一页专门资料。下表是两者的对应关系，每节课末尾也附了直达链接。
 
+下表的「概念页」列只列与该课次直接对应的页面。表单之外，另外两个概念被列为「贯穿全程」：**[Python 运算符](learning-materials/operators.html)**（第 1–3 课，运算符的完整清单）与 **[Python 表达式](learning-materials/expressions.html)**（第 1–3 课，区分「能算出值的写法」与语句，解释为何 `if (x = 5):` 会报错）。它们不绑定单一课次，但在第 3、4、6、7、12 课反复被用到。
+
 | 课次 | 概念页 | 这一页讲什么 |
 |---|---|---|
-| 第 1 课 | [变量与数据类型](learning-materials/variables-and-data-types.html) · [Python 运算符](learning-materials/operators.html) | 赋值是贴标签；str / int / float / bool 四种基础类型与转换规则；六类运算符与优先级 |
+| 第 1 课 | [变量与数据类型](learning-materials/variables-and-data-types.html) · [Python 运算符](learning-materials/operators.html) · [Python 表达式](learning-materials/expressions.html) | 赋值是贴标签；str / int / float / bool 四种基础类型与转换规则；六类运算符与优先级；表达式与语句的分界 |
 | 第 2 课 | [字符串与文本处理](learning-materials/strings-and-text.html) | 索引切片、split / join / strip / replace、f-string；把脏稿件清洗成规范文本 |
-| 第 3 课 | [布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html) · [Python 运算符](learning-materials/operators.html) | 比较运算、if / elif / else、and / or / not；用规则给文本打标签及其局限 |
-| 第 4 课 | [列表](learning-materials/lists.html) · [循环（for / while）](learning-materials/loops.html) · [Python 运算符](learning-materials/operators.html) | 有序容器的增删改查与切片；for / while、range、enumerate、break / continue |
+| 第 3 课 | [布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html) · [Python 运算符](learning-materials/operators.html) · [Python 表达式](learning-materials/expressions.html) | 比较运算、if / elif / else、and / or / not；用规则给文本打标签及其局限；为什么 `if` 的条件必须是一个表达式 |
+| 第 4 课 | [列表](learning-materials/lists.html) · [循环（for / while）](learning-materials/loops.html) · [Python 运算符](learning-materials/operators.html) · [Python 表达式](learning-materials/expressions.html) | 有序容器的增删改查与切片；for / while、range、enumerate、break / continue |
 | 第 5 课 | [字典与集合](learning-materials/dictionaries-and-sets.html) | 键值对映射与去重集合；get / setdefault；词频统计与 Top-N |
-| 第 6 课 | [推导式](learning-materials/comprehensions.html) · [循环（for / while）](learning-materials/loops.html) · [Python 运算符](learning-materials/operators.html) | 列表 / 字典推导式；把「建容器 + 循环 + 判断」写成一行 |
+| 第 6 课 | [推导式](learning-materials/comprehensions.html) · [循环（for / while）](learning-materials/loops.html) · [Python 运算符](learning-materials/operators.html) · [Python 表达式](learning-materials/expressions.html) | 列表 / 字典推导式；把「建容器 + 循环 + 判断」写成一行 |
 | 第 7 课 | [函数](learning-materials/functions.html) | def、参数与返回值、默认参数、作用域、docstring |
 | 第 8 课 | [文件读写与编码](learning-materials/file-io-and-encoding.html) · [异常处理](learning-materials/exceptions.html) | open / with、读写 txt 与 CSV、utf-8 与 gbk 乱码；try / except / else / finally |
 | 第 9 课 | [模块与包](learning-materials/modules-and-packages.html) | import 机制、`__name__`、包与 `__init__.py`、pip 与虚拟环境 |
@@ -72,7 +74,7 @@
 - 上半场：Python 能替记者做什么；Jupyter Notebook 单元格用法；`print()` 与注释；变量与命名规范
 - 下半场：四种基础类型 `str` / `int` / `float` / `bool`；`type()`；`input()`；类型转换；六类运算符与优先级（算术 / 赋值 / 比较 / 逻辑 / 成员 / 身份）
 - 产出：`lesson01.py` 稿件字数统计器
-- 配套资料：[变量与数据类型](learning-materials/variables-and-data-types.html)、[Python 运算符](learning-materials/operators.html)、[Python 运算符](learning-materials/operators.html)
+- 配套资料：[变量与数据类型](learning-materials/variables-and-data-types.html)、[Python 运算符](learning-materials/operators.html)、[Python 表达式](learning-materials/expressions.html)
 - 课后作业：拿自己写的 3 段导语各跑一次，记下字数与句数
 
 **第 2 课 · 字符串与文本清洗** ｜ 难度 ★★☆☆☆
@@ -86,7 +88,7 @@
 - 上半场：布尔值、比较运算符；`if` / `elif` / `else`；`and` / `or` / `not`；`in` 成员判断
 - 下半场：按关键词给标题和评论打标签（正面 / 负面 / 中性）——这是情感分析最原始的形态
 - 产出：`lesson03.py` 关键词规则版情感倾向判断器
-- 配套资料：[布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html)、[Python 运算符](learning-materials/operators.html)、[Python 运算符](learning-materials/operators.html)
+- 配套资料：[布尔逻辑与条件判断](learning-materials/booleans-and-conditionals.html)、[Python 运算符](learning-materials/operators.html)、[Python 表达式](learning-materials/expressions.html)
 - **关键伏笔**：课堂最后留 10 分钟讨论「规则法漏判了什么」——为何「这条明明是负面的却没命中关键词」，为 AI 阶段建立真实痛点
 - 课后作业：找 10 条自己的判断与程序判断不一致的评论，说明原因
 
@@ -96,7 +98,7 @@
 - 上半场：列表增删改查、索引切片；`for` 遍历、`range()`、`enumerate()`；`sort()` / `sorted()`
 - 下半场：遍历一批新闻标题，按关键词筛选、按长度排序
 - 产出：`lesson04.py` 标题批量筛选排序器
-- 配套资料：[列表](learning-materials/lists.html)、[循环（for / while）](learning-materials/loops.html)、[Python 运算符](learning-materials/operators.html)、[Python 运算符](learning-materials/operators.html)
+- 配套资料：[列表](learning-materials/lists.html)、[循环（for / while）](learning-materials/loops.html)、[Python 运算符](learning-materials/operators.html)、[Python 表达式](learning-materials/expressions.html)
 - 课后作业：换成自己收集的 50 条标题，筛出与你选题相关的部分
 
 **第 5 课 · 字典与词频统计** ｜ 难度 ★★★☆☆
@@ -110,7 +112,7 @@
 - 上半场：`while` 循环、`break` / `continue`；嵌套循环；列表推导式、字典推导式
 - 下半场：用推导式重写第 4、5 课的代码并对比可读性；写一个交互式循环小程序
 - 产出：`lesson06.py` 精简版数据处理脚本
-- 配套资料：[循环（for / while）](learning-materials/loops.html)、[推导式](learning-materials/comprehensions.html)、[Python 运算符](learning-materials/operators.html)
+- 配套资料：[循环（for / while）](learning-materials/loops.html)、[推导式](learning-materials/comprehensions.html)、[Python 运算符](learning-materials/operators.html)、[Python 表达式](learning-materials/expressions.html)
 - 课后作业：把自己以前写的循环改写成推导式，体会代码变短但没变难懂
 
 ### 板块三 · 函数与工程化（第 7–9 课）

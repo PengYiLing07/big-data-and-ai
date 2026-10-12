@@ -32,8 +32,18 @@
       "board": "b1",
       "lesson": "第 1–3 课",
       "prereq": ["variables-and-data-types"],
-      "next": ["booleans-and-conditionals", "loops", "comprehensions"],
+      "next": ["expressions", "booleans-and-conditionals", "loops", "comprehensions"],
       "summary": "算术 / 赋值 / 比较 / 逻辑 / 成员 / 身份六类运算符；= 与 == 与 is 的分界、and / or 的返回值、优先级与结合性。"
+    },
+    {
+      "id": "expressions",
+      "name": "Python 表达式",
+      "file": "expressions.html",
+      "board": "b1",
+      "lesson": "第 1–3 课",
+      "prereq": ["variables-and-data-types", "operators"],
+      "next": ["booleans-and-conditionals", "comprehensions"],
+      "summary": "表达式 = 能算出一个值的写法；与语句的边界、操作数与运算符的组成、求值顺序与短路、放没放对位置的三类报错。"
     },
     {
       "id": "strings-and-text",
@@ -51,7 +61,7 @@
       "file": "booleans-and-conditionals.html",
       "board": "b1",
       "lesson": "第 3 课",
-      "prereq": ["variables-and-data-types", "operators", "strings-and-text"],
+      "prereq": ["variables-and-data-types", "operators", "expressions", "strings-and-text"],
       "next": ["loops", "comprehensions"],
       "summary": "True / False 与比较运算；if / elif / else；and / or / not；用规则给文本打标签及其局限。"
     },
@@ -91,7 +101,7 @@
       "file": "comprehensions.html",
       "board": "b2",
       "lesson": "第 6 课",
-      "prereq": ["lists", "loops", "dictionaries-and-sets", "operators"],
+      "prereq": ["lists", "loops", "dictionaries-and-sets", "operators", "expressions"],
       "next": ["functions"],
       "summary": "列表推导式与字典推导式：把「建容器 + 循环 + 判断」三件事写成一行。"
     },
